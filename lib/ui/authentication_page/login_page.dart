@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/ui/authentication_page/signup_page.dart';
 import 'package:peka/widgets/button.dart';
 
 class LoginPage extends StatelessWidget {
@@ -57,21 +58,23 @@ class LoginPage extends StatelessWidget {
                   height: 5.0,
                 ),
                 //TEXTFIELD ALAMAT EMAIL
-                Container(
-                  width: 312.0,
-                  height: 45.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  decoration: BoxDecoration(
-                      color: kGreyBgColor,
-                      borderRadius:
-                          BorderRadius.circular(defaultRadiusTextField)),
-                  child: TextField(
-                      decoration: InputDecoration(
-                          hintText: "Tulis alamat email kamu",
-                          hintStyle: greyHintTextStyle,
-                          border: InputBorder.none),
-                      style: blackTextStyle.copyWith(
-                          fontWeight: regular, fontSize: 14.0)),
+                ConstrainedBox(
+                  constraints: const BoxConstraints.tightForFinite(),
+                  child: Container(
+                    height: 45.0,
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    decoration: BoxDecoration(
+                        color: kGreyBgColor,
+                        borderRadius:
+                            BorderRadius.circular(defaultRadiusTextField)),
+                    child: TextField(
+                        decoration: InputDecoration(
+                            hintText: "Tulis alamat email kamu",
+                            hintStyle: greyHintTextStyle,
+                            border: InputBorder.none),
+                        style: blackTextStyle.copyWith(
+                            fontWeight: regular, fontSize: 14.0)),
+                  ),
                 ),
                 const SizedBox(
                   height: 10.0,
@@ -86,22 +89,24 @@ class LoginPage extends StatelessWidget {
                   height: 5.0,
                 ),
                 //TEXTFIELD KATA SANDI
-                Container(
-                  width: 312.0,
-                  height: 45.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  decoration: BoxDecoration(
-                      color: kGreyBgColor,
-                      borderRadius:
-                          BorderRadius.circular(defaultRadiusTextField)),
-                  child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          hintText: "Tulis kata sandi kamu",
-                          hintStyle: greyHintTextStyle,
-                          border: InputBorder.none),
-                      style: blackTextStyle.copyWith(
-                          fontWeight: regular, fontSize: 14.0)),
+                ConstrainedBox(
+                  constraints: const BoxConstraints.tightForFinite(),
+                  child: Container(
+                    height: 45.0,
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    decoration: BoxDecoration(
+                        color: kGreyBgColor,
+                        borderRadius:
+                            BorderRadius.circular(defaultRadiusTextField)),
+                    child: TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            hintText: "Tulis kata sandi kamu",
+                            hintStyle: greyHintTextStyle,
+                            border: InputBorder.none),
+                        style: blackTextStyle.copyWith(
+                            fontWeight: regular, fontSize: 14.0)),
+                  ),
                 ),
                 // TEXT LUPA KATA SANDI
                 Align(
@@ -136,7 +141,13 @@ class LoginPage extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SignupPage(),
+                            ));
+                      },
                       child: Text(
                         "Daftar",
                         style: purpleTextStyle.copyWith(
