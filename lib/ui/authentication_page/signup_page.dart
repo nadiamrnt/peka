@@ -80,40 +80,42 @@ class SignupPage extends StatelessWidget {
                 //TEXT FIELD UNTUK NAMA DEPAN DAN NAMA BELAKANG
                 Row(
                   children: [
-                    Container(
-                      width: 150.0,
-                      height: 45.0,
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      decoration: BoxDecoration(
-                          color: kGreyBgColor,
-                          borderRadius:
-                              BorderRadius.circular(defaultRadiusTextField)),
-                      child: TextField(
-                          decoration: InputDecoration(
-                              hintText: "Nama depan",
-                              hintStyle: greyHintTextStyle,
-                              border: InputBorder.none),
-                          style: blackTextStyle.copyWith(
-                              fontWeight: regular, fontSize: 14.0)),
+                    Expanded(
+                      child: Container(
+                        height: 45.0,
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        decoration: BoxDecoration(
+                            color: kGreyBgColor,
+                            borderRadius:
+                                BorderRadius.circular(defaultRadiusTextField)),
+                        child: TextField(
+                            decoration: InputDecoration(
+                                hintText: "Nama depan",
+                                hintStyle: greyHintTextStyle,
+                                border: InputBorder.none),
+                            style: blackTextStyle.copyWith(
+                                fontWeight: regular, fontSize: 14.0)),
+                      ),
                     ),
                     const SizedBox(
                       width: 10.0,
                     ),
-                    Container(
-                      width: 150.0,
-                      height: 45.0,
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      decoration: BoxDecoration(
-                          color: kGreyBgColor,
-                          borderRadius:
-                              BorderRadius.circular(defaultRadiusTextField)),
-                      child: TextField(
-                          decoration: InputDecoration(
-                              hintText: "Nama belakang",
-                              hintStyle: greyHintTextStyle,
-                              border: InputBorder.none),
-                          style: blackTextStyle.copyWith(
-                              fontWeight: regular, fontSize: 14.0)),
+                    Expanded(
+                      child: Container(
+                        height: 45.0,
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        decoration: BoxDecoration(
+                            color: kGreyBgColor,
+                            borderRadius:
+                                BorderRadius.circular(defaultRadiusTextField)),
+                        child: TextField(
+                            decoration: InputDecoration(
+                                hintText: "Nama belakang",
+                                hintStyle: greyHintTextStyle,
+                                border: InputBorder.none),
+                            style: blackTextStyle.copyWith(
+                                fontWeight: regular, fontSize: 14.0)),
+                      ),
                     ),
                   ],
                 ),
@@ -130,21 +132,23 @@ class SignupPage extends StatelessWidget {
                   height: 5.0,
                 ),
                 //TEXTFIELD UNTUK ALAMAT EMAIL
-                Container(
-                  width: 312.0,
-                  height: 45.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  decoration: BoxDecoration(
-                      color: kGreyBgColor,
-                      borderRadius:
-                          BorderRadius.circular(defaultRadiusTextField)),
-                  child: TextField(
-                      decoration: InputDecoration(
-                          hintText: "Tulis alamat email kamu",
-                          hintStyle: greyHintTextStyle,
-                          border: InputBorder.none),
-                      style: blackTextStyle.copyWith(
-                          fontWeight: regular, fontSize: 14.0)),
+                ConstrainedBox(
+                  constraints: const BoxConstraints.tightForFinite(),
+                  child: Container(
+                    height: 45.0,
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    decoration: BoxDecoration(
+                        color: kGreyBgColor,
+                        borderRadius:
+                            BorderRadius.circular(defaultRadiusTextField)),
+                    child: TextField(
+                        decoration: InputDecoration(
+                            hintText: "Tulis alamat email kamu",
+                            hintStyle: greyHintTextStyle,
+                            border: InputBorder.none),
+                        style: blackTextStyle.copyWith(
+                            fontWeight: regular, fontSize: 14.0)),
+                  ),
                 ),
                 const SizedBox(
                   height: 10.0,
@@ -159,22 +163,24 @@ class SignupPage extends StatelessWidget {
                   height: 5.0,
                 ),
                 //TEXTFIELD UNTUK KATA SANDI
-                Container(
-                  width: 312.0,
-                  height: 45.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  decoration: BoxDecoration(
-                      color: kGreyBgColor,
-                      borderRadius:
-                          BorderRadius.circular(defaultRadiusTextField)),
-                  child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          hintText: "Tulis kata sandi kamu",
-                          hintStyle: greyHintTextStyle,
-                          border: InputBorder.none),
-                      style: blackTextStyle.copyWith(
-                          fontWeight: regular, fontSize: 14.0)),
+                ConstrainedBox(
+                  constraints: const BoxConstraints.tightForFinite(),
+                  child: Container(
+                    height: 45.0,
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    decoration: BoxDecoration(
+                        color: kGreyBgColor,
+                        borderRadius:
+                            BorderRadius.circular(defaultRadiusTextField)),
+                    child: TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            hintText: "Tulis kata sandi kamu",
+                            hintStyle: greyHintTextStyle,
+                            border: InputBorder.none),
+                        style: blackTextStyle.copyWith(
+                            fontWeight: regular, fontSize: 14.0)),
+                  ),
                 ),
                 const SizedBox(
                   height: 10.0,
@@ -189,22 +195,24 @@ class SignupPage extends StatelessWidget {
                   height: 5.0,
                 ),
                 //TEXTFIELD UNTUK ULANG KATA SANDI
-                Container(
-                  width: 312.0,
-                  height: 45.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  decoration: BoxDecoration(
-                      color: kGreyBgColor,
-                      borderRadius:
-                          BorderRadius.circular(defaultRadiusTextField)),
-                  child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          hintText: "Tulis ulang kata sandi kamu",
-                          hintStyle: greyHintTextStyle,
-                          border: InputBorder.none),
-                      style: blackTextStyle.copyWith(
-                          fontWeight: regular, fontSize: 14.0)),
+                ConstrainedBox(
+                  constraints: const BoxConstraints.tightForFinite(),
+                  child: Container(
+                    height: 45.0,
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    decoration: BoxDecoration(
+                        color: kGreyBgColor,
+                        borderRadius:
+                            BorderRadius.circular(defaultRadiusTextField)),
+                    child: TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            hintText: "Tulis ulang kata sandi kamu",
+                            hintStyle: greyHintTextStyle,
+                            border: InputBorder.none),
+                        style: blackTextStyle.copyWith(
+                            fontWeight: regular, fontSize: 14.0)),
+                  ),
                 ),
                 const SizedBox(
                   height: 20.0,
