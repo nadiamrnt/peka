@@ -12,7 +12,7 @@ Color kWhiteBgColor = const Color(0xffFAFAFA);
 Color kGreyColor = const Color(0xff7D90A4);
 Color kGreyBgColor = const Color(0xffF8F8F8);
 Color kGreyHintColor = const Color(0xffAFB2B9);
-Color kPinkBgColor = const Color(0xffFEB5AC);
+Color kPinkBgColor = const Color(0xffFDEFED);
 Color kBlueBgColor = const Color(0xffF2F8FF);
 Color kTransparentColor = Colors.transparent;
 

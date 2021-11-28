@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/ui/authentication_page/signup_page.dart';
-import 'package:peka/widgets/button.dart';
+import 'package:peka/ui/pages/auth/signup_page.dart';
+
+import '../../widgets/button.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -123,8 +124,9 @@ class LoginPage extends StatelessWidget {
                   height: 20.0,
                 ),
                 //BUTTON MASUK
-                const Button(
+                Button(
                   textButton: "Masuk",
+                  onTap: () {},
                 ),
                 const SizedBox(
                   height: 20.0,

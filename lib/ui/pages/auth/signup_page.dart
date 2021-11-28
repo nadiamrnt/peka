@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/widgets/button.dart';
+
+import '../../widgets/button.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -217,7 +218,10 @@ class SignupPage extends StatelessWidget {
                 const SizedBox(
                   height: 20.0,
                 ),
-                const Button(textButton: "Daftar"),
+                Button(
+                  textButton: "Daftar",
+                  onTap: () {},
+                ),
               ],
             ),
           ),

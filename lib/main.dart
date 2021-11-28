@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'ui/authentication_page/login_page.dart';
+import 'package:peka/common/styles.dart';
+import 'package:peka/ui/pages/detail/detail_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,9 +15,8 @@ class MyApp extends StatelessWidget {
       title: 'Peka',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const LoginPage(),
+          primarySwatch: Colors.blue, scaffoldBackgroundColor: kWhiteColor),
+      home: const DetailPage(),
     );
   }
 }
