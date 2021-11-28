@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/authentication_page/signup_page.dart';
+import 'package:peka/ui/kelola_panti_page/intro_kelola_page.dart';
 import 'package:peka/widgets/button.dart';
 
 class LoginPage extends StatelessWidget {
@@ -125,6 +126,7 @@ class LoginPage extends StatelessWidget {
                 //BUTTON MASUK
                 const Button(
                   textButton: "Masuk",
+                  pindahHalaman: IntroKelolaPage(),
                 ),
                 const SizedBox(
                   height: 20.0,

@@ -217,7 +217,10 @@ class SignupPage extends StatelessWidget {
                 const SizedBox(
                   height: 20.0,
                 ),
-                const Button(textButton: "Daftar"),
+                Button(
+                  textButton: "Daftar",
+                  pindahHalaman: () {},
+                ),
               ],
             ),
           ),
