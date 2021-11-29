@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/ui/pages/kelola_panti/intro_kelola_page.dart';
-import 'package:peka/ui/pages/kelola_panti/profil_page.dart';
+import 'package:peka/ui/pages/profile/profile_page.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class BottomBar extends StatefulWidget {
@@ -26,13 +26,13 @@ class _BottomBarState extends State<BottomBar> {
     List<Widget> _listPage = [
       const DetailPage(),
       const IntroKelolaPage(),
-      const ProfilPage()
+      const ProfilePage()
     ];
 
     return Scaffold(
       body: _listPage.elementAt(_selectedIndex),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(40.0, 20.0, 40.0, 30.0),
+        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 40.0),
         child: SalomonBottomBar(
           onTap: _onNavbarTapped,
           selectedItemColor: kPrimaryColor,
@@ -60,7 +60,7 @@ class _BottomBarState extends State<BottomBar> {
               activeIcon: const ImageIcon(
                   AssetImage('assets/icons/ic_profile_active.png')),
               icon: const ImageIcon(AssetImage('assets/icons/ic_profile.png')),
-              title: Text('Profil', style: greyTextStyle),
+              title: Text('Profile', style: greyTextStyle),
             ),
           ],
         ),
