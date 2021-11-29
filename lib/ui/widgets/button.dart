@@ -11,20 +11,26 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints.tightForFinite(),
-        child: Container(
-          decoration: BoxDecoration(
-              color: kPrimaryColor,
-              borderRadius: BorderRadius.circular(defaultRadius)),
-          height: 55.0,
-          child: Center(
-            child: Text(
-              textButton,
-              style:
-                  whiteTextStyle.copyWith(fontSize: 16.0, fontWeight: semiBold),
+    return ConstrainedBox(
+      constraints: const BoxConstraints.tightForFinite(),
+      child: Container(
+        decoration: BoxDecoration(
+            color: kPrimaryColor,
+            borderRadius: BorderRadius.circular(defaultRadius)),
+        height: 55.0,
+        child: Material(
+          borderRadius: BorderRadius.circular(defaultRadius),
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(defaultRadius),
+            splashColor: kBlueBgColor,
+            onTap: onTap,
+            child: Center(
+              child: Text(
+                textButton,
+                style: whiteTextStyle.copyWith(
+                    fontSize: 16.0, fontWeight: semiBold),
+              ),
             ),
           ),
         ),
