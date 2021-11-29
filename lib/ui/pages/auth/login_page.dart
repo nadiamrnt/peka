@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
+import 'package:peka/ui/pages/detail/detail_page.dart';
+import 'package:peka/ui/widgets/bottom_bar.dart';
 
 import '../../widgets/button.dart';
 
@@ -126,8 +128,16 @@ class LoginPage extends StatelessWidget {
                 //BUTTON MASUK
                 Button(
                   textButton: "Masuk",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BottomBar(),
+                      ),
+                    );
+                  },
                 ),
+
                 const SizedBox(
                   height: 20.0,
                 ),
