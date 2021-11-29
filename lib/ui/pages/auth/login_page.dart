@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
-import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/ui/widgets/bottom_bar.dart';
 
 import '../../widgets/button.dart';
