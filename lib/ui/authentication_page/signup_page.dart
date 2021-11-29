@@ -219,7 +219,7 @@ class SignupPage extends StatelessWidget {
                 ),
                 Button(
                   textButton: "Daftar",
-                  pindahHalaman: () {},
+                  onTap: () {},
                 ),
               ],
             ),

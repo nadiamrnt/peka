@@ -125,9 +125,14 @@ class LoginPage extends StatelessWidget {
                   height: 20.0,
                 ),
                 //BUTTON MASUK
-                const Button(
+                Button(
                   textButton: "Masuk",
-                  pindahHalaman: BottomBar(),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BottomBar()));
+                  },
                 ),
                 const SizedBox(
                   height: 20.0,

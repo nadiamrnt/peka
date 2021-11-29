@@ -9,6 +9,7 @@ class IntroKelolaPage extends StatefulWidget {
   State<IntroKelolaPage> createState() => _IntroKelolaPageState();
 }
 
+//INI ADALAH HALAMAN KELOLA PANTI 1
 class _IntroKelolaPageState extends State<IntroKelolaPage> {
   @override
   Widget build(BuildContext context) {
@@ -71,7 +72,10 @@ class _IntroKelolaPageState extends State<IntroKelolaPage> {
                   height: 40.0,
                 ),
                 //BUTTON DAFTAR PANTI
-                Button(textButton: "Daftar", pindahHalaman: () {}),
+                Button(
+                  textButton: "Daftar",
+                  onTap: () {},
+                ),
               ],
             ),
           ),
