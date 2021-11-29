@@ -11,26 +11,24 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints.tightForFinite(),
-      child: Container(
-        decoration: BoxDecoration(
-            color: kPrimaryColor,
-            borderRadius: BorderRadius.circular(defaultRadius)),
-        height: 55.0,
-        child: Material(
+    return Container(
+      decoration: BoxDecoration(
+          color: kPrimaryColor,
+          borderRadius: BorderRadius.circular(defaultRadius)),
+      height: 55.0,
+      width: double.infinity,
+      child: Material(
+        borderRadius: BorderRadius.circular(defaultRadius),
+        color: kTransparentColor,
+        child: InkWell(
           borderRadius: BorderRadius.circular(defaultRadius),
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(defaultRadius),
-            splashColor: kBlueBgColor,
-            onTap: onTap,
-            child: Center(
-              child: Text(
-                textButton,
-                style: whiteTextStyle.copyWith(
-                    fontSize: 16.0, fontWeight: semiBold),
-              ),
+          splashColor: kBlueBgColor,
+          onTap: onTap,
+          child: Center(
+            child: Text(
+              textButton,
+              style:
+                  whiteTextStyle.copyWith(fontSize: 16.0, fontWeight: semiBold),
             ),
           ),
         ),

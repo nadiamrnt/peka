@@ -60,23 +60,21 @@ class LoginPage extends StatelessWidget {
                   height: 5.0,
                 ),
                 //TEXTFIELD ALAMAT EMAIL
-                ConstrainedBox(
-                  constraints: const BoxConstraints.tightForFinite(),
-                  child: Container(
-                    height: 45.0,
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    decoration: BoxDecoration(
-                        color: kGreyBgColor,
-                        borderRadius:
-                            BorderRadius.circular(defaultRadiusTextField)),
-                    child: TextField(
-                        decoration: InputDecoration(
-                            hintText: "Tulis alamat email kamu",
-                            hintStyle: greyHintTextStyle,
-                            border: InputBorder.none),
-                        style: blackTextStyle.copyWith(
-                            fontWeight: regular, fontSize: 14.0)),
-                  ),
+                Container(
+                  height: 45.0,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  decoration: BoxDecoration(
+                      color: kGreyBgColor,
+                      borderRadius:
+                          BorderRadius.circular(defaultRadiusTextField)),
+                  child: TextField(
+                      decoration: InputDecoration(
+                          hintText: "Tulis alamat email kamu",
+                          hintStyle: greyHintTextStyle,
+                          border: InputBorder.none),
+                      style: blackTextStyle.copyWith(
+                          fontWeight: regular, fontSize: 14.0)),
                 ),
                 const SizedBox(
                   height: 10.0,
@@ -91,24 +89,22 @@ class LoginPage extends StatelessWidget {
                   height: 5.0,
                 ),
                 //TEXTFIELD KATA SANDI
-                ConstrainedBox(
-                  constraints: const BoxConstraints.tightForFinite(),
-                  child: Container(
-                    height: 45.0,
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    decoration: BoxDecoration(
-                        color: kGreyBgColor,
-                        borderRadius:
-                            BorderRadius.circular(defaultRadiusTextField)),
-                    child: TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            hintText: "Tulis kata sandi kamu",
-                            hintStyle: greyHintTextStyle,
-                            border: InputBorder.none),
-                        style: blackTextStyle.copyWith(
-                            fontWeight: regular, fontSize: 14.0)),
-                  ),
+                Container(
+                  height: 45.0,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  decoration: BoxDecoration(
+                      color: kGreyBgColor,
+                      borderRadius:
+                          BorderRadius.circular(defaultRadiusTextField)),
+                  child: TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                          hintText: "Tulis kata sandi kamu",
+                          hintStyle: greyHintTextStyle,
+                          border: InputBorder.none),
+                      style: blackTextStyle.copyWith(
+                          fontWeight: regular, fontSize: 14.0)),
                 ),
                 // TEXT LUPA KATA SANDI
                 Align(

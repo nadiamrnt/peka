@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/ui/pages/kelola_panti/register_page.dart';
 import 'package:peka/ui/widgets/button.dart';
 
 class IntroKelolaPage extends StatefulWidget {
@@ -14,7 +15,6 @@ class _IntroKelolaPageState extends State<IntroKelolaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kWhiteColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -74,7 +74,14 @@ class _IntroKelolaPageState extends State<IntroKelolaPage> {
                 //BUTTON DAFTAR PANTI
                 Button(
                   textButton: "Daftar",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterPage(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
