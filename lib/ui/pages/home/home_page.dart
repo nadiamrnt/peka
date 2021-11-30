@@ -7,8 +7,11 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 30.0, left: 24, right: 24),
+          child: Column(
+            children: [],
+          ),
         ),
       ),
     );

@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/button.dart';
+import 'package:peka/utils/category_helper.dart';
 
-class RegisterPage extends StatelessWidget {
+import '../../../data/model/kebutuhan_panti_asuhan.dart';
+
+class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final List<KebutuhanPantiAsuhan> _listCategory = [];
 
   @override
   Widget build(BuildContext context) {
@@ -17,20 +27,21 @@ class RegisterPage extends StatelessWidget {
               _buildHeader(),
               const SizedBox(height: 30.0),
               _buildAddImage(),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: 24.0),
               _buildName(),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: 16.0),
               _buildPhoneNumber(),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: 16.0),
               _buildDescription(),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: 16.0),
               _buildFile(),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: 16.0),
               _buildLocation(),
-              const SizedBox(height: 10.0),
-              //TODO:: Listview Kebutuhan panti
+              const SizedBox(height: 20.0),
+              _buildListCategory(),
+              const SizedBox(height: 40.0),
               Button(textButton: 'Perbarui', onTap: () {}),
-              const SizedBox(height: 10.0),
+              const SizedBox(height: 30.0),
             ],
           ),
         ),
@@ -180,12 +191,16 @@ class RegisterPage extends StatelessWidget {
               color: kGreyBgColor,
               borderRadius: BorderRadius.circular(defaultRadiusTextField)),
           child: TextField(
-              decoration: InputDecoration(
-                  hintText: "Tulis deskripsi panti asuhan",
-                  hintStyle: greyHintTextStyle,
-                  border: InputBorder.none),
-              style:
-                  blackTextStyle.copyWith(fontWeight: regular, fontSize: 14.0)),
+            maxLines: 6,
+            decoration: InputDecoration(
+                hintText: "Tulis deskripsi panti asuhan",
+                hintStyle: greyHintTextStyle,
+                border: InputBorder.none),
+            style: blackTextStyle.copyWith(
+              fontWeight: regular,
+              fontSize: 14.0,
+            ),
+          ),
         ),
       ],
     );
@@ -278,6 +293,92 @@ class RegisterPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildListCategory() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Kebutuhan Panti',
+          style: blackTextStyle.copyWith(
+            fontSize: 16,
+            fontWeight: regular,
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 100,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: CategoryHelper.categoryFromLocal.map((kebutuhan) {
+              String name = kebutuhan['name'];
+              String image = kebutuhan['image'];
+              var dataPantiAsuhan =
+                  KebutuhanPantiAsuhan(name: name, image: image);
+              return _itemListKebutuhan(dataPantiAsuhan);
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _itemListKebutuhan(KebutuhanPantiAsuhan dataPantiAsuhan) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (_listCategory.contains(dataPantiAsuhan)) {
+            _listCategory.remove(dataPantiAsuhan);
+          } else {
+            _listCategory.add(dataPantiAsuhan);
+          }
+        });
+      },
+      child: Container(
+        width: 80,
+        height: 100,
+        margin: const EdgeInsets.only(right: 16),
+        decoration: BoxDecoration(
+          color: kWhiteBgColor,
+          borderRadius: const BorderRadius.all(Radius.circular(22)),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                _listCategory.contains(dataPantiAsuhan)
+                    ? Image.asset(
+                        'assets/icons/ic_checklist.png',
+                        width: 27,
+                        height: 25,
+                      )
+                    : const SizedBox(
+                        height: 25,
+                      ),
+              ],
+            ),
+            const SizedBox(height: 3),
+            Column(
+              children: [
+                Image.asset(dataPantiAsuhan.image, height: 30),
+                const SizedBox(
+                  height: 6,
+                ),
+                Text(
+                  dataPantiAsuhan.name,
+                  style: greyTextStyle.copyWith(
+                    fontSize: 12,
+                    fontWeight: regular,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
