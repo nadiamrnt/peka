@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1083252737459",
+    "project_id": "peka-af325",
+    "storage_bucket": "peka-af325.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083252737459:android:340c94a55fc1a56456b7c6",
+        "android_client_info": {
+          "package_name": "com.anakmami.peka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1083252737459-iv6p3rl3et89h2bbu92reomtorr36rai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjRVC7kmCscn49ZCyh4TQTP17GKGlIwC4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083252737459-iv6p3rl3et89h2bbu92reomtorr36rai.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

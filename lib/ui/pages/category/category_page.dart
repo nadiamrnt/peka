@@ -57,9 +57,10 @@ class CategoryPage extends StatelessWidget {
 
   Widget _buildGridView() {
     return GridView.builder(
+      padding: const EdgeInsets.only(bottom: 24),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 200,
-          childAspectRatio: 0.73,
+          childAspectRatio: 0.75,
           crossAxisSpacing: 15,
           mainAxisSpacing: 15),
       itemBuilder: (context, index) {
@@ -71,7 +72,7 @@ class CategoryPage extends StatelessWidget {
 
   Widget pantiCard(int index) {
     return Container(
-      height: 219,
+      height: 200,
       width: 144,
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
@@ -79,6 +80,7 @@ class CategoryPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(30),
@@ -87,19 +89,26 @@ class CategoryPage extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(top: 10.0, left: 10, right: 6),
             child: Text(
               PantiHelper.pantiFromLocal[index]['name'],
-              style: blackTextStyle.copyWith(fontSize: 12, fontWeight: medium),
+              overflow: TextOverflow.visible,
+              maxLines: 1,
+              style: blackTextStyle.copyWith(
+                fontSize: 12,
+                fontWeight: medium,
+              ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+            padding: const EdgeInsets.only(
+                top: 4, left: 10.0, right: 6.0, bottom: 8.0),
             child: Row(
               children: [
                 Image.asset(
                   'assets/icons/ic_location.png',
-                  width: 10.2,
+                  width: 11,
+                  height: 14,
                 ),
                 const SizedBox(width: 5),
                 Text(
