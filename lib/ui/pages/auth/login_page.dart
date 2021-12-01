@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
-import 'package:peka/ui/widgets/bottom_bar.dart';
+import 'package:peka/ui/pages/home/home_page.dart';
 
 import '../../widgets/button.dart';
 
@@ -127,7 +127,7 @@ class LoginPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const BottomBar(),
+                        builder: (context) => const HomePage(),
                       ),
                     );
                   },
