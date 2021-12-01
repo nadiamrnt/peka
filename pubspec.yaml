@@ -11,6 +11,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_fonts: ^2.1.0
   salomon_bottom_bar: ^3.1.0
+  equatable: ^2.0.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -18,5 +19,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/icons/
-    - assets/images/
+  - assets/icons/
+  - assets/images/
