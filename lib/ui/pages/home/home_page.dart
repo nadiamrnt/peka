@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/utils/category_helper.dart';
