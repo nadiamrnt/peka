@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 
 class KelolaPage extends StatelessWidget {
+  static const routeName = '/kelola-page';
   const KelolaPage({Key? key}) : super(key: key);
 
   @override

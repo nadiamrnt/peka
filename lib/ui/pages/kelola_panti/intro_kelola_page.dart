@@ -3,6 +3,8 @@ import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/kelola_panti/register_page.dart';
 import 'package:peka/ui/widgets/button.dart';
 
+import '../../../common/navigation.dart';
+
 class IntroKelolaPage extends StatefulWidget {
   const IntroKelolaPage({Key? key}) : super(key: key);
 
@@ -75,12 +77,7 @@ class _IntroKelolaPageState extends State<IntroKelolaPage> {
                 Button(
                   textButton: "Daftar",
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RegisterPage(),
-                      ),
-                    );
+                    Navigation.intent(RegisterPage.routeName);
                   },
                 ),
               ],

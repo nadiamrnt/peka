@@ -4,6 +4,8 @@ import 'package:peka/common/styles.dart';
 import '../../widgets/button.dart';
 
 class SignupPage extends StatelessWidget {
+  static const routeName = '/signup-page';
+
   const SignupPage({Key? key}) : super(key: key);
 
   @override
@@ -21,18 +23,18 @@ class SignupPage extends StatelessWidget {
                 // HEADER HALAMAN SIGN UP
                 Row(
                   children: [
-                    IconButton(
-                      onPressed: () {
+                    GestureDetector(
+                      onTap: () {
                         Navigator.pop(context);
                       },
-                      icon: Image.asset(
+                      child: Image.asset(
                         "assets/icons/ic_back_signup.png",
                         width: 24,
                         height: 24,
                       ),
                     ),
                     const SizedBox(
-                      width: 10.0,
+                      width: 26.0,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -5,6 +5,7 @@ import 'package:peka/common/styles.dart';
 import '../../widgets/button.dart';
 
 class DetailPage extends StatelessWidget {
+  static const routeName = '/detail-page';
   const DetailPage({Key? key}) : super(key: key);
 
   @override

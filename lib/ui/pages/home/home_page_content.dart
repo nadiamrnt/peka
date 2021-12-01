@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/ui/pages/category/category_page.dart';
+import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/utils/category_helper.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+import '../../../common/navigation.dart';
+
+class HomePageContent extends StatelessWidget {
+  const HomePageContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,7 @@ class HomePage extends StatelessWidget {
               _buildCategory(),
               const SizedBox(height: 24),
               _buildListPantiAsuhan(),
-              const SizedBox(height: 30),
+              const SizedBox(height: 24),
             ],
           ),
         ),
@@ -163,37 +167,42 @@ class HomePage extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.only(left: 24),
             children: CategoryHelper.categoryFromLocal.map((item) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 18.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 45,
-                      height: 45,
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: CategoryHelper.categoryFromLocal
-                                .indexOf(item)
-                                .isEven
-                            ? kBlueBgColor
-                            : kPinkBgColor,
+              return GestureDetector(
+                onTap: () {
+                  Navigation.intent(CategoryPage.routeName);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 18.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 45,
+                        height: 45,
+                        padding: const EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: CategoryHelper.categoryFromLocal
+                                  .indexOf(item)
+                                  .isEven
+                              ? kBlueBgColor
+                              : kPinkBgColor,
+                        ),
+                        child: Image.asset(
+                          item['image'],
+                          width: 30,
+                        ),
                       ),
-                      child: Image.asset(
-                        item['image'],
-                        width: 30,
+                      const SizedBox(height: 12),
+                      Text(
+                        item['name'],
+                        style: greyTextStyle.copyWith(
+                          fontWeight: regular,
+                          fontSize: 10,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      item['name'],
-                      style: greyTextStyle.copyWith(
-                        fontWeight: regular,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             }).toList(),
@@ -224,67 +233,72 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.only(left: 24),
             scrollDirection: Axis.horizontal,
             children: [
-              Container(
-                height: 324,
-                width: 235,
-                margin: const EdgeInsets.only(right: 24),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: kWhiteBgColor,
-                    width: 2,
+              GestureDetector(
+                child: Container(
+                  height: 324,
+                  width: 235,
+                  margin: const EdgeInsets.only(right: 24),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: kWhiteBgColor,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(30),
                   ),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 224,
-                      width: 215,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        image: const DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/img_house.png'),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 224,
+                        width: 215,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          image: const DecorationImage(
+                            fit: BoxFit.fill,
+                            image: AssetImage('assets/images/img_house.png'),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Panti Asuhan Al-Khaer',
-                            style: blackTextStyle.copyWith(
-                                fontSize: 16,
-                                fontWeight: medium,
-                                overflow: TextOverflow.ellipsis),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/icons/ic_location.png',
-                                height: 14,
-                                width: 11,
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                'Makassar',
-                                style: greyTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: light,
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Panti Asuhan Al-Khaer',
+                              style: blackTextStyle.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: medium,
+                                  overflow: TextOverflow.ellipsis),
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Image.asset(
+                                  'assets/icons/ic_location.png',
+                                  height: 14,
+                                  width: 11,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                                const SizedBox(width: 7),
+                                Text(
+                                  'Makassar',
+                                  style: greyTextStyle.copyWith(
+                                    fontSize: 14,
+                                    fontWeight: light,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+                onTap: () {
+                  Navigation.intent(DetailPage.routeName);
+                },
               ),
               Container(
                 height: 324,

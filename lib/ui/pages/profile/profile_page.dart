@@ -11,18 +11,16 @@ class ProfilePage extends StatelessWidget {
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Expanded(
-              child: Column(
-                children: [
-                  _buildHeader(),
-                  const SizedBox(height: 40),
-                  _buildProfilePicture(),
-                  const SizedBox(height: 20),
-                  _buildName(),
-                  const SizedBox(height: 40),
-                  _buildOptionList(),
-                ],
-              ),
+            child: Column(
+              children: [
+                _buildHeader(),
+                const SizedBox(height: 40),
+                _buildProfilePicture(),
+                const SizedBox(height: 20),
+                _buildName(),
+                const SizedBox(height: 40),
+                _buildOptionList(),
+              ],
             ),
           ),
         ),

@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/utils/panti_helper.dart';
 
+import '../../../common/navigation.dart';
+
 class CategoryPage extends StatelessWidget {
+  static const routeName = '/category-page';
+
   const CategoryPage({Key? key}) : super(key: key);
 
   @override
@@ -15,7 +19,7 @@ class CategoryPage extends StatelessWidget {
             children: [
               _buildHeader(),
               const SizedBox(height: 20),
-              Expanded(child: _buildGridView()),
+              Expanded(child: _buildGridView(context)),
             ],
           ),
         ),
@@ -31,8 +35,9 @@ class CategoryPage extends StatelessWidget {
           Row(
             children: [
               GestureDetector(
-                //TODO:: navigation back
-                onTap: () {},
+                onTap: () {
+                  Navigation.back();
+                },
                 child: Image.asset(
                   'assets/icons/ic_back.png',
                   width: 32,
@@ -55,25 +60,24 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildGridView() {
+  Widget _buildGridView(BuildContext context) {
     return GridView.builder(
       padding: const EdgeInsets.only(bottom: 24),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          childAspectRatio: 0.75,
-          crossAxisSpacing: 15,
-          mainAxisSpacing: 15),
+        maxCrossAxisExtent: 200,
+        childAspectRatio: 0.7,
+        crossAxisSpacing: 15,
+        mainAxisSpacing: 15,
+      ),
       itemBuilder: (context, index) {
-        return pantiCard(index);
+        return _pantiCard(index);
       },
       itemCount: PantiHelper.pantiFromLocal.length,
     );
   }
 
-  Widget pantiCard(int index) {
+  Widget _pantiCard(int index) {
     return Container(
-      height: 200,
-      width: 144,
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: kWhiteBgColor,

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/utils/category_helper.dart';
 
+import '../../../common/navigation.dart';
 import '../../../data/model/kebutuhan_panti_asuhan.dart';
 
 class RegisterPage extends StatefulWidget {
+  static const routeName = '/register-page';
+
   const RegisterPage({Key? key}) : super(key: key);
 
   @override
@@ -40,7 +44,12 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 20.0),
               _buildListCategory(),
               const SizedBox(height: 40.0),
-              Button(textButton: 'Perbarui', onTap: () {}),
+              Button(
+                textButton: 'Perbarui',
+                onTap: () {
+                  Navigation.intent(KelolaPage.routeName);
+                },
+              ),
               const SizedBox(height: 30.0),
             ],
           ),

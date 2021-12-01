@@ -3,9 +3,12 @@ import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 
+import '../../../common/navigation.dart';
 import '../../widgets/button.dart';
 
 class LoginPage extends StatelessWidget {
+  static const routeName = '/login-page';
+
   const LoginPage({Key? key}) : super(key: key);
 
   @override
@@ -125,12 +128,7 @@ class LoginPage extends StatelessWidget {
                   Button(
                     textButton: "Masuk",
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
-                      );
+                      Navigation.intent(HomePage.routeName);
                     },
                   ),
                   const SizedBox(height: 20.0),
@@ -147,11 +145,7 @@ class LoginPage extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SignupPage(),
-                              ));
+                          Navigation.intent(SignupPage.routeName);
                         },
                         child: Text(
                           "Daftar",

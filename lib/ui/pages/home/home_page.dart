@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/ui/pages/kelola_panti/intro_kelola_page.dart';
 import 'package:peka/ui/pages/profile/profile_page.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
+import 'home_page_content.dart';
+
 class HomePage extends StatefulWidget {
+  static const routeName = '/home-page';
   const HomePage({Key? key}) : super(key: key);
 
   @override
@@ -14,6 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+
   void _onNavbarTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -24,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     //LIST PAGE UNTUK NAVIGASI PINDAH HALAMAN
     List<Widget> _listPage = [
-      const DetailPage(),
+      const HomePageContent(),
       const IntroKelolaPage(),
       const ProfilePage()
     ];
@@ -44,7 +47,12 @@ class _HomePageState extends State<HomePage> {
               activeIcon: const ImageIcon(
                   AssetImage('assets/icons/ic_home_active.png')),
               icon: const ImageIcon(AssetImage('assets/icons/ic_home.png')),
-              title: Text('Home', style: greyTextStyle),
+              title: Text(
+                'Home',
+                style: greyTextStyle.copyWith(
+                  color: kPrimaryColor,
+                ),
+              ),
             ),
 
             /// Kelola
@@ -52,7 +60,12 @@ class _HomePageState extends State<HomePage> {
               activeIcon: const ImageIcon(
                   AssetImage('assets/icons/ic_kelola_active.png')),
               icon: const ImageIcon(AssetImage('assets/icons/ic_kelola.png')),
-              title: Text('Kelola', style: greyTextStyle),
+              title: Text(
+                'Kelola',
+                style: greyTextStyle.copyWith(
+                  color: kPrimaryColor,
+                ),
+              ),
             ),
 
             /// Profil
@@ -60,7 +73,12 @@ class _HomePageState extends State<HomePage> {
               activeIcon: const ImageIcon(
                   AssetImage('assets/icons/ic_profile_active.png')),
               icon: const ImageIcon(AssetImage('assets/icons/ic_profile.png')),
-              title: Text('Profile', style: greyTextStyle),
+              title: Text(
+                'Profile',
+                style: greyTextStyle.copyWith(
+                  color: kPrimaryColor,
+                ),
+              ),
             ),
           ],
         ),
