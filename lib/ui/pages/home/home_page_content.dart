@@ -1,13 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/data/firebase/auth/auth.dart';
+import 'package:peka/data/firebase/firestore/firestore.dart';
+import 'package:peka/data/model/user_model.dart';
 import 'package:peka/ui/pages/category/category_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/utils/category_helper.dart';
 
 import '../../../common/navigation.dart';
 
-class HomePageContent extends StatelessWidget {
+class HomePageContent extends StatefulWidget {
   const HomePageContent({Key? key}) : super(key: key);
+
+  @override
+  State<HomePageContent> createState() => _HomePageContentState();
+}
+
+class _HomePageContentState extends State<HomePageContent> {
+  UserModel? user;
 
   @override
   Widget build(BuildContext context) {
@@ -32,54 +43,66 @@ class HomePageContent extends StatelessWidget {
   }
 
   Widget _buildHeader() {
-    return Padding(
-      padding: EdgeInsets.only(
-        top: 30,
-        left: defaultMargin,
-        right: defaultMargin,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return StreamBuilder<DocumentSnapshot>(
+      stream: Firestore.firebaseFirestore
+          .collection('users')
+          .doc(Auth.auth.currentUser?.uid)
+          .snapshots(),
+      builder: (_, snapshot) {
+        if (snapshot.hasData) {
+          var data = snapshot.data;
+          user = UserModel.getDataUser(data!);
+        }
+        return Padding(
+          padding: EdgeInsets.only(
+            top: 30,
+            left: defaultMargin,
+            right: defaultMargin,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  'Halo,\nJustin Bieber',
-                  style: blackTextStyle.copyWith(
-                    fontSize: 24,
-                    fontWeight: semiBold,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Container(
-                width: 60,
-                height: 60,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage(
-                      'assets/images/img_profile.png',
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Halo,\n${user?.name}',
+                      style: blackTextStyle.copyWith(
+                        fontSize: 24,
+                        fontWeight: semiBold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage(
+                          'assets/images/img_profile.png',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                'Mau donasi apa hari ini?',
+                style: greyTextStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: light,
                 ),
               ),
             ],
           ),
-          const SizedBox(
-            height: 6,
-          ),
-          Text(
-            'Mau donasi apa hari ini?',
-            style: greyTextStyle.copyWith(
-              fontSize: 16,
-              fontWeight: light,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

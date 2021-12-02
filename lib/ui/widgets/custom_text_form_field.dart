@@ -20,7 +20,6 @@ class CustomTextFormField extends StatefulWidget {
 }
 
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
-  late bool _validate = false;
   late bool _onError = false;
 
   @override
