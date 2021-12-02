@@ -1,5 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+
+import '../../../common/navigation.dart';
+import '../../../data/firebase/auth/auth.dart';
+import '../../../data/firebase/firestore/firestore.dart';
+import '../../../data/model/user_model.dart';
+import '../../widgets/profile_option.dart';
+import '../auth/login_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -19,7 +27,7 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 20),
                 _buildName(),
                 const SizedBox(height: 40),
-                _buildOptionList(),
+                _buildOptionList(context),
               ],
             ),
           ),
@@ -59,28 +67,47 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildName() {
-    return Column(
-      children: [
-        Text(
-          "Muhammad Ridhoi",
-          style: blackTextStyle.copyWith(
-            fontSize: 16.0,
-            fontWeight: semiBold,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          'r.ridoi702@gmail.com',
-          style: greyTextStyle.copyWith(
-            fontSize: 16.0,
-            fontWeight: regular,
-          ),
-        ),
-      ],
+    return StreamBuilder<DocumentSnapshot>(
+      stream: Firestore.firebaseFirestore
+          .collection('users')
+          .doc(Auth.auth.currentUser?.uid)
+          .snapshots(),
+      builder: (_, snapshot) {
+        UserModel? user;
+        if (snapshot.hasData) {
+          user = UserModel.getDataUser(snapshot.data!);
+        }
+
+        if (snapshot.data == null) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        return Column(
+          children: [
+            Text(
+              user!.name,
+              style: blackTextStyle.copyWith(
+                fontSize: 16.0,
+                fontWeight: semiBold,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              user.email,
+              style: greyTextStyle.copyWith(
+                fontSize: 16.0,
+                fontWeight: regular,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Column _buildOptionList() {
+  Widget _buildOptionList(BuildContext context) {
     return Column(
       children: [
         const ProfileOption(
@@ -113,53 +140,18 @@ class ProfilePage extends StatelessWidget {
           thickness: 2,
         ),
         const SizedBox(height: 5),
-        const ProfileOption(
-          imageAsset: 'ic_logout.png',
-          title: 'Keluar',
+        GestureDetector(
+          onDoubleTap: () async {
+            await Auth.auth.signOut();
+            Navigation.intentReplacement(LoginPage.routeName);
+          },
+          child: const ProfileOption(
+            imageAsset: 'ic_logout.png',
+            title: 'Keluar',
+          ),
         ),
         const SizedBox(height: 5),
       ],
-    );
-  }
-}
-
-class ProfileOption extends StatelessWidget {
-  final String title;
-  final String imageAsset;
-  // ignore: use_key_in_widget_constructors
-  const ProfileOption({required this.title, required this.imageAsset});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {},
-      child: Row(
-        children: [
-          //image icon
-          Container(
-            width: 32.0,
-            height: 32.0,
-            padding: const EdgeInsets.all(4.0),
-            decoration: BoxDecoration(
-              color: kBlueBgColor,
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Image.asset(
-              'assets/icons/$imageAsset',
-              fit: BoxFit.cover,
-            ),
-          ),
-          //title
-          const SizedBox(width: 20),
-          Text(
-            title,
-            style: greyTextStyle.copyWith(
-              fontSize: 16.0,
-              fontWeight: regular,
-            ),
-          )
-        ],
-      ),
     );
   }
 }

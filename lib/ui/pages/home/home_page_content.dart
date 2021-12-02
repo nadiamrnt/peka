@@ -53,6 +53,7 @@ class _HomePageContentState extends State<HomePageContent> {
           var data = snapshot.data;
           user = UserModel.getDataUser(data!);
         }
+
         return Padding(
           padding: EdgeInsets.only(
             top: 30,

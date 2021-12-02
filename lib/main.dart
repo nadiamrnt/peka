@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue, scaffoldBackgroundColor: kWhiteColor),
       navigatorKey: navigatorKey,
-      initialRoute: FirebaseAuth.instance.currentUser != null
+      initialRoute: FirebaseAuth.instance.currentUser?.uid != null
           ? LoginPage.routeName
           : HomePage.routeName,
       routes: {
