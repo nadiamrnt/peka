@@ -5,7 +5,7 @@ import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/utils/category_helper.dart';
 
 import '../../../common/navigation.dart';
-import '../../../data/model/kebutuhan_panti_asuhan.dart';
+import '../../../data/model/kebutuhan_model.dart';
 
 class RegisterPage extends StatefulWidget {
   static const routeName = '/register-page';
@@ -17,7 +17,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final List<KebutuhanPantiAsuhan> _listCategory = [];
+  final List<KebutuhanModel> _listKebutuhan = [];
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +66,9 @@ class _RegisterPageState extends State<RegisterPage> {
           Row(
             children: [
               GestureDetector(
-                //TODO:: navigation back
-                onTap: () {},
+                onTap: () {
+                  Navigation.back();
+                },
                 child: Image.asset(
                   'assets/icons/ic_back.png',
                   width: 32,
@@ -325,8 +326,7 @@ class _RegisterPageState extends State<RegisterPage> {
             children: CategoryHelper.categoryFromLocal.map((kebutuhan) {
               String name = kebutuhan['name'];
               String image = kebutuhan['image'];
-              var dataPantiAsuhan =
-                  KebutuhanPantiAsuhan(name: name, image: image);
+              var dataPantiAsuhan = KebutuhanModel(name: name, image: image);
               return _itemListKebutuhan(dataPantiAsuhan);
             }).toList(),
           ),
@@ -335,14 +335,14 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _itemListKebutuhan(KebutuhanPantiAsuhan dataPantiAsuhan) {
+  Widget _itemListKebutuhan(KebutuhanModel dataPantiAsuhan) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          if (_listCategory.contains(dataPantiAsuhan)) {
-            _listCategory.remove(dataPantiAsuhan);
+          if (_listKebutuhan.contains(dataPantiAsuhan)) {
+            _listKebutuhan.remove(dataPantiAsuhan);
           } else {
-            _listCategory.add(dataPantiAsuhan);
+            _listKebutuhan.add(dataPantiAsuhan);
           }
         });
       },
@@ -359,7 +359,7 @@ class _RegisterPageState extends State<RegisterPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                _listCategory.contains(dataPantiAsuhan)
+                _listKebutuhan.contains(dataPantiAsuhan)
                     ? Image.asset(
                         'assets/icons/ic_checklist.png',
                         width: 27,

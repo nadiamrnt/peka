@@ -1,23 +1,47 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/data/firebase/auth/auth.dart';
+import 'package:peka/data/firebase/firestore/firestore.dart';
+import 'package:peka/data/model/panti_asuhan_model.dart';
+import 'package:peka/ui/pages/kelola_panti/intro_kelola_page.dart';
 
 class KelolaPage extends StatelessWidget {
   static const routeName = '/kelola-page';
+
   const KelolaPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.only(top: 30, left: 24, right: 24),
-          child: Column(
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 24),
-              _buildListKelolaPanti(),
-            ],
-          ),
+        body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: Firestore.firebaseFirestore
+              .collection('users')
+              .doc(Auth.auth.currentUser?.uid)
+              .collection('kelola_panti')
+              .snapshots(),
+          builder: (_, snapshot) {
+            if (snapshot.data == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.data!.docs.isNotEmpty) {
+              var _listDataPanti = snapshot.data!.docs;
+              return Padding(
+                padding: const EdgeInsets.only(top: 30, left: 24, right: 24),
+                child: Column(
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 24),
+                    _buildListKelolaPanti(_listDataPanti),
+                  ],
+                ),
+              );
+            } else {
+              return const IntroKelolaPage();
+            }
+          },
         ),
       ),
     );
@@ -48,11 +72,13 @@ class KelolaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildListKelolaPanti() {
+  Widget _buildListKelolaPanti(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> listDataPanti) {
     return Flexible(
       child: ListView(
-        children: [
-          GestureDetector(
+        children: listDataPanti.map((item) {
+          PantiAsuhanModel _pantiAsuhan = PantiAsuhanModel.fromDatabase(item);
+          return GestureDetector(
             child: Container(
               height: 184,
               width: double.infinity,
@@ -75,10 +101,10 @@ class KelolaPage extends StatelessWidget {
                         width: 100,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          image: const DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage('assets/images/img_house.png'),
-                          ),
+                        ),
+                        child: Image.network(
+                          _pantiAsuhan.imgUrl,
+                          fit: BoxFit.fill,
                         ),
                       ),
                       const SizedBox(width: 15),
@@ -87,7 +113,7 @@ class KelolaPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Panti Asuhan Barokah',
+                              _pantiAsuhan.name,
                               style: blackTextStyle.copyWith(
                                 fontSize: 16,
                                 fontWeight: semiBold,
@@ -104,7 +130,7 @@ class KelolaPage extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 7),
                                 Text(
-                                  'Makassar',
+                                  _pantiAsuhan.address.split(', ').first,
                                   style: greyTextStyle.copyWith(
                                     fontSize: 14,
                                     fontWeight: light,
@@ -121,456 +147,37 @@ class KelolaPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Row(
-                      children: [
-                        Container(
-                          width: 76,
-                          height: 24,
-                          margin: const EdgeInsets.only(right: 8),
-                          padding: const EdgeInsets.only(top: 2),
-                          decoration: BoxDecoration(
-                            color: kPinkBgColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            'Beras',
-                            textAlign: TextAlign.center,
-                            style: greyTextStyle.copyWith(
-                              fontSize: 12,
-                              fontWeight: regular,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 76,
-                          height: 24,
-                          margin: const EdgeInsets.only(right: 8),
-                          padding: const EdgeInsets.only(top: 2),
-                          decoration: BoxDecoration(
-                            color: kBlueBgColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            'Deterjen',
-                            textAlign: TextAlign.center,
-                            style: greyTextStyle.copyWith(
-                              fontSize: 12,
-                              fontWeight: regular,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 76,
-                          height: 24,
-                          margin: const EdgeInsets.only(right: 8),
-                          padding: const EdgeInsets.only(top: 2),
-                          decoration: BoxDecoration(
-                            color: kPinkBgColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            'Pakaian',
-                            textAlign: TextAlign.center,
-                            style: greyTextStyle.copyWith(
-                              fontSize: 12,
-                              fontWeight: regular,
-                            ),
-                          ),
-                        ),
-                      ],
+                      children: _pantiAsuhan.kebutuhan
+                          .map((kebutuhan) => Container(
+                                width: 76,
+                                height: 24,
+                                margin: const EdgeInsets.only(right: 8),
+                                padding: const EdgeInsets.only(top: 2),
+                                decoration: BoxDecoration(
+                                  color: _pantiAsuhan.kebutuhan
+                                          .indexOf(kebutuhan)
+                                          .isOdd
+                                      ? kPinkBgColor
+                                      : kBlueBgColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  kebutuhan.name,
+                                  textAlign: TextAlign.center,
+                                  style: greyTextStyle.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: regular,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
                     ),
                   )
                 ],
               ),
             ),
-          ),
-          Container(
-            height: 190,
-            width: double.infinity,
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: kWhiteBgColor,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 104,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        image: const DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/img_house.png'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Panti Asuhan Al-Khaer Selatan',
-                            style: blackTextStyle.copyWith(
-                              fontSize: 16,
-                              fontWeight: semiBold,
-                              height: 1.75,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/icons/ic_location.png',
-                                width: 11,
-                                height: 14,
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                'Makassar',
-                                style: greyTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: light,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 76,
-                        height: 24,
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.only(top: 2),
-                        decoration: BoxDecoration(
-                          color: kPinkBgColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'Beras',
-                          textAlign: TextAlign.center,
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 76,
-                        height: 24,
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.only(top: 2),
-                        decoration: BoxDecoration(
-                          color: kBlueBgColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'Deterjen',
-                          textAlign: TextAlign.center,
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 76,
-                        height: 24,
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.only(top: 2),
-                        decoration: BoxDecoration(
-                          color: kPinkBgColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'Pakaian',
-                          textAlign: TextAlign.center,
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-            height: 190,
-            width: double.infinity,
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: kWhiteBgColor,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 104,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        image: const DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/img_house.png'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Panti Asuhan Sukses Bersama',
-                            style: blackTextStyle.copyWith(
-                              fontSize: 16,
-                              fontWeight: semiBold,
-                              height: 1.75,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/icons/ic_location.png',
-                                width: 11,
-                                height: 14,
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                'Makassar',
-                                style: greyTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: light,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 76,
-                        height: 24,
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.only(top: 2),
-                        decoration: BoxDecoration(
-                          color: kPinkBgColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'Beras',
-                          textAlign: TextAlign.center,
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 76,
-                        height: 24,
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.only(top: 2),
-                        decoration: BoxDecoration(
-                          color: kBlueBgColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'Deterjen',
-                          textAlign: TextAlign.center,
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 76,
-                        height: 24,
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.only(top: 2),
-                        decoration: BoxDecoration(
-                          color: kPinkBgColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'Pakaian',
-                          textAlign: TextAlign.center,
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-            height: 190,
-            width: double.infinity,
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: kWhiteBgColor,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 104,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        image: const DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/img_house.png'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Panti Asuhan Barokah',
-                            style: blackTextStyle.copyWith(
-                              fontSize: 16,
-                              fontWeight: semiBold,
-                              height: 1.75,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/icons/ic_location.png',
-                                width: 11,
-                                height: 14,
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                'Makassar',
-                                style: greyTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: light,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 76,
-                        height: 24,
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.only(top: 2),
-                        decoration: BoxDecoration(
-                          color: kPinkBgColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'Beras',
-                          textAlign: TextAlign.center,
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 76,
-                        height: 24,
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.only(top: 2),
-                        decoration: BoxDecoration(
-                          color: kBlueBgColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'Deterjen',
-                          textAlign: TextAlign.center,
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 76,
-                        height: 24,
-                        margin: const EdgeInsets.only(right: 8),
-                        padding: const EdgeInsets.only(top: 2),
-                        decoration: BoxDecoration(
-                          color: kPinkBgColor,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'Pakaian',
-                          textAlign: TextAlign.center,
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
+          );
+        }).toList(),
       ),
     );
   }

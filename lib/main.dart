@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
@@ -29,9 +28,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue, scaffoldBackgroundColor: kWhiteColor),
       navigatorKey: navigatorKey,
-      initialRoute: FirebaseAuth.instance.currentUser?.uid != null
+      /*initialRoute: FirebaseAuth.instance.currentUser?.uid != null
           ? LoginPage.routeName
-          : HomePage.routeName,
+          : HomePage.routeName,*/
+      initialRoute: LoginPage.routeName,
       routes: {
         LoginPage.routeName: (context) => const LoginPage(),
         SignupPage.routeName: (_) => const SignupPage(),
