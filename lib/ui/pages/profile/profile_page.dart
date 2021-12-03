@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 
 import '../../../common/navigation.dart';
-import '../../../data/firebase/auth/auth.dart';
-import '../../../data/firebase/firestore/firestore.dart';
 import '../../../data/model/user_model.dart';
+import '../../../services/firebase/auth/auth.dart';
+import '../../../services/firebase/firestore/firestore.dart';
 import '../../widgets/profile_option.dart';
 import '../auth/login_page.dart';
 

@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/data/firebase/auth/auth.dart';
-import 'package:peka/data/firebase/firestore/firestore.dart';
 import 'package:peka/data/model/user_model.dart';
-import 'package:peka/ui/pages/category/category_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/utils/category_helper.dart';
 
 import '../../../common/navigation.dart';
+import '../../../services/firebase/auth/auth.dart';
+import '../../../services/firebase/firestore/firestore.dart';
+import 'category/category_page.dart';
 
 class HomePageContent extends StatefulWidget {
   const HomePageContent({Key? key}) : super(key: key);

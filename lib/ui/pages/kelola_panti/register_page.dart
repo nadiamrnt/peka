@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/widgets/button.dart';
@@ -6,6 +9,7 @@ import 'package:peka/utils/category_helper.dart';
 
 import '../../../common/navigation.dart';
 import '../../../data/model/kebutuhan_model.dart';
+import '../../../utils/image_picker_helper.dart';
 
 class RegisterPage extends StatefulWidget {
   static const routeName = '/register-page';
@@ -18,6 +22,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final List<KebutuhanModel> _listKebutuhan = [];
+  XFile? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -93,35 +98,51 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _buildAddImage() {
     return GestureDetector(
-      onTap: () {},
-      child: Container(
-        height: 170,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          color: const Color(0XFFF0F0F0),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 70.0,
-                height: 70.0,
-                child: Image.asset('assets/icons/ic_add_image.png'),
-              ),
-              const SizedBox(height: 10.0),
-              Text(
-                'Tambah foto panti asuhan',
-                style: greyTextStyle.copyWith(
-                  fontSize: 12.0,
-                  fontWeight: regular,
+      onTap: () {
+        _modalBottomSheetMenu();
+      },
+      child: _image != null
+          ? Container(
+              height: 170,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                image: DecorationImage(
+                  image: Image.file(
+                    File(_image!.path),
+                    fit: BoxFit.fill,
+                  ).image,
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
+              ),
+            )
+          : Container(
+              height: 170,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                color: const Color(0XFFF0F0F0),
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 70.0,
+                      height: 70.0,
+                      child: Image.asset('assets/icons/ic_add_image.png'),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(
+                      'Tambah foto panti asuhan',
+                      style: greyTextStyle.copyWith(
+                        fontSize: 12.0,
+                        fontWeight: regular,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
@@ -390,5 +411,55 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  void _modalBottomSheetMenu() {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        builder: (builder) {
+          return Container(
+              height: 200,
+              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 24),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(10.0),
+                ),
+              ),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      await ImagePickerHelper.imgFromCamera().then((image) {
+                        setState(() {
+                          _image = image;
+                        });
+                      });
+                      Navigation.back();
+                    },
+                    child: const Text('Pick from camera'),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await ImagePickerHelper.imgFromGallery().then((image) {
+                        setState(() {
+                          _image = image;
+                        });
+                      });
+                      Navigation.back();
+                    },
+                    child: const Text('Pick from gallery'),
+                  ),
+                ],
+              ));
+        });
   }
 }

@@ -18,6 +18,11 @@ dependencies:
   firebase_storage: ^10.1.0
   image_picker: ^0.8.4+4
   loading_overlay: ^0.3.0
+  google_maps_flutter: ^2.1.1
+  location: ^4.3.0
+  geocoding: ^2.0.1
+  http: ^0.13.4
+  url_launcher: ^6.0.15
 
 dev_dependencies:
   flutter_test:

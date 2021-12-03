@@ -6,7 +6,7 @@ import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 
 import '../../../common/navigation.dart';
-import '../../../data/firebase/auth/auth.dart';
+import '../../../services/firebase/auth/auth.dart';
 import '../../widgets/button.dart';
 
 class LoginPage extends StatefulWidget {

@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/data/firebase/auth/auth.dart';
-import 'package:peka/data/firebase/firestore/firestore.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/ui/pages/kelola_panti/intro_kelola_page.dart';
+
+import '../../../services/firebase/auth/auth.dart';
+import '../../../services/firebase/firestore/firestore.dart';
 
 class KelolaPage extends StatelessWidget {
   static const routeName = '/kelola-page';

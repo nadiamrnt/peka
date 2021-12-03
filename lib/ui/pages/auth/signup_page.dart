@@ -4,8 +4,8 @@ import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 
-import '../../../data/firebase/auth/auth.dart';
-import '../../../data/firebase/firestore/firestore.dart';
+import '../../../services/firebase/auth/auth.dart';
+import '../../../services/firebase/firestore/firestore.dart';
 import '../../widgets/button.dart';
 import '../home/home_page.dart';
 

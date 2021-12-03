@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/utils/panti_helper.dart';
 
-import '../../../common/navigation.dart';
+import '../../../../common/navigation.dart';
 
 class CategoryPage extends StatelessWidget {
   static const routeName = '/category-page';
