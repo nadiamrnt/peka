@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/category/category_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
+import 'package:peka/ui/pages/home/search_page.dart';
 import 'package:peka/utils/category_helper.dart';
 
 import '../../../common/navigation.dart';
@@ -94,38 +95,45 @@ class HomePageContent extends StatelessWidget {
           Expanded(
             child: SizedBox(
               height: 45,
-              child: TextField(
-                style: blackTextStyle.copyWith(
-                  fontSize: 14,
-                  fontWeight: regular,
-                ),
-                textAlign: TextAlign.left,
-                decoration: InputDecoration(
-                  hintText: 'Cari Panti Asuhan',
-                  hintStyle: greyTextStyle.copyWith(
+              child: GestureDetector(
+                onTap: () {
+                  Navigation.intent(SearchPage.routeName);
+                },
+                child: TextField(
+                  style: blackTextStyle.copyWith(
                     fontSize: 14,
                     fontWeight: regular,
                   ),
-                  contentPadding: const EdgeInsets.only(right: 8, left: 12),
-                  filled: true,
-                  fillColor: kWhiteBgColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 14.0,
-                      right: 18,
+                  textInputAction: TextInputAction.none,
+                  textAlign: TextAlign.left,
+                  enabled: false,
+                  decoration: InputDecoration(
+                    hintText: 'Cari Panti Asuhan',
+                    hintStyle: greyTextStyle.copyWith(
+                      fontSize: 14,
+                      fontWeight: regular,
                     ),
-                    child: Image.asset(
-                      'assets/icons/ic_search.png',
-                      width: 24,
+                    contentPadding: const EdgeInsets.only(right: 8, left: 12),
+                    filled: true,
+                    fillColor: kWhiteBgColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
                     ),
-                  ),
-                  prefixIconConstraints: const BoxConstraints(
-                    minHeight: 24,
-                    minWidth: 24,
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 14.0,
+                        right: 18,
+                      ),
+                      child: Image.asset(
+                        'assets/icons/ic_search.png',
+                        width: 24,
+                      ),
+                    ),
+                    prefixIconConstraints: const BoxConstraints(
+                      minHeight: 24,
+                      minWidth: 24,
+                    ),
                   ),
                 ),
               ),

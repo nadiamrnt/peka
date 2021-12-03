@@ -5,6 +5,7 @@ import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/category/category_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
+import 'package:peka/ui/pages/home/search_page.dart';
 import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_page.dart';
 
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         RegisterPage.routeName: (_) => const RegisterPage(),
         KelolaPage.routeName: (_) => const KelolaPage(),
         CategoryPage.routeName: (_) => const CategoryPage(),
+        SearchPage.routeName: (_) => const SearchPage(),
       },
     );
   }
