@@ -9,7 +9,13 @@
    <application
         android:label="peka"
         android:icon="@mipmap/ic_launcher">
-        <activity
+
+       <meta-data
+           android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyC_U0Z5xlsDtcx4IN7rAk9tWrxLHTMmJD0" />
+
+
+       <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"

@@ -23,6 +23,7 @@ dependencies:
   geocoding: ^2.0.1
   http: ^0.13.4
   url_launcher: ^6.0.15
+  file_picker: ^4.2.7
 
 dev_dependencies:
   flutter_test:

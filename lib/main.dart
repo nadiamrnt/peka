@@ -8,6 +8,7 @@ import 'package:peka/ui/pages/home/category/category_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_page.dart';
+import 'package:peka/ui/pages/maps/google_maps_page.dart';
 
 import 'common/navigation.dart';
 
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         RegisterPage.routeName: (_) => const RegisterPage(),
         KelolaPage.routeName: (_) => const KelolaPage(),
         CategoryPage.routeName: (_) => const CategoryPage(),
+        GoogleMapsPage.routeName: (_) => const GoogleMapsPage(),
       },
     );
   }

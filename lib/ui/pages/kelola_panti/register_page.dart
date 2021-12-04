@@ -1,11 +1,15 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
+import 'package:peka/ui/pages/maps/google_maps_page.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/utils/category_helper.dart';
+import 'package:peka/utils/file_picker_helper.dart';
 
 import '../../../common/navigation.dart';
 import '../../../data/model/kebutuhan_model.dart';
@@ -22,7 +26,10 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final List<KebutuhanModel> _listKebutuhan = [];
+  String? _address;
+  GeoPoint? _location;
   XFile? _image;
+  PlatformFile? _file;
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +57,10 @@ class _RegisterPageState extends State<RegisterPage> {
               _buildListCategory(),
               const SizedBox(height: 40.0),
               Button(
-                textButton: 'Perbarui',
+                textButton: 'Kirim',
                 onTap: () {
-                  Navigation.intent(KelolaPage.routeName);
+                  print(_address);
+                  print(_location);
                 },
               ),
               const SizedBox(height: 30.0),
@@ -250,31 +258,61 @@ class _RegisterPageState extends State<RegisterPage> {
           const SizedBox(height: 5.0),
           //BUTTON UNTUK MENAMBAHKAN FILE
           GestureDetector(
-            onTap: () {},
-            child: Container(
-              height: 45.0,
-              width: 185,
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              decoration: BoxDecoration(
-                color: kWhiteColor,
-                borderRadius: BorderRadius.circular(defaultRadiusTextField),
-                border: Border.all(color: kPrimaryColor),
-              ),
-              child: Row(
-                children: [
-                  Image.asset(
-                    'assets/icons/ic_upload.png',
-                    width: 24,
+            onTap: () async {
+              var platformFile = await getFileAndUpload();
+              setState(() {
+                _file = platformFile;
+              });
+              print('path :: ${platformFile!.path!}');
+              print('file :: ${platformFile.name}');
+            },
+            child: _file != null
+                ? Container(
+                    height: 45.0,
+                    width: 185,
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    decoration: BoxDecoration(
+                      color: kWhiteColor,
+                      borderRadius:
+                          BorderRadius.circular(defaultRadiusTextField),
+                      border: Border.all(color: kPrimaryColor),
+                    ),
+                    child: Text(
+                      _file!.name,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: purpleTextStyle.copyWith(
+                        fontSize: 14,
+                        fontWeight: regular,
+                      ),
+                    ),
+                  )
+                : Container(
+                    height: 45.0,
+                    width: 185,
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    decoration: BoxDecoration(
+                      color: kWhiteColor,
+                      borderRadius:
+                          BorderRadius.circular(defaultRadiusTextField),
+                      border: Border.all(color: kPrimaryColor),
+                    ),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/icons/ic_upload.png',
+                          width: 24,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Tambahkan file',
+                          style: purpleTextStyle.copyWith(
+                              fontSize: 14, fontWeight: regular),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Tambahkan file',
-                    style: purpleTextStyle.copyWith(
-                        fontSize: 14, fontWeight: regular),
-                  ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
@@ -293,7 +331,16 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           const SizedBox(height: 5.0),
           GestureDetector(
-            onTap: () {},
+            onTap: () async {
+              final getData = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GoogleMapsPage()));
+              _address = getData['address'];
+              setState(() {
+                _location = getData['location'];
+              });
+            },
             child: Container(
               height: 170,
               width: double.infinity,
@@ -301,26 +348,39 @@ class _RegisterPageState extends State<RegisterPage> {
                 borderRadius: BorderRadius.circular(18),
                 color: kGreyBgColor,
               ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 38.0,
-                      height: 38.0,
-                      child: Image.asset('assets/icons/ic_add_location.png'),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Text(
-                      'Tandai Lokasi',
-                      style: greyTextStyle.copyWith(
-                        fontSize: 12.0,
-                        fontWeight: regular,
+              child: _location != null
+                  ? GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target:
+                            LatLng(_location!.latitude, _location!.longitude),
+                        zoom: 16.0,
                       ),
+                      zoomControlsEnabled: false,
+                      //MARKER MERAH
+                      // markers: Marker(),
+                      mapType: MapType.normal,
                     )
-                  ],
-                ),
-              ),
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 38.0,
+                            height: 38.0,
+                            child:
+                                Image.asset('assets/icons/ic_add_location.png'),
+                          ),
+                          const SizedBox(height: 10.0),
+                          Text(
+                            'Tandai Lokasi',
+                            style: greyTextStyle.copyWith(
+                              fontSize: 12.0,
+                              fontWeight: regular,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
             ),
           ),
         ],
