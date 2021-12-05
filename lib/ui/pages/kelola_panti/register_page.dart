@@ -30,6 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
   GeoPoint? _location;
   XFile? _image;
   PlatformFile? _file;
+  final Set<Marker> _markers = {};
 
   @override
   Widget build(BuildContext context) {
@@ -110,21 +111,17 @@ class _RegisterPageState extends State<RegisterPage> {
         _modalBottomSheetMenu();
       },
       child: _image != null
-          ? Container(
-              height: 170,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                image: DecorationImage(
-                  image: Image.file(
-                    File(_image!.path),
-                    fit: BoxFit.fill,
-                  ).image,
-                ),
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(18),
+              child: Image.file(
+                File(_image!.path),
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.fitWidth,
               ),
             )
           : Container(
-              height: 170,
+              height: 200,
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18),
@@ -339,28 +336,45 @@ class _RegisterPageState extends State<RegisterPage> {
               _address = getData['address'];
               setState(() {
                 _location = getData['location'];
+
+                _markers.clear();
+                _markers.add(
+                  Marker(
+                    markerId: MarkerId(_location.toString()),
+                    position: LatLng(_location!.latitude, _location!.longitude),
+                    icon: BitmapDescriptor.defaultMarker,
+                  ),
+                );
               });
             },
-            child: Container(
-              height: 170,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                color: kGreyBgColor,
-              ),
-              child: _location != null
-                  ? GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                        target:
-                            LatLng(_location!.latitude, _location!.longitude),
-                        zoom: 16.0,
+            child: _location != null
+                ? SizedBox(
+                    height: 170,
+                    width: double.infinity,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(18),
+                      child: GoogleMap(
+                        markers: _markers,
+                        initialCameraPosition: CameraPosition(
+                          target:
+                              LatLng(_location!.latitude, _location!.longitude),
+                          zoom: 17,
+                        ),
+                        scrollGesturesEnabled: false,
+                        zoomGesturesEnabled: false,
+                        zoomControlsEnabled: false,
+                        mapType: MapType.normal,
                       ),
-                      zoomControlsEnabled: false,
-                      //MARKER MERAH
-                      // markers: Marker(),
-                      mapType: MapType.normal,
-                    )
-                  : Center(
+                    ),
+                  )
+                : Container(
+                    height: 170,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      color: kGreyBgColor,
+                    ),
+                    child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -381,7 +395,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ],
                       ),
                     ),
-            ),
+                  ),
           ),
         ],
       ),
@@ -475,51 +489,61 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _modalBottomSheetMenu() {
     showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20),
-          ),
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
         ),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        builder: (builder) {
-          return Container(
-              height: 200,
-              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 24),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10.0),
-                  topRight: Radius.circular(10.0),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (builder) {
+        return Container(
+          height: 150,
+          padding: const EdgeInsets.only(
+            top: 24,
+            left: 70,
+            right: 70,
+          ),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(10.0),
+            ),
+          ),
+          child: Column(
+            children: [
+              Button(
+                textButton: 'Ambil Foto',
+                onTap: () async {
+                  await ImagePickerHelper.imgFromCamera().then((image) {
+                    setState(() {
+                      _image = image;
+                    });
+                  });
+                  Navigation.back();
+                },
+              ),
+              const SizedBox(height: 6),
+              TextButton(
+                onPressed: () async {
+                  await ImagePickerHelper.imgFromGallery().then((image) {
+                    setState(() {
+                      _image = image;
+                    });
+                  });
+                  Navigation.back();
+                },
+                child: Text(
+                  'Pilih dari galeri',
+                  style:
+                      greyTextStyle.copyWith(fontSize: 16, fontWeight: medium),
                 ),
               ),
-              child: Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      await ImagePickerHelper.imgFromCamera().then((image) {
-                        setState(() {
-                          _image = image;
-                        });
-                      });
-                      Navigation.back();
-                    },
-                    child: const Text('Pick from camera'),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await ImagePickerHelper.imgFromGallery().then((image) {
-                        setState(() {
-                          _image = image;
-                        });
-                      });
-                      Navigation.back();
-                    },
-                    child: const Text('Pick from gallery'),
-                  ),
-                ],
-              ));
-        });
+            ],
+          ),
+        );
+      },
+    );
   }
 }

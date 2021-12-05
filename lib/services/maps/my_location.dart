@@ -15,7 +15,7 @@ class MyLocation {
         await geocoding.placemarkFromCoordinates(lat, lang);
     geocoding.Placemark place = placemarks.first;
     String myAddressLocation =
-        "${place.subAdministrativeArea}, ${place.locality}, ${place.subLocality}, ${place.street}";
+        "${place.street}, ${place.postalCode}, ${place.subLocality}, ${place.locality}, ${place.subAdministrativeArea}, ${place.administrativeArea}";
     return myAddressLocation;
   }
 }

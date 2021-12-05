@@ -40,7 +40,6 @@ class _LoginPageState extends State<LoginPage> {
               child: Stack(children: [
                 Form(
                   key: _formKey,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -78,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text(
                         "Alamat Email",
                         style: blackTextStyle.copyWith(
-                            fontSize: 16, fontWeight: regular),
+                            fontSize: 16, fontWeight: medium),
                       ),
                       const SizedBox(
                         height: 5.0,
@@ -96,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text(
                         "Kata Sandi",
                         style: blackTextStyle.copyWith(
-                            fontSize: 16, fontWeight: regular),
+                            fontSize: 16, fontWeight: medium),
                       ),
                       const SizedBox(
                         height: 5.0,
