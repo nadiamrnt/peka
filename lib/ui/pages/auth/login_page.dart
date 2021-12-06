@@ -177,9 +177,9 @@ class _LoginPageState extends State<LoginPage> {
         Navigation.intentReplacement(HomePage.routeName);
       }
     } catch (e) {
-      const snackbar = SnackBar(
+      const snackBar = SnackBar(
           content: Text('Opss.. masukkan email/kata sandi dengan benar'));
-      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } finally {
       setState(() {
         _isLoading = false;

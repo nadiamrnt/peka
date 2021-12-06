@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/ui/pages/kelola_panti/intro_kelola_page.dart';
 
-import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
 
 class KelolaPage extends StatelessWidget {
@@ -19,10 +19,11 @@ class KelolaPage extends StatelessWidget {
         body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: Firestore.firebaseFirestore
               .collection('users')
-              .doc(Auth.auth.currentUser?.uid)
+              .doc(FirebaseAuth.instance.currentUser?.uid)
               .collection('kelola_panti')
               .snapshots(),
           builder: (_, snapshot) {
+            // TODO:: LoadingBar
             if (snapshot.data == null) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -79,6 +80,8 @@ class KelolaPage extends StatelessWidget {
       child: ListView(
         children: listDataPanti.map((item) {
           PantiAsuhanModel _pantiAsuhan = PantiAsuhanModel.fromDatabase(item);
+          var splitString = _pantiAsuhan.address.split(', ');
+          String location = "${splitString[4]}, ${splitString[5]}";
           return GestureDetector(
             child: Container(
               height: 184,
@@ -90,24 +93,23 @@ class KelolaPage extends StatelessWidget {
                   color: kWhiteBgColor,
                   width: 2,
                 ),
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(18),
               ),
               child: Column(
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        height: 104,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Image.network(
-                          _pantiAsuhan.imgUrl,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
+                      SizedBox(
+                          height: 104,
+                          width: 100,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(18),
+                            child: Image.network(
+                              _pantiAsuhan.imgUrl,
+                              fit: BoxFit.fill,
+                            ),
+                          )),
                       const SizedBox(width: 15),
                       Expanded(
                         child: Column(
@@ -123,6 +125,7 @@ class KelolaPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Image.asset(
                                   'assets/icons/ic_location.png',
@@ -130,11 +133,13 @@ class KelolaPage extends StatelessWidget {
                                   height: 14,
                                 ),
                                 const SizedBox(width: 7),
-                                Text(
-                                  _pantiAsuhan.address.split(', ').first,
-                                  style: greyTextStyle.copyWith(
-                                    fontSize: 14,
-                                    fontWeight: light,
+                                Flexible(
+                                  child: Text(
+                                    location,
+                                    style: greyTextStyle.copyWith(
+                                      fontSize: 14,
+                                      fontWeight: light,
+                                    ),
                                   ),
                                 ),
                               ],

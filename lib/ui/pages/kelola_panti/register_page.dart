@@ -2,12 +2,17 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/services/firebase/auth/auth.dart';
+import 'package:peka/services/firebase/firestore/firestore.dart';
 import 'package:peka/ui/pages/maps/google_maps_page.dart';
 import 'package:peka/ui/widgets/button.dart';
+import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/utils/category_helper.dart';
 import 'package:peka/utils/file_picker_helper.dart';
 
@@ -32,43 +37,133 @@ class _RegisterPageState extends State<RegisterPage> {
   PlatformFile? _file;
   final Set<Marker> _markers = {};
 
+  bool _isLoading = false;
+
+  // controller text
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-          child: Column(
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 30.0),
-              _buildAddImage(),
-              const SizedBox(height: 24.0),
-              _buildName(),
-              const SizedBox(height: 16.0),
-              _buildPhoneNumber(),
-              const SizedBox(height: 16.0),
-              _buildDescription(),
-              const SizedBox(height: 16.0),
-              _buildFile(),
-              const SizedBox(height: 16.0),
-              _buildLocation(),
-              const SizedBox(height: 20.0),
-              _buildListCategory(),
-              const SizedBox(height: 40.0),
-              Button(
-                textButton: 'Kirim',
-                onTap: () {
-                  print(_address);
-                  print(_location);
-                },
+        body: LoadingOverlay(
+          isLoading: _isLoading,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: defaultMargin),
+              child: Column(
+                children: [
+                  _buildHeader(),
+                  const SizedBox(height: 30.0),
+                  _buildAddImage(),
+                  const SizedBox(height: 24.0),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        _buildName(),
+                        const SizedBox(height: 16.0),
+                        _buildPhoneNumber(),
+                        const SizedBox(height: 16.0),
+                        _buildDescription(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  _buildFile(),
+                  const SizedBox(height: 16.0),
+                  _buildLocation(),
+                  const SizedBox(height: 20.0),
+                  _buildListCategory(),
+                  const SizedBox(height: 40.0),
+                  Button(
+                    textButton: 'Kirim',
+                    onTap: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      try {
+                        if (_formKey.currentState!.validate()) {
+                          if (_image != null) {
+                            // Send Image
+                            String _imagePath = _image!.path;
+                            Reference ref = FirebaseStorage.instance
+                                .ref()
+                                .child('image_panti')
+                                .child(_imagePath);
+                            UploadTask task = ref.putFile(File(_image!.path));
+                            TaskSnapshot snapShot = await task;
+                            String _imgUrl =
+                                await snapShot.ref.getDownloadURL();
+
+                            // Send text content
+                            final String _name = _nameController.text;
+                            final String _noPhone = _phoneController.text;
+                            final String _description = _descController.text;
+
+                            // Send File
+                            final String? _filePath = _file!.path;
+                            String _fileUrl =
+                                await documentFileUpload(_filePath!);
+
+                            // Send location
+                            // Send list category
+                            // Send to Firestore
+                            Firestore.firebaseFirestore
+                                .collection('users')
+                                .doc(Auth.auth.currentUser!.uid)
+                                .collection('kelola_panti')
+                                .add({
+                              'name': _name,
+                              'img_url': _imgUrl,
+                              'description': _description,
+                              'no_tlpn': _noPhone,
+                              'address': _address,
+                              'location': _location,
+                              'document': _fileUrl,
+                              'approved': false,
+                              'kebutuhan': KebutuhanModel.convertToListMap(
+                                  _listKebutuhan),
+                            });
+
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            Navigation.back();
+                          } else {
+                            setState(() {
+                              _isLoading = false;
+                            });
+                            const snackBar = SnackBar(
+                              content:
+                                  Text('Mohon masukkan gambar panti asuhan'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          }
+                        }
+                      } catch (e) {
+                        const snackBar = SnackBar(
+                          content: Text('Opss.. terjadi kesalahan, coba lagi'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      } finally {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 30.0),
+                ],
               ),
-              const SizedBox(height: 30.0),
-            ],
+            ),
           ),
         ),
-      )),
+      ),
     );
   }
 
@@ -160,21 +255,10 @@ class _RegisterPageState extends State<RegisterPage> {
           style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
         ),
         const SizedBox(height: 5.0),
-        //TEXTFIELD NAMA PANTI ASUHAN
-        Container(
-          height: 45.0,
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: BoxDecoration(
-              color: kGreyBgColor,
-              borderRadius: BorderRadius.circular(defaultRadiusTextField)),
-          child: TextField(
-              decoration: InputDecoration(
-                  hintText: "Tulis nama panti asuhan",
-                  hintStyle: greyHintTextStyle,
-                  border: InputBorder.none),
-              style:
-                  blackTextStyle.copyWith(fontWeight: regular, fontSize: 14.0)),
+        CustomTextFormField(
+          hintText: 'Tulis nama panti asuhan',
+          errorText: 'Masukkan nama panti asuhan',
+          controller: _nameController,
         ),
       ],
     );
@@ -190,20 +274,10 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 5.0),
         //TEXTFIELD NOMOR TELEPON
-        Container(
-          height: 45.0,
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: BoxDecoration(
-              color: kGreyBgColor,
-              borderRadius: BorderRadius.circular(defaultRadiusTextField)),
-          child: TextField(
-              decoration: InputDecoration(
-                  hintText: "Tulis nomor telepon panti asuhan",
-                  hintStyle: greyHintTextStyle,
-                  border: InputBorder.none),
-              style:
-                  blackTextStyle.copyWith(fontWeight: regular, fontSize: 14.0)),
+        CustomTextFormField(
+          hintText: 'Tulis nomor telepon panti asuhan',
+          errorText: 'Masukkan nomor telepon panti asuhan',
+          controller: _phoneController,
         ),
       ],
     );
@@ -218,26 +292,11 @@ class _RegisterPageState extends State<RegisterPage> {
           style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
         ),
         const SizedBox(height: 5.0),
-        //TEXTFIELD DESKRIPSI
-        Container(
-          height: 149.0,
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: BoxDecoration(
-              color: kGreyBgColor,
-              borderRadius: BorderRadius.circular(defaultRadiusTextField)),
-          child: TextField(
-            maxLines: 6,
-            decoration: InputDecoration(
-                hintText: "Tulis deskripsi panti asuhan",
-                hintStyle: greyHintTextStyle,
-                border: InputBorder.none),
-            style: blackTextStyle.copyWith(
-              fontWeight: regular,
-              fontSize: 14.0,
-            ),
-          ),
-        ),
+        CustomTextFormField(
+          hintText: 'Tulis deskripsi panti asuhan',
+          errorText: 'Masukkan deskripsi panti asuhan',
+          controller: _descController,
+        )
       ],
     );
   }
@@ -253,15 +312,12 @@ class _RegisterPageState extends State<RegisterPage> {
             style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
           ),
           const SizedBox(height: 5.0),
-          //BUTTON UNTUK MENAMBAHKAN FILE
           GestureDetector(
             onTap: () async {
               var platformFile = await getFileAndUpload();
               setState(() {
                 _file = platformFile;
               });
-              print('path :: ${platformFile!.path!}');
-              print('file :: ${platformFile.name}');
             },
             child: _file != null
                 ? Container(
@@ -545,5 +601,13 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _descController.dispose();
+    super.dispose();
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/ui/pages/kelola_panti/intro_kelola_page.dart';
+import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/pages/profile/profile_page.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     //LIST PAGE UNTUK NAVIGASI PINDAH HALAMAN
     List<Widget> _listPage = [
       const HomePageContent(),
-      const IntroKelolaPage(),
+      const KelolaPage(),
       const ProfilePage()
     ];
 
