@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/ui/pages/kelola_panti/register_page.dart';
+import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
 import 'package:peka/ui/widgets/button.dart';
 
 import '../../../common/navigation.dart';
@@ -74,7 +74,7 @@ class _IntroKelolaPageState extends State<IntroKelolaPage> {
               Button(
                 textButton: "Daftar",
                 onTap: () {
-                  Navigation.intent(RegisterPage.routeName);
+                  Navigation.intent(RegisterAndUpdatePage.routeName);
                 },
               ),
             ],

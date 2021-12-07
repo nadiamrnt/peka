@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/ui/pages/kelola_panti/intro_kelola_page.dart';
+import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
 
 import '../../../services/firebase/firestore/firestore.dart';
 
@@ -54,7 +56,7 @@ class KelolaPage extends StatelessWidget {
       children: [
         Expanded(
           child: Text(
-            'List Panti Asuhan',
+            'Kelola Panti Asuhan',
             textAlign: TextAlign.center,
             style: blackTextStyle.copyWith(
               fontSize: 16,
@@ -64,7 +66,9 @@ class KelolaPage extends StatelessWidget {
         ),
         GestureDetector(
           //TODO:: Add Panti Asuhan button
-          onTap: () {},
+          onTap: () {
+            Navigation.intent(RegisterAndUpdatePage.routeName);
+          },
           child: Image.asset(
             'assets/icons/ic_dots.png',
             width: 32,
@@ -78,13 +82,19 @@ class KelolaPage extends StatelessWidget {
       List<QueryDocumentSnapshot<Map<String, dynamic>>> listDataPanti) {
     return Flexible(
       child: ListView(
-        children: listDataPanti.map((item) {
-          PantiAsuhanModel _pantiAsuhan = PantiAsuhanModel.fromDatabase(item);
+        children: listDataPanti.map((documentSnapshot) {
+          PantiAsuhanModel _pantiAsuhan =
+              PantiAsuhanModel.fromDatabase(documentSnapshot);
           var splitString = _pantiAsuhan.address.split(', ');
           String location = "${splitString[4]}, ${splitString[5]}";
           return GestureDetector(
+            onTap: () {
+              Navigation.intentWithData(RegisterAndUpdatePage.routeName, {
+                'panti_asuhan': _pantiAsuhan,
+                'document_id': documentSnapshot.id
+              });
+            },
             child: Container(
-              height: 184,
               width: double.infinity,
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.all(16),
@@ -152,31 +162,33 @@ class KelolaPage extends StatelessWidget {
                   const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0),
-                    child: Row(
-                      children: _pantiAsuhan.kebutuhan
-                          .map((kebutuhan) => Container(
-                                width: 76,
-                                height: 24,
-                                margin: const EdgeInsets.only(right: 8),
-                                padding: const EdgeInsets.only(top: 2),
-                                decoration: BoxDecoration(
-                                  color: _pantiAsuhan.kebutuhan
-                                          .indexOf(kebutuhan)
-                                          .isOdd
-                                      ? kPinkBgColor
-                                      : kBlueBgColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(
-                                  kebutuhan.name,
-                                  textAlign: TextAlign.center,
-                                  style: greyTextStyle.copyWith(
-                                    fontSize: 12,
-                                    fontWeight: regular,
+                    child: Flexible(
+                      child: Row(
+                        children: _pantiAsuhan.kebutuhan
+                            .map((kebutuhan) => Container(
+                                  width: 76,
+                                  height: 24,
+                                  margin: const EdgeInsets.only(right: 8),
+                                  padding: const EdgeInsets.only(top: 2),
+                                  decoration: BoxDecoration(
+                                    color: _pantiAsuhan.kebutuhan
+                                            .indexOf(kebutuhan)
+                                            .isOdd
+                                        ? kPinkBgColor
+                                        : kBlueBgColor,
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                ),
-                              ))
-                          .toList(),
+                                  child: Text(
+                                    kebutuhan.name,
+                                    textAlign: TextAlign.center,
+                                    style: greyTextStyle.copyWith(
+                                      fontSize: 12,
+                                      fontWeight: regular,
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
                     ),
                   )
                 ],

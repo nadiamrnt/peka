@@ -5,14 +5,16 @@ import '../../common/styles.dart';
 class ProfileOption extends StatelessWidget {
   final String title;
   final String imageAsset;
+  final Function() onTap;
 
   // ignore: use_key_in_widget_constructors
-  const ProfileOption({required this.title, required this.imageAsset});
+  const ProfileOption(
+      {required this.title, required this.imageAsset, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Row(
         children: [
           //image icon

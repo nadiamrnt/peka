@@ -42,7 +42,7 @@ class ProfilePage extends StatelessWidget {
           EdgeInsets.only(left: defaultMargin, right: defaultMargin, top: 30),
       child: Center(
         child: Text(
-          'Profile',
+          'Profil',
           style: blackTextStyle.copyWith(
             fontSize: 16,
             fontWeight: semiBold,
@@ -110,9 +110,10 @@ class ProfilePage extends StatelessWidget {
   Widget _buildOptionList(BuildContext context) {
     return Column(
       children: [
-        const ProfileOption(
-          imageAsset: 'ic_profile_active.png',
-          title: 'Data Pribadi',
+        ProfileOption(
+          imageAsset: 'ic_edit_profile.png',
+          title: 'Edit Profil',
+          onTap: () {},
         ),
         const SizedBox(height: 5),
         Divider(
@@ -120,9 +121,10 @@ class ProfilePage extends StatelessWidget {
           thickness: 2,
         ),
         const SizedBox(height: 5),
-        const ProfileOption(
+        ProfileOption(
           imageAsset: 'ic_setting.png',
           title: 'Pengaturan',
+          onTap: () {},
         ),
         const SizedBox(height: 5),
         Divider(
@@ -130,9 +132,10 @@ class ProfilePage extends StatelessWidget {
           thickness: 2,
         ),
         const SizedBox(height: 5),
-        const ProfileOption(
+        ProfileOption(
           imageAsset: 'ic_info.png',
           title: 'Tentang Kami',
+          onTap: () {},
         ),
         const SizedBox(height: 5),
         Divider(
@@ -140,15 +143,13 @@ class ProfilePage extends StatelessWidget {
           thickness: 2,
         ),
         const SizedBox(height: 5),
-        GestureDetector(
-          onDoubleTap: () async {
+        ProfileOption(
+          imageAsset: 'ic_logout.png',
+          title: 'Keluar',
+          onTap: () async {
             await Auth.auth.signOut();
             Navigation.intentReplacement(LoginPage.routeName);
           },
-          child: const ProfileOption(
-            imageAsset: 'ic_logout.png',
-            title: 'Keluar',
-          ),
         ),
         const SizedBox(height: 5),
       ],

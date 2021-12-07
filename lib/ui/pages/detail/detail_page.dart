@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
-import 'package:peka/ui/pages/detail/detail_map_page.dart';
 
 import '../../../common/navigation.dart';
 import '../../widgets/button.dart';
+import 'detail_map_page.dart';
 
 class DetailPage extends StatefulWidget {
   static const routeName = '/detail-page';
+
   const DetailPage({Key? key}) : super(key: key);
 
   @override
@@ -76,19 +77,14 @@ class _DetailPageState extends State<DetailPage> {
                   width: 32,
                 ),
               ),
-              Text(
-                'Detail',
-                style: blackTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: semiBold,
-                ),
-              ),
-              GestureDetector(
-                //TODO:: Like button
-                onTap: () {},
-                child: Image.asset(
-                  'assets/icons/ic_dots.png',
-                  width: 32,
+              Expanded(
+                child: Text(
+                  'Detail',
+                  textAlign: TextAlign.center,
+                  style: blackTextStyle.copyWith(
+                    fontSize: 16,
+                    fontWeight: semiBold,
+                  ),
                 ),
               ),
             ],
@@ -217,15 +213,17 @@ class _DetailPageState extends State<DetailPage> {
           ),
           const SizedBox(height: 16),
           GestureDetector(
-              onDoubleTap: () async {
-                await Navigation.intentWithData(
-                    DetailMapPage.routeName, pantiAsuhan);
-              },
-              child: SizedBox(
-                height: 170,
-                width: double.infinity,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
+            onTap: () async {
+              await Navigation.intentWithData(
+                  DetailMapPage.routeName, pantiAsuhan);
+            },
+            child: SizedBox(
+              height: 170,
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: AbsorbPointer(
+                  absorbing: true,
                   child: GoogleMap(
                     markers: _markers,
                     initialCameraPosition: CameraPosition(
@@ -239,7 +237,9 @@ class _DetailPageState extends State<DetailPage> {
                     mapType: MapType.normal,
                   ),
                 ),
-              )),
+              ),
+            ),
+          ),
           const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),

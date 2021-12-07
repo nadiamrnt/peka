@@ -33,6 +33,7 @@ class _SignupPageState extends State<SignupPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: kWhiteColor,
+        // TODO:: LoadingBar
         body: LoadingOverlay(
           isLoading: _isLoading,
           color: kGreyColor,

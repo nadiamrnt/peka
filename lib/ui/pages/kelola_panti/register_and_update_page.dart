@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/services/firebase/auth/auth.dart';
 import 'package:peka/services/firebase/firestore/firestore.dart';
 import 'package:peka/ui/pages/maps/google_maps_page.dart';
@@ -20,16 +21,16 @@ import '../../../common/navigation.dart';
 import '../../../data/model/kebutuhan_model.dart';
 import '../../../utils/image_picker_helper.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterAndUpdatePage extends StatefulWidget {
   static const routeName = '/register-page';
 
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterAndUpdatePage({Key? key}) : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterAndUpdatePage> createState() => _RegisterAndUpdatePageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
   final List<KebutuhanModel> _listKebutuhan = [];
   String? _address;
   GeoPoint? _location;
@@ -45,8 +46,15 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
 
+  // isUpdate page
+  bool _isUpdate = false;
+  PantiAsuhanModel? _pantiAsuhan;
+  String? _documentId;
+
   @override
   Widget build(BuildContext context) {
+    _isUpdateData();
+
     return SafeArea(
       child: Scaffold(
         body: LoadingOverlay(
@@ -55,6 +63,7 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: defaultMargin),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(),
                   const SizedBox(height: 30.0),
@@ -112,22 +121,48 @@ class _RegisterPageState extends State<RegisterPage> {
                             // Send location
                             // Send list category
                             // Send to Firestore
-                            Firestore.firebaseFirestore
-                                .collection('users')
-                                .doc(Auth.auth.currentUser!.uid)
-                                .collection('kelola_panti')
-                                .add({
-                              'name': _name,
-                              'img_url': _imgUrl,
-                              'description': _description,
-                              'no_tlpn': _noPhone,
-                              'address': _address,
-                              'location': _location,
-                              'document': _fileUrl,
-                              'approved': false,
-                              'kebutuhan': KebutuhanModel.convertToListMap(
-                                  _listKebutuhan),
-                            });
+                            // TODO:: Buatin fungsi tersendiri untuk add dan update
+                            if (_isUpdate) {
+                              Firestore.firebaseFirestore
+                                  .collection('users')
+                                  .doc(Auth.auth.currentUser!.uid)
+                                  .collection('kelola_panti')
+                                  .doc(_documentId)
+                                  .update({
+                                'name': _name,
+                                'img_url': _imgUrl,
+                                'description': _description,
+                                'no_tlpn': _noPhone,
+                                'address': _address,
+                                'location': _location,
+                                'document': _fileUrl,
+                                'approved': false,
+                                'kebutuhan': KebutuhanModel.convertToListMap(
+                                    _listKebutuhan),
+                              });
+
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              Navigation.back();
+                            } else {
+                              Firestore.firebaseFirestore
+                                  .collection('users')
+                                  .doc(Auth.auth.currentUser!.uid)
+                                  .collection('kelola_panti')
+                                  .add({
+                                'name': _name,
+                                'img_url': _imgUrl,
+                                'description': _description,
+                                'no_tlpn': _noPhone,
+                                'address': _address,
+                                'location': _location,
+                                'document': _fileUrl,
+                                'approved': false,
+                                'kebutuhan': KebutuhanModel.convertToListMap(
+                                    _listKebutuhan),
+                              });
+                            }
 
                             setState(() {
                               _isLoading = false;
@@ -146,6 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           }
                         }
                       } catch (e) {
+                        print(e);
                         const snackBar = SnackBar(
                           content: Text('Opss.. terjadi kesalahan, coba lagi'),
                         );
@@ -205,44 +241,54 @@ class _RegisterPageState extends State<RegisterPage> {
       onTap: () {
         _modalBottomSheetMenu();
       },
-      child: _image != null
+      child: (_isUpdate && _image == null)
           ? ClipRRect(
               borderRadius: BorderRadius.circular(18),
-              child: Image.file(
-                File(_image!.path),
+              child: Image.network(
+                _pantiAsuhan!.imgUrl,
                 width: double.infinity,
                 height: 200,
                 fit: BoxFit.fitWidth,
               ),
             )
-          : Container(
-              height: 200,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                color: const Color(0XFFF0F0F0),
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 70.0,
-                      height: 70.0,
-                      child: Image.asset('assets/icons/ic_add_image.png'),
+          : (_isUpdate || _image != null)
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: Image.file(
+                    File(_image!.path),
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.fitWidth,
+                  ),
+                )
+              : Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    color: const Color(0XFFF0F0F0),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 70.0,
+                          height: 70.0,
+                          child: Image.asset('assets/icons/ic_add_image.png'),
+                        ),
+                        const SizedBox(height: 10.0),
+                        Text(
+                          'Tambah foto panti asuhan',
+                          style: greyTextStyle.copyWith(
+                            fontSize: 12.0,
+                            fontWeight: regular,
+                          ),
+                        )
+                      ],
                     ),
-                    const SizedBox(height: 10.0),
-                    Text(
-                      'Tambah foto panti asuhan',
-                      style: greyTextStyle.copyWith(
-                        fontSize: 12.0,
-                        fontWeight: regular,
-                      ),
-                    )
-                  ],
+                  ),
                 ),
-              ),
-            ),
     );
   }
 
@@ -273,7 +319,6 @@ class _RegisterPageState extends State<RegisterPage> {
           style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
         ),
         const SizedBox(height: 5.0),
-        //TEXTFIELD NOMOR TELEPON
         CustomTextFormField(
           hintText: 'Tulis nomor telepon panti asuhan',
           errorText: 'Masukkan nomor telepon panti asuhan',
@@ -302,159 +347,215 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget _buildFile() {
-    return Align(
-      alignment: Alignment.bottomLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Surat Keterangan",
-            style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
-          ),
-          const SizedBox(height: 5.0),
-          GestureDetector(
-            onTap: () async {
-              var platformFile = await getFileAndUpload();
-              setState(() {
-                _file = platformFile;
-              });
-            },
-            child: _file != null
-                ? Container(
-                    height: 45.0,
-                    width: 185,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    decoration: BoxDecoration(
-                      color: kWhiteColor,
-                      borderRadius:
-                          BorderRadius.circular(defaultRadiusTextField),
-                      border: Border.all(color: kPrimaryColor),
-                    ),
-                    child: Text(
-                      _file!.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: purpleTextStyle.copyWith(
-                        fontSize: 14,
-                        fontWeight: regular,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Surat Keterangan",
+          style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
+        ),
+        const SizedBox(height: 5.0),
+        GestureDetector(
+          onTap: () async {
+            var platformFile = await getFileAndUpload();
+            setState(() {
+              _file = platformFile;
+            });
+          },
+          child: (_isUpdate && _file == null)
+              ? Row(
+                  children: [
+                    Container(
+                      height: 45.0,
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      decoration: BoxDecoration(
+                        color: kWhiteColor,
+                        borderRadius:
+                            BorderRadius.circular(defaultRadiusTextField),
+                        border: Border.all(color: kPrimaryColor),
+                      ),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/icons/ic_upload.png',
+                            width: 24,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Perbarui Surat Keterangan',
+                            style: purpleTextStyle.copyWith(
+                                fontSize: 14, fontWeight: regular),
+                          ),
+                        ],
                       ),
                     ),
-                  )
-                : Container(
-                    height: 45.0,
-                    width: 185,
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    decoration: BoxDecoration(
-                      color: kWhiteColor,
-                      borderRadius:
-                          BorderRadius.circular(defaultRadiusTextField),
-                      border: Border.all(color: kPrimaryColor),
-                    ),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/icons/ic_upload.png',
-                          width: 24,
+                  ],
+                )
+              : (_isUpdate || _file != null)
+                  ? Container(
+                      height: 45.0,
+                      width: 185,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      decoration: BoxDecoration(
+                        color: kWhiteColor,
+                        borderRadius:
+                            BorderRadius.circular(defaultRadiusTextField),
+                        border: Border.all(color: kPrimaryColor),
+                      ),
+                      child: Text(
+                        _file!.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: purpleTextStyle.copyWith(
+                          fontSize: 14,
+                          fontWeight: regular,
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Tambahkan file',
-                          style: purpleTextStyle.copyWith(
-                              fontSize: 14, fontWeight: regular),
-                        ),
-                      ],
+                      ),
+                    )
+                  : Container(
+                      height: 45.0,
+                      width: 185,
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      decoration: BoxDecoration(
+                        color: kWhiteColor,
+                        borderRadius:
+                            BorderRadius.circular(defaultRadiusTextField),
+                        border: Border.all(color: kPrimaryColor),
+                      ),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/icons/ic_upload.png',
+                            width: 24,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Tambahkan file',
+                            style: purpleTextStyle.copyWith(
+                                fontSize: 14, fontWeight: regular),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildLocation() {
-    return Align(
-      alignment: Alignment.bottomLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Tandai Lokasi",
-            style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
-          ),
-          const SizedBox(height: 5.0),
-          GestureDetector(
-            onTap: () async {
-              final getData = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const GoogleMapsPage()));
-              _address = getData['address'];
-              setState(() {
-                _location = getData['location'];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Tandai Lokasi",
+          style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
+        ),
+        const SizedBox(height: 5.0),
+        GestureDetector(
+          onTap: () async {
+            final getData = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const GoogleMapsPage()));
+            _address = getData['address'];
+            setState(() {
+              _location = getData['location'];
 
-                _markers.clear();
-                _markers.add(
-                  Marker(
-                    markerId: MarkerId(_location.toString()),
-                    position: LatLng(_location!.latitude, _location!.longitude),
-                    icon: BitmapDescriptor.defaultMarker,
+              _markers.clear();
+              _markers.add(
+                Marker(
+                  markerId: MarkerId(_location!.latitude.toString()),
+                  position: LatLng(_location!.latitude, _location!.longitude),
+                  icon: BitmapDescriptor.defaultMarker,
+                ),
+              );
+            });
+          },
+          child: (_isUpdate && _location == null)
+              ? Container(
+                  height: 170,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    color: kGreyBgColor,
                   ),
-                );
-              });
-            },
-            child: _location != null
-                ? SizedBox(
-                    height: 170,
-                    width: double.infinity,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(18),
-                      child: GoogleMap(
-                        markers: _markers,
-                        initialCameraPosition: CameraPosition(
-                          target:
-                              LatLng(_location!.latitude, _location!.longitude),
-                          zoom: 17,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 38.0,
+                          height: 38.0,
+                          child:
+                              Image.asset('assets/icons/ic_add_location.png'),
                         ),
-                        scrollGesturesEnabled: false,
-                        zoomGesturesEnabled: false,
-                        zoomControlsEnabled: false,
-                        mapType: MapType.normal,
-                      ),
-                    ),
-                  )
-                : Container(
-                    height: 170,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
-                      color: kGreyBgColor,
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 38.0,
-                            height: 38.0,
-                            child:
-                                Image.asset('assets/icons/ic_add_location.png'),
+                        const SizedBox(height: 10.0),
+                        Text(
+                          'Perbarui lokasi',
+                          style: greyTextStyle.copyWith(
+                            fontSize: 12.0,
+                            fontWeight: regular,
                           ),
-                          const SizedBox(height: 10.0),
-                          Text(
-                            'Tandai Lokasi',
-                            style: greyTextStyle.copyWith(
-                              fontSize: 12.0,
-                              fontWeight: regular,
-                            ),
-                          )
-                        ],
-                      ),
+                        )
+                      ],
                     ),
                   ),
-          ),
-        ],
-      ),
+                )
+              : (_location != null)
+                  ? SizedBox(
+                      height: 170,
+                      width: double.infinity,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(18),
+                        child: AbsorbPointer(
+                          absorbing: true,
+                          child: GoogleMap(
+                            markers: _markers,
+                            initialCameraPosition: CameraPosition(
+                              target: LatLng(
+                                  _location!.latitude, _location!.longitude),
+                              zoom: 17,
+                            ),
+                            scrollGesturesEnabled: false,
+                            zoomGesturesEnabled: false,
+                            zoomControlsEnabled: false,
+                            mapType: MapType.normal,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      height: 170,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        color: kGreyBgColor,
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 38.0,
+                              height: 38.0,
+                              child: Image.asset(
+                                  'assets/icons/ic_add_location.png'),
+                            ),
+                            const SizedBox(height: 10.0),
+                            Text(
+                              'Tandai Lokasi',
+                              style: greyTextStyle.copyWith(
+                                fontSize: 12.0,
+                                fontWeight: regular,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+        ),
+      ],
     );
   }
 
@@ -577,6 +678,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       _image = image;
                     });
                   });
+                  print(_image?.path);
                   Navigation.back();
                 },
               ),
@@ -588,6 +690,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       _image = image;
                     });
                   });
+                  print(_image?.path);
                   Navigation.back();
                 },
                 child: Text(
@@ -601,6 +704,29 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       },
     );
+  }
+
+  void _isUpdateData() {
+    Map<String, dynamic>? _dataFromKelolaPage =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (_dataFromKelolaPage != null) {
+      _isUpdate = true;
+
+      PantiAsuhanModel _dataPantiAsuhan = _dataFromKelolaPage['panti_asuhan'];
+      _documentId = _dataFromKelolaPage['document_id'];
+
+      setState(() {
+        _pantiAsuhan = _dataPantiAsuhan;
+        _nameController.text = _pantiAsuhan!.name;
+        _phoneController.text = _pantiAsuhan!.noTlpn;
+        _descController.text = _pantiAsuhan!.description;
+
+        _listKebutuhan.addAll(_dataPantiAsuhan.kebutuhan);
+      });
+
+      print(_listKebutuhan);
+    }
   }
 
   @override

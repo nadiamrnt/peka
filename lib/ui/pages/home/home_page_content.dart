@@ -276,11 +276,18 @@ class _HomePageContentState extends State<HomePageContent> {
                             builder: (_, user) {
                               if (user.data == null) {
                                 return const Center(
+                                  // TODO:: ganti loading
                                   child: CircularProgressIndicator(),
                                 );
                               }
 
+                              // TODO:: Need revisi
                               if (user.data!.docs.isNotEmpty) {
+                                int index = 1;
+                                user.data?.docs.map((item) {
+                                  index = user.data!.docs.indexOf(item);
+                                });
+
                                 DocumentSnapshot? itemDataPanti =
                                     user.data?.docs[index];
                                 PantiAsuhanModel pantiAsuhan =
