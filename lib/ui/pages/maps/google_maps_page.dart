@@ -21,7 +21,6 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
   final Set<Marker> _markers = {};
   LatLng? _myLocation;
   final LatLng _initialCameraPosition = const LatLng(-2.548926, 118.0148634);
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   @override
   void initState() {
@@ -32,7 +31,6 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _key,
       body: Stack(children: [
         GoogleMap(
           mapType: MapType.normal,

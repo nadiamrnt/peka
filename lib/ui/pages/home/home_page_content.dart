@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/data/model/user_model.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/utils/category_helper.dart';
@@ -193,6 +194,7 @@ class _HomePageContentState extends State<HomePageContent> {
             children: CategoryHelper.categoryFromLocal.map((item) {
               return GestureDetector(
                 onTap: () {
+                  // TODO: Bawah data item ke CategoryPage
                   Navigation.intent(CategoryPage.routeName);
                 },
                 child: Padding(
@@ -252,267 +254,134 @@ class _HomePageContentState extends State<HomePageContent> {
         ),
         const SizedBox(height: 20),
         SizedBox(
-          height: 330,
-          child: ListView(
-            padding: const EdgeInsets.only(left: 24),
-            scrollDirection: Axis.horizontal,
-            children: [
-              GestureDetector(
-                child: Container(
-                  height: 324,
-                  width: 235,
-                  margin: const EdgeInsets.only(right: 24),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: kWhiteBgColor,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 224,
-                        width: 215,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          image: const DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage('assets/images/img_house.png'),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Panti Asuhan Al-Khaer',
-                              style: blackTextStyle.copyWith(
-                                  fontSize: 16,
-                                  fontWeight: medium,
-                                  overflow: TextOverflow.ellipsis),
-                            ),
-                            const SizedBox(height: 6),
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'assets/icons/ic_location.png',
-                                  height: 14,
-                                  width: 11,
-                                ),
-                                const SizedBox(width: 7),
-                                Text(
-                                  'Makassar',
-                                  style: greyTextStyle.copyWith(
-                                    fontSize: 14,
-                                    fontWeight: light,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                onTap: () {
-                  Navigation.intent(DetailPage.routeName);
-                },
-              ),
-              Container(
-                height: 324,
-                width: 235,
-                margin: const EdgeInsets.only(right: 24),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: kWhiteBgColor,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 224,
-                      width: 215,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        image: const DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/img_house.png'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Panti Asuhan Al-Khaer',
-                            style: blackTextStyle.copyWith(
-                                fontSize: 16,
-                                fontWeight: medium,
-                                overflow: TextOverflow.ellipsis),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/icons/ic_location.png',
-                                height: 14,
-                                width: 11,
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                'Makassar',
-                                style: greyTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: light,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 324,
-                width: 235,
-                margin: const EdgeInsets.only(right: 24),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: kWhiteBgColor,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 224,
-                      width: 215,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        image: const DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/img_house.png'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Panti Asuhan Al-Khaer',
-                            style: blackTextStyle.copyWith(
-                                fontSize: 16,
-                                fontWeight: medium,
-                                overflow: TextOverflow.ellipsis),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/icons/ic_location.png',
-                                height: 14,
-                                width: 11,
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                'Makassar',
-                                style: greyTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: light,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 324,
-                width: 235,
-                margin: const EdgeInsets.only(right: 24),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: kWhiteBgColor,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 224,
-                      width: 215,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        image: const DecorationImage(
-                          fit: BoxFit.fill,
-                          image: AssetImage('assets/images/img_house.png'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Panti Asuhan Al-Khaer',
-                            style: blackTextStyle.copyWith(
-                                fontSize: 16,
-                                fontWeight: medium,
-                                overflow: TextOverflow.ellipsis),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Image.asset(
-                                'assets/icons/ic_location.png',
-                                height: 14,
-                                width: 11,
-                              ),
-                              const SizedBox(width: 7),
-                              Text(
-                                'Makassar',
-                                style: greyTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: light,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+            height: 330,
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream:
+                  Firestore.firebaseFirestore.collection('users').snapshots(),
+              builder: (_, users) {
+                return users.hasData
+                    ? ListView.builder(
+                        padding: const EdgeInsets.only(left: 24),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: users.data!.docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          DocumentSnapshot userData = users.data!.docs[index];
+                          return StreamBuilder<
+                              QuerySnapshot<Map<String, dynamic>>>(
+                            stream: Firestore.firebaseFirestore
+                                .collection('users')
+                                .doc(userData.id)
+                                .collection('kelola_panti')
+                                .snapshots(),
+                            builder: (_, user) {
+                              if (user.data == null) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+
+                              if (user.data!.docs.isNotEmpty) {
+                                DocumentSnapshot? itemDataPanti =
+                                    user.data?.docs[index];
+                                PantiAsuhanModel pantiAsuhan =
+                                    PantiAsuhanModel.fromDatabase(
+                                        itemDataPanti);
+
+                                return itemDataPanti != null
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          Navigation.intentWithData(
+                                              DetailPage.routeName,
+                                              pantiAsuhan);
+                                        },
+                                        child: Container(
+                                          height: 324,
+                                          width: 235,
+                                          margin:
+                                              const EdgeInsets.only(right: 24),
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: kWhiteBgColor,
+                                              width: 2,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: 224,
+                                                width: 215,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.fill,
+                                                    image: NetworkImage(
+                                                        pantiAsuhan.imgUrl),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      pantiAsuhan.name,
+                                                      style: blackTextStyle
+                                                          .copyWith(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  medium,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                    ),
+                                                    const SizedBox(height: 6),
+                                                    Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          'assets/icons/ic_location.png',
+                                                          height: 14,
+                                                          width: 11,
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 7),
+                                                        Text(
+                                                          pantiAsuhan.address
+                                                              .split(', ')[4],
+                                                          style: greyTextStyle
+                                                              .copyWith(
+                                                            fontSize: 14,
+                                                            fontWeight: light,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    : const CircularProgressIndicator();
+                              } else {
+                                return const SizedBox();
+                              }
+                            },
+                          );
+                        },
+                      )
+                    : const CircularProgressIndicator();
+              },
+            )),
       ],
     );
   }

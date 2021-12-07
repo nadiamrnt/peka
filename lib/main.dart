@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/auth/login_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
+import 'package:peka/ui/pages/detail/detail_map_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/ui/pages/home/category/category_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         KelolaPage.routeName: (_) => const KelolaPage(),
         CategoryPage.routeName: (_) => const CategoryPage(),
         GoogleMapsPage.routeName: (_) => const GoogleMapsPage(),
+        DetailMapPage.routeName: (_) => const DetailMapPage(),
       },
     );
   }
