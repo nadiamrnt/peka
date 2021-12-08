@@ -87,6 +87,8 @@ class KelolaPage extends StatelessWidget {
               PantiAsuhanModel.fromDatabase(documentSnapshot);
           var splitString = _pantiAsuhan.address.split(', ');
           String location = "${splitString[4]}, ${splitString[5]}";
+          int? _kebutuhanLenght;
+
           return GestureDetector(
             onTap: () {
               Navigation.intentWithData(RegisterAndUpdatePage.routeName, {
@@ -162,10 +164,14 @@ class KelolaPage extends StatelessWidget {
                   const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0),
-                    child: Flexible(
-                      child: Row(
-                        children: _pantiAsuhan.kebutuhan
-                            .map((kebutuhan) => Container(
+                    child: Row(
+                      children: [
+                        Row(
+                          children: _pantiAsuhan.kebutuhan
+                              .map((kebutuhan) {
+                                _kebutuhanLenght =
+                                    _pantiAsuhan.kebutuhan.length;
+                                return Container(
                                   width: 76,
                                   height: 24,
                                   margin: const EdgeInsets.only(right: 8),
@@ -186,9 +192,27 @@ class KelolaPage extends StatelessWidget {
                                       fontWeight: regular,
                                     ),
                                   ),
-                                ))
-                            .toList(),
-                      ),
+                                );
+                              })
+                              .toList()
+                              .getRange(
+                                  0,
+                                  (_kebutuhanLenght! > 3)
+                                      ? 3
+                                      : _kebutuhanLenght!)
+                              .toList(),
+                        ),
+                        const SizedBox(width: 4),
+                        _kebutuhanLenght! > 3
+                            ? Text(
+                                '+' + (_kebutuhanLenght! - 3).toString(),
+                                style: greyTextStyle.copyWith(
+                                  fontWeight: regular,
+                                  fontSize: 14,
+                                ),
+                              )
+                            : const SizedBox(),
+                      ],
                     ),
                   )
                 ],

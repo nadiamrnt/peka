@@ -34,7 +34,9 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
   final List<KebutuhanModel> _listKebutuhan = [];
   String? _address;
   GeoPoint? _location;
+  GoogleMapController? _googleMapController;
   XFile? _image;
+  String? _imgUrl;
   PlatformFile? _file;
   final Set<Marker> _markers = {};
 
@@ -89,110 +91,8 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                   _buildListCategory(),
                   const SizedBox(height: 40.0),
                   Button(
-                    textButton: 'Kirim',
-                    onTap: () async {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      try {
-                        if (_formKey.currentState!.validate()) {
-                          if (_image != null) {
-                            // Send Image
-                            String _imagePath = _image!.path;
-                            Reference ref = FirebaseStorage.instance
-                                .ref()
-                                .child('image_panti')
-                                .child(_imagePath);
-                            UploadTask task = ref.putFile(File(_image!.path));
-                            TaskSnapshot snapShot = await task;
-                            String _imgUrl =
-                                await snapShot.ref.getDownloadURL();
-
-                            // Send text content
-                            final String _name = _nameController.text;
-                            final String _noPhone = _phoneController.text;
-                            final String _description = _descController.text;
-
-                            // Send File
-                            final String? _filePath = _file!.path;
-                            String _fileUrl =
-                                await documentFileUpload(_filePath!);
-
-                            // Send location
-                            // Send list category
-                            // Send to Firestore
-                            // TODO:: Buatin fungsi tersendiri untuk add dan update
-                            if (_isUpdate) {
-                              Firestore.firebaseFirestore
-                                  .collection('users')
-                                  .doc(Auth.auth.currentUser!.uid)
-                                  .collection('kelola_panti')
-                                  .doc(_documentId)
-                                  .update({
-                                'name': _name,
-                                'img_url': _imgUrl,
-                                'description': _description,
-                                'no_tlpn': _noPhone,
-                                'address': _address,
-                                'location': _location,
-                                'document': _fileUrl,
-                                'approved': false,
-                                'kebutuhan': KebutuhanModel.convertToListMap(
-                                    _listKebutuhan),
-                              });
-
-                              setState(() {
-                                _isLoading = false;
-                              });
-                              Navigation.back();
-                            } else {
-                              Firestore.firebaseFirestore
-                                  .collection('users')
-                                  .doc(Auth.auth.currentUser!.uid)
-                                  .collection('kelola_panti')
-                                  .add({
-                                'name': _name,
-                                'img_url': _imgUrl,
-                                'description': _description,
-                                'no_tlpn': _noPhone,
-                                'address': _address,
-                                'location': _location,
-                                'document': _fileUrl,
-                                'approved': false,
-                                'kebutuhan': KebutuhanModel.convertToListMap(
-                                    _listKebutuhan),
-                              });
-                            }
-
-                            setState(() {
-                              _isLoading = false;
-                            });
-                            Navigation.back();
-                          } else {
-                            setState(() {
-                              _isLoading = false;
-                            });
-                            const snackBar = SnackBar(
-                              content:
-                                  Text('Mohon masukkan gambar panti asuhan'),
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          }
-                        }
-                      } catch (e) {
-                        print(e);
-                        const snackBar = SnackBar(
-                          content: Text('Opss.. terjadi kesalahan, coba lagi'),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      } finally {
-                        setState(() {
-                          _isLoading = false;
-                        });
-                      }
-                    },
-                  ),
+                      textButton: _isUpdate ? 'Update' : 'Kirim',
+                      onTap: _registerOrUpdateButton),
                   const SizedBox(height: 30.0),
                 ],
               ),
@@ -444,6 +344,19 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
   }
 
   Widget _buildLocation() {
+    if (_location != null) {
+      setState(() {
+        _markers.clear();
+        _markers.add(
+          Marker(
+            markerId: MarkerId(_location!.latitude.toString()),
+            position: LatLng(_location!.latitude, _location!.longitude),
+            icon: BitmapDescriptor.defaultMarker,
+          ),
+        );
+      });
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -454,51 +367,52 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
         const SizedBox(height: 5.0),
         GestureDetector(
           onTap: () async {
-            final getData = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const GoogleMapsPage()));
-            _address = getData['address'];
-            setState(() {
-              _location = getData['location'];
+            try {
+              final getData = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GoogleMapsPage()));
+              _address = getData['address'];
 
-              _markers.clear();
-              _markers.add(
-                Marker(
-                  markerId: MarkerId(_location!.latitude.toString()),
-                  position: LatLng(_location!.latitude, _location!.longitude),
-                  icon: BitmapDescriptor.defaultMarker,
-                ),
-              );
-            });
+              setState(() {
+                _location = getData['location'];
+              });
+
+              if (_googleMapController != null) {
+                await _googleMapController?.moveCamera(
+                    CameraUpdate.newCameraPosition(CameraPosition(
+                        target:
+                            LatLng(_location!.latitude, _location!.longitude),
+                        zoom: 17)));
+              }
+            } catch (e) {
+              const snackBar =
+                  SnackBar(content: Text('Pilih lokasi dibatalkan'));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
           },
           child: (_isUpdate && _location == null)
-              ? Container(
+              ? SizedBox(
                   height: 170,
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    color: kGreyBgColor,
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 38.0,
-                          height: 38.0,
-                          child:
-                              Image.asset('assets/icons/ic_add_location.png'),
+                  child: ClipRRect(
+                    child: AbsorbPointer(
+                      absorbing: true,
+                      child: GoogleMap(
+                        markers: _markers,
+                        onMapCreated: (controller) async {
+                          _googleMapController = controller;
+                        },
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(_pantiAsuhan!.location.latitude,
+                              _pantiAsuhan!.location.longitude),
+                          zoom: 17,
                         ),
-                        const SizedBox(height: 10.0),
-                        Text(
-                          'Perbarui lokasi',
-                          style: greyTextStyle.copyWith(
-                            fontSize: 12.0,
-                            fontWeight: regular,
-                          ),
-                        )
-                      ],
+                        scrollGesturesEnabled: false,
+                        zoomGesturesEnabled: false,
+                        zoomControlsEnabled: false,
+                        mapType: MapType.normal,
+                      ),
                     ),
                   ),
                 )
@@ -512,6 +426,9 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                           absorbing: true,
                           child: GoogleMap(
                             markers: _markers,
+                            onMapCreated: (controller) async {
+                              _googleMapController = controller;
+                            },
                             initialCameraPosition: CameraPosition(
                               target: LatLng(
                                   _location!.latitude, _location!.longitude),
@@ -678,7 +595,6 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                       _image = image;
                     });
                   });
-                  print(_image?.path);
                   Navigation.back();
                 },
               ),
@@ -690,7 +606,6 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                       _image = image;
                     });
                   });
-                  print(_image?.path);
                   Navigation.back();
                 },
                 child: Text(
@@ -722,10 +637,114 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
         _phoneController.text = _pantiAsuhan!.noTlpn;
         _descController.text = _pantiAsuhan!.description;
 
+        _markers.clear();
+        _markers.add(
+          Marker(
+            markerId: MarkerId(_pantiAsuhan!.location.latitude.toString()),
+            position: LatLng(_pantiAsuhan!.location.latitude,
+                _pantiAsuhan!.location.longitude),
+            icon: BitmapDescriptor.defaultMarker,
+          ),
+        );
+
         _listKebutuhan.addAll(_dataPantiAsuhan.kebutuhan);
       });
+    }
+  }
 
-      print(_listKebutuhan);
+  void _registerOrUpdateButton() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      if (_formKey.currentState!.validate()) {
+        if (_image != null) {
+          // Send Image
+          String _imagePath = _image!.path;
+          Reference ref = FirebaseStorage.instance
+              .ref()
+              .child('image_panti')
+              .child(_imagePath);
+          UploadTask task = ref.putFile(File(_image!.path));
+          TaskSnapshot snapShot = await task;
+          _imgUrl = await snapShot.ref.getDownloadURL();
+
+          // Send text content
+          final String _name = _nameController.text;
+          final String _noPhone = _phoneController.text;
+          final String _description = _descController.text;
+
+          // Send File
+          final String? _filePath = _file!.path;
+          String _fileUrl = await documentFileUpload(_filePath!);
+
+          // Send location
+          // Send list category
+          // Send to Firestore
+          // TODO:: Buatin fungsi tersendiri untuk add dan update
+          if (_isUpdate) {
+            Firestore.firebaseFirestore
+                .collection('users')
+                .doc(Auth.auth.currentUser!.uid)
+                .collection('kelola_panti')
+                .doc(_documentId)
+                .update({
+              'name': _name,
+              'img_url': _imgUrl ?? _pantiAsuhan!.imgUrl,
+              'description': _description,
+              'no_tlpn': _noPhone,
+              'address': _address,
+              'location': _location,
+              'document': _fileUrl,
+              'approved': false,
+              'kebutuhan': KebutuhanModel.convertToListMap(_listKebutuhan),
+            });
+
+            setState(() {
+              _isLoading = false;
+            });
+            Navigation.back();
+          } else {
+            Firestore.firebaseFirestore
+                .collection('users')
+                .doc(Auth.auth.currentUser!.uid)
+                .collection('kelola_panti')
+                .add({
+              'name': _name,
+              'img_url': _imgUrl,
+              'description': _description,
+              'no_tlpn': _noPhone,
+              'address': _address,
+              'location': _location,
+              'document': _fileUrl,
+              'approved': false, //TODO:: Jadikan true kalau di tampilkan
+              'kebutuhan': KebutuhanModel.convertToListMap(_listKebutuhan),
+            });
+          }
+
+          setState(() {
+            _isLoading = false;
+          });
+          Navigation.back();
+        } else {
+          setState(() {
+            _isLoading = false;
+          });
+          const snackBar = SnackBar(
+            content: Text('Mohon masukkan gambar panti asuhan'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      }
+    } catch (e) {
+      const snackBar = SnackBar(
+        content: Text('Opss.. terjadi kesalahan, coba lagi'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -734,6 +753,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
     _nameController.dispose();
     _phoneController.dispose();
     _descController.dispose();
+    _googleMapController?.dispose();
     super.dispose();
   }
 }
