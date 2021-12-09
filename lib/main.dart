@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/splash_screen.dart';
 import 'package:peka/ui/pages/auth/login_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/category/category_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
+import 'package:peka/ui/pages/home/search_page.dart';
 import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_page.dart';
 
@@ -25,8 +27,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue, scaffoldBackgroundColor: kWhiteColor),
       navigatorKey: navigatorKey,
-      initialRoute: LoginPage.routeName,
+      initialRoute: SplashScreen.routeName,
       routes: {
+        SplashScreen.routeName: (context) => const SplashScreen(),
         LoginPage.routeName: (context) => const LoginPage(),
         SignupPage.routeName: (_) => const SignupPage(),
         DetailPage.routeName: (_) => const DetailPage(),
@@ -34,6 +37,7 @@ class MyApp extends StatelessWidget {
         RegisterPage.routeName: (_) => const RegisterPage(),
         KelolaPage.routeName: (_) => const KelolaPage(),
         CategoryPage.routeName: (_) => const CategoryPage(),
+        SearchPage.routeName: (_) => const SearchPage(),
       },
     );
   }
