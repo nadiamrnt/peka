@@ -79,14 +79,14 @@ class CategoryPage extends StatelessWidget {
         }
 
         if (snapshot.data!.docs.isNotEmpty) {
-          snapshot.data!.docs.forEach((data) {
+          for (var data in snapshot.data!.docs) {
             PantiAsuhanModel dataPanti = PantiAsuhanModel.fromDatabase(data);
             for (var itemKebutuhan in dataPanti.kebutuhan) {
               if (itemKebutuhan.name == category['name']) {
                 listPantiAsuhan.add(dataPanti);
               }
             }
-          });
+          }
 
           return snapshot.hasData
               ? ResponsiveGridRow(
@@ -96,7 +96,8 @@ class CategoryPage extends StatelessWidget {
                       md: 3,
                       sm: 1,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        padding: const EdgeInsets.only(
+                            left: 6, right: 6, bottom: 12),
                         child: GestureDetector(
                           onTap: () {
                             Navigation.intentWithData(
@@ -116,6 +117,7 @@ class CategoryPage extends StatelessWidget {
 
   Widget _pantiCard(PantiAsuhanModel pantiAsuhan) {
     return Container(
+      height: 205,
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: kWhiteBgColor,
@@ -128,6 +130,7 @@ class CategoryPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
             child: Image.network(
               pantiAsuhan.imgUrl,
+              height: 135,
               fit: BoxFit.fill,
             ),
           ),

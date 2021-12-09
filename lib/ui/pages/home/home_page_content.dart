@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/data/model/user_model.dart';
+import 'package:peka/ui/pages/home/search_page.dart';
 import 'package:peka/utils/category_helper.dart';
 
 import '../../../common/navigation.dart';
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
+import '../../widgets/custom_dialog_box.dart';
 import '../detail/detail_page.dart';
 import 'category/category_page.dart';
 
@@ -30,7 +32,7 @@ class _HomePageContentState extends State<HomePageContent> {
             children: [
               _buildHeader(),
               const SizedBox(height: 30),
-              _buildSearch(),
+              _buildSearch(context),
               const SizedBox(height: 24),
               _buildCategory(),
               const SizedBox(height: 24),
@@ -108,7 +110,7 @@ class _HomePageContentState extends State<HomePageContent> {
     );
   }
 
-  Widget _buildSearch() {
+  Widget _buildSearch(context) {
     return Padding(
       padding: EdgeInsets.only(
         left: defaultMargin,
@@ -119,54 +121,70 @@ class _HomePageContentState extends State<HomePageContent> {
           Expanded(
             child: SizedBox(
               height: 45,
-              child: TextField(
-                style: blackTextStyle.copyWith(
-                  fontSize: 14,
-                  fontWeight: regular,
-                ),
-                textAlign: TextAlign.left,
-                decoration: InputDecoration(
-                  hintText: 'Cari Panti Asuhan',
-                  hintStyle: greyTextStyle.copyWith(
+              child: GestureDetector(
+                onTap: () {
+                  Navigation.intent(SearchPage.routeName);
+                },
+                child: TextField(
+                  style: blackTextStyle.copyWith(
                     fontSize: 14,
                     fontWeight: regular,
                   ),
-                  contentPadding: const EdgeInsets.only(right: 8, left: 12),
-                  filled: true,
-                  fillColor: kWhiteBgColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 14.0,
-                      right: 18,
+                  textInputAction: TextInputAction.none,
+                  textAlign: TextAlign.left,
+                  enabled: false,
+                  decoration: InputDecoration(
+                    hintText: 'Cari Panti Asuhan',
+                    hintStyle: greyTextStyle.copyWith(
+                      fontSize: 14,
+                      fontWeight: regular,
                     ),
-                    child: Image.asset(
-                      'assets/icons/ic_search.png',
-                      width: 24,
+                    contentPadding: const EdgeInsets.only(right: 8, left: 12),
+                    filled: true,
+                    fillColor: kWhiteBgColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
                     ),
-                  ),
-                  prefixIconConstraints: const BoxConstraints(
-                    minHeight: 24,
-                    minWidth: 24,
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 14.0,
+                        right: 18,
+                      ),
+                      child: Image.asset(
+                        'assets/icons/ic_search.png',
+                        width: 24,
+                      ),
+                    ),
+                    prefixIconConstraints: const BoxConstraints(
+                      minHeight: 24,
+                      minWidth: 24,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
           const SizedBox(width: 6),
-          Container(
-            height: 45,
-            width: 47,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: kPrimaryColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Image.asset(
-              'assets/icons/ic_filter.png',
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const CustomDialogBox();
+                  });
+            },
+            child: Container(
+              height: 45,
+              width: 47,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: kPrimaryColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Image.asset(
+                'assets/icons/ic_filter.png',
+              ),
             ),
           ),
         ],

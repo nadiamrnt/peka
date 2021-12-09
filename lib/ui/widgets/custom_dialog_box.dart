@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/ui/pages/category/category_page.dart';
 import 'package:peka/utils/province_helper.dart';
+
+import '../pages/home/category/category_page.dart';
 
 class CustomDialogBox extends StatefulWidget {
   const CustomDialogBox({Key? key}) : super(key: key);
@@ -72,7 +73,8 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
   Widget _buildProvinceCard(int index) {
     return GestureDetector(
       onTap: () {
-        Navigation.intentReplacement(CategoryPage.routeName);
+        Navigation.intentReplacementWithData(CategoryPage.routeName,
+            {'name': ProvinceHelper.provinceList[index]});
       },
       child: Container(
         padding: const EdgeInsets.all(10),

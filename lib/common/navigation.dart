@@ -15,6 +15,11 @@ class Navigation {
     navigatorKey.currentState?.pushReplacementNamed(routeName);
   }
 
+  static intentReplacementWithData(
+      String routeName, Map<String, dynamic> data) {
+    navigatorKey.currentState?.pushReplacementNamed(routeName, arguments: data);
+  }
+
   static back() => navigatorKey.currentState?.pop();
   static backWithData(Map<String, dynamic> data) =>
       navigatorKey.currentState?.pop(data);

@@ -1,12 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/splash_screen.dart';
+import 'package:peka/ui/pages/auth/add_photo_page.dart';
+import 'package:peka/ui/pages/auth/forgot_password_page.dart';
 import 'package:peka/ui/pages/auth/login_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/detail/detail_map_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/ui/pages/home/category/category_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
+import 'package:peka/ui/pages/home/search_page.dart';
 import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
 import 'package:peka/ui/pages/maps/google_maps_page.dart';
@@ -30,11 +34,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue, scaffoldBackgroundColor: kWhiteColor),
       navigatorKey: navigatorKey,
-      /*initialRoute: FirebaseAuth.instance.currentUser?.uid != null
-          ? LoginPage.routeName
-          : HomePage.routeName,*/
-      initialRoute: LoginPage.routeName,
+      initialRoute: SplashScreen.routeName,
       routes: {
+        SplashScreen.routeName: (context) => const SplashScreen(),
         LoginPage.routeName: (context) => const LoginPage(),
         SignupPage.routeName: (_) => const SignupPage(),
         DetailPage.routeName: (_) => const DetailPage(),
@@ -44,6 +46,9 @@ class MyApp extends StatelessWidget {
         CategoryPage.routeName: (_) => const CategoryPage(),
         GoogleMapsPage.routeName: (_) => const GoogleMapsPage(),
         DetailMapPage.routeName: (_) => const DetailMapPage(),
+        SearchPage.routeName: (_) => const SearchPage(),
+        AddPhotoPage.routeName: (_) => const AddPhotoPage(),
+        ForgotPasswordPage.routeName: (_) => const ForgotPasswordPage(),
       },
     );
   }
