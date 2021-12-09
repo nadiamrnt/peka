@@ -608,7 +608,6 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                       });
                     });
                   } catch (e) {
-                    print(e);
                     const snackBar = SnackBar(
                       duration: Duration(seconds: 2),
                       content: Text('Opss.. gagal mengambil gambar'),
@@ -758,6 +757,9 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
 
   Future<void> _registerData() async {
     // Send Image
+/*var compressImage = await ImagePickerHelper.testCompressAndGetFile(
+        File(_image!.path), _image!.path);*/
+
     String _imagePath = _image!.path.split('/').last;
     Reference ref = FirebaseStorage.instance
         .ref()

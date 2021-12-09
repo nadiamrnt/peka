@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/button.dart';
 
+import '../../../common/navigation.dart';
 import '../../../services/maps/my_location.dart';
 import '../../../services/maps/permission.dart';
 
@@ -66,6 +67,7 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
             });
           },
         ),
+        _buildHeader(),
         _buildSetAddress(),
       ]),
     );
@@ -137,6 +139,33 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, top: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () => Navigation.back(),
+            child: Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: kPrimaryColor.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.arrow_back,
+                color: kWhiteColor,
+                size: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

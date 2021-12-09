@@ -25,6 +25,7 @@ dependencies:
   url_launcher: ^6.0.15
   file_picker: ^4.2.7
   responsive_grid: ^2.0.0
+  flutter_image_compress: ^1.0.0-nullsafety
 
 dev_dependencies:
   flutter_test:

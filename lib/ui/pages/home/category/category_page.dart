@@ -89,24 +89,26 @@ class CategoryPage extends StatelessWidget {
           }
 
           return snapshot.hasData
-              ? ResponsiveGridRow(
-                  children: listPantiAsuhan.map((pantiAsuhan) {
-                  return ResponsiveGridCol(
-                      xs: 6,
-                      md: 3,
-                      sm: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 6, right: 6, bottom: 12),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigation.intentWithData(
-                                DetailPage.routeName, pantiAsuhan);
-                          },
-                          child: _pantiCard(pantiAsuhan),
-                        ),
-                      ));
-                }).toList())
+              ? SingleChildScrollView(
+                  child: ResponsiveGridRow(
+                      children: listPantiAsuhan.map((pantiAsuhan) {
+                    return ResponsiveGridCol(
+                        xs: 6,
+                        md: 3,
+                        sm: 1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 6, right: 6, bottom: 12),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigation.intentWithData(
+                                  DetailPage.routeName, pantiAsuhan);
+                            },
+                            child: _pantiCard(pantiAsuhan),
+                          ),
+                        ));
+                  }).toList()),
+                )
               : const CircularProgressIndicator();
         } else {
           return const SizedBox();
