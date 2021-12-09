@@ -12,6 +12,20 @@ dependencies:
   google_fonts: ^2.1.0
   salomon_bottom_bar: ^3.1.0
   equatable: ^2.0.3
+  firebase_core: ^1.2.0
+  firebase_auth: ^1.2.0
+  cloud_firestore: ^2.2.0
+  firebase_storage: ^10.1.0
+  image_picker: ^0.8.4+4
+  loading_overlay: ^0.3.0
+  google_maps_flutter: ^2.1.1
+  location: ^4.3.0
+  geocoding: ^2.0.1
+  http: ^0.13.4
+  url_launcher: ^6.0.15
+  file_picker: ^4.2.7
+  responsive_grid: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

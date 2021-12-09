@@ -1,186 +1,197 @@
 import 'package:flutter/material.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/ui/pages/auth/forgot_password_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
+import 'package:peka/ui/widgets/custom_text_form_field.dart';
 
 import '../../../common/navigation.dart';
+import '../../../services/firebase/auth/auth.dart';
 import '../../widgets/button.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   static const routeName = '/login-page';
 
   const LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+  late bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: kWhiteColor,
-        body: SingleChildScrollView(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 30.0, horizontal: 24.0),
-            child: Stack(children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(),
-                  const SizedBox(height: 20.0),
-                  _buildIlustrasi(context),
-                  const SizedBox(height: 20.0),
-                  _buildEmail(),
-                  const SizedBox(height: 10.0),
-                  _buildKataSandi(),
-                  _buildLupaSandi(),
-                  const SizedBox(height: 20.0),
-                  Button(
-                    textButton: "Masuk",
-                    onTap: () {
-                      Navigation.intent(HomePage.routeName);
-                    },
+        // TODO:: LoadingBar
+        body: LoadingOverlay(
+          isLoading: _isLoading,
+          color: kGreyColor,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 30.0, horizontal: 24.0),
+              child: Stack(children: [
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //TEXT MASUK
+                      Text(
+                        "Masuk",
+                        style: blackTextStyle.copyWith(
+                            fontSize: 22, fontWeight: medium),
+                      ),
+                      //TEXT SILAHKAN MASUK AKUN KAMU
+                      Text(
+                        "Silahkan masuk akun kamu",
+                        style: greyTextStyle.copyWith(
+                            fontSize: 14, fontWeight: light),
+                      ),
+                      const SizedBox(
+                        height: 24.0,
+                      ),
+                      //ILUSTRASI PADA HALAMAN LOGIN
+                      Center(
+                        child: SizedBox(
+                          width: 220,
+                          height: 220,
+                          child: Image.asset(
+                            'assets/images/ill_signin.png',
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 24.0,
+                      ),
+                      //TEXT ALAMAT EMAIL
+                      Text(
+                        "Alamat Email",
+                        style: blackTextStyle.copyWith(
+                            fontSize: 16, fontWeight: medium),
+                      ),
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      //TEXTFIELD ALAMAT EMAIL
+                      CustomTextFormField(
+                        hintText: 'Tulis alamat email kamu',
+                        errorText: 'Masukkan alamat email kamu',
+                        controller: _emailController,
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      //TEXT KATA SANDI
+                      Text(
+                        "Kata Sandi",
+                        style: blackTextStyle.copyWith(
+                            fontSize: 16, fontWeight: medium),
+                      ),
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      //TEXTFIELD KATA SANDI
+                      CustomTextFormField(
+                        hintText: 'Tulis kata sandi kamu',
+                        errorText: 'Masukkan kata sandi kamu',
+                        obscureText: true,
+                        controller: _passwordController,
+                      ),
+                      // TEXT LUPA KATA SANDI
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "Lupa Sandi?",
+                            style: purpleTextStyle,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      //BUTTON MASUK
+                      Button(
+                        textButton: "Masuk",
+                        onTap: _login,
+                      ),
+                      const SizedBox(height: 20.0),
+                      //TEXT BELUM PUNYA AKUN? DAFTAR
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Belum punya akun?",
+                            style: blackTextStyle.copyWith(
+                              fontSize: 14,
+                              fontWeight: regular,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigation.intent(SignupPage.routeName);
+                            },
+                            child: Text(
+                              "Daftar",
+                              style: purpleTextStyle.copyWith(
+                                fontSize: 14,
+                                fontWeight: medium,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-                  const SizedBox(height: 20.0),
-                  _buildDaftar(),
-                ],
-              ),
-            ]),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Column _buildHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Masuk",
-          style: blackTextStyle.copyWith(fontSize: 22, fontWeight: medium),
-        ),
-        Text(
-          "Silahkan masuk akun kamu",
-          style: greyTextStyle.copyWith(fontSize: 14, fontWeight: light),
-        ),
-      ],
-    );
-  }
-
-  Center _buildIlustrasi(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: 220,
-        height: 220,
-        child: Image.asset(
-          'assets/images/ill_signin.png',
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmail() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Alamat Email",
-          style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
-        ),
-        const SizedBox(
-          height: 5.0,
-        ),
-        Container(
-          height: 45.0,
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: BoxDecoration(
-              color: kGreyBgColor,
-              borderRadius: BorderRadius.circular(defaultRadiusTextField)),
-          child: TextField(
-              decoration: InputDecoration(
-                  hintText: "Tulis alamat email kamu",
-                  hintStyle: greyHintTextStyle,
-                  border: InputBorder.none),
-              style:
-                  blackTextStyle.copyWith(fontWeight: regular, fontSize: 14.0)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildKataSandi() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Kata Sandi",
-          style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
-        ),
-        const SizedBox(
-          height: 5.0,
-        ),
-        Container(
-          height: 45.0,
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          decoration: BoxDecoration(
-              color: kGreyBgColor,
-              borderRadius: BorderRadius.circular(defaultRadiusTextField)),
-          child: TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                  hintText: "Tulis kata sandi kamu",
-                  hintStyle: greyHintTextStyle,
-                  border: InputBorder.none),
-              style:
-                  blackTextStyle.copyWith(fontWeight: regular, fontSize: 14.0)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLupaSandi() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () {
-          Navigation.intent(ForgotPasswordPage.routeName);
-        },
-        child: Text(
-          "Lupa Sandi?",
-          style: purpleTextStyle,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDaftar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "Belum punya akun?",
-          style: blackTextStyle.copyWith(
-            fontSize: 14,
-            fontWeight: regular,
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigation.intent(SignupPage.routeName);
-          },
-          child: Text(
-            "Daftar",
-            style: purpleTextStyle.copyWith(
-              fontSize: 14,
-              fontWeight: medium,
+                ),
+              ]),
             ),
           ),
         ),
-      ],
+      ),
     );
+  }
+
+  void _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      if (_formKey.currentState!.validate()) {
+        final email = _emailController.text;
+        final password = _passwordController.text;
+
+        await Auth.signInEmail(email, password);
+
+        Navigation.intentReplacement(HomePage.routeName);
+      }
+    } catch (e) {
+      const snackBar = SnackBar(
+          content: Text('Opss.. masukkan email/kata sandi dengan benar'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

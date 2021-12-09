@@ -16,4 +16,6 @@ class Navigation {
   }
 
   static back() => navigatorKey.currentState?.pop();
+  static backWithData(Map<String, dynamic> data) =>
+      navigatorKey.currentState?.pop(data);
 }

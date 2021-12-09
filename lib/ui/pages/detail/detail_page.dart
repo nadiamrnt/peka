@@ -1,27 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:peka/Utils/category_helper.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/data/model/panti_asuhan_model.dart';
 
+import '../../../common/navigation.dart';
 import '../../widgets/button.dart';
+import 'detail_map_page.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   static const routeName = '/detail-page';
+
   const DetailPage({Key? key}) : super(key: key);
 
   @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  final Set<Marker> _markers = {};
+
+  @override
   Widget build(BuildContext context) {
+    final _pantiAsuhan =
+        ModalRoute.of(context)?.settings.arguments as PantiAsuhanModel;
+
+    setState(() {
+      _markers.clear();
+      _markers.add(
+        Marker(
+          markerId: MarkerId(_pantiAsuhan.location.longitude.toString()),
+          position: LatLng(
+              _pantiAsuhan.location.latitude, _pantiAsuhan.location.longitude),
+          icon: BitmapDescriptor.defaultMarker,
+        ),
+      );
+    });
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildHeader(),
+              _buildHeader(_pantiAsuhan),
               const SizedBox(height: 30),
-              _buildContent(),
+              _buildContent(_pantiAsuhan),
               const SizedBox(height: 15),
-              _buildCategory(),
+              _buildCategory(_pantiAsuhan),
               const SizedBox(height: 30),
-              _buildLocation(),
+              _buildLocation(_pantiAsuhan),
               const SizedBox(height: 40),
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
@@ -35,7 +61,7 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(PantiAsuhanModel pantiAsuhan) {
     return Padding(
       padding:
           EdgeInsets.only(left: defaultMargin, right: defaultMargin, top: 30),
@@ -45,40 +71,33 @@ class DetailPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                //TODO:: navigation back
-                onTap: () {},
+                onTap: () => Navigation.back(),
                 child: Image.asset(
                   'assets/icons/ic_back.png',
                   width: 32,
                 ),
               ),
-              Text(
-                'Detail',
-                style: blackTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: semiBold,
-                ),
-              ),
-              GestureDetector(
-                //TODO:: Like button
-                onTap: () {},
-                child: Image.asset(
-                  'assets/icons/ic_dots.png',
-                  width: 32,
+              Expanded(
+                child: Text(
+                  'Detail',
+                  textAlign: TextAlign.center,
+                  style: blackTextStyle.copyWith(
+                    fontSize: 16,
+                    fontWeight: semiBold,
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 30),
-          // TODO:: CachedNetworkImage
           Container(
             height: 328,
             width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              image: const DecorationImage(
+              image: DecorationImage(
                 fit: BoxFit.cover,
-                image: AssetImage('assets/images/img_house.png'),
+                image: NetworkImage(pantiAsuhan.imgUrl),
               ),
             ),
           ),
@@ -87,14 +106,14 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(PantiAsuhanModel pantiAsuhan) {
     return Padding(
       padding: EdgeInsets.only(left: defaultMargin, right: defaultMargin),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Panti Asuhan Al-Khaer',
+            pantiAsuhan.name,
             style: blackTextStyle.copyWith(fontSize: 18, fontWeight: semiBold),
           ),
           const SizedBox(height: 7),
@@ -107,7 +126,7 @@ class DetailPage extends StatelessWidget {
               ),
               const SizedBox(width: 7),
               Text(
-                'Makassar',
+                pantiAsuhan.address.split(', ')[4],
                 style:
                     greyTextStyle.copyWith(fontSize: 14, fontWeight: regular),
               ),
@@ -115,7 +134,7 @@ class DetailPage extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           Text(
-            'American classic house, this house has always been a target for property companies because of its ancient style but very attractive',
+            pantiAsuhan.description,
             style: greyTextStyle.copyWith(height: 1.75, fontWeight: regular),
           ),
         ],
@@ -123,7 +142,7 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategory() {
+  Widget _buildCategory(PantiAsuhanModel pantiAsuhan) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -140,7 +159,7 @@ class DetailPage extends StatelessWidget {
           child: ListView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.only(left: 24),
-            children: CategoryHelper.categoryFromLocal.map((item) {
+            children: pantiAsuhan.kebutuhan.map((item) {
               return Padding(
                 padding: const EdgeInsets.only(right: 18.0),
                 child: Column(
@@ -152,20 +171,18 @@ class DetailPage extends StatelessWidget {
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: CategoryHelper.categoryFromLocal
-                                .indexOf(item)
-                                .isEven
+                        color: pantiAsuhan.kebutuhan.indexOf(item).isEven
                             ? kBlueBgColor
                             : kPinkBgColor,
                       ),
                       child: Image.asset(
-                        item['image'],
+                        item.image,
                         width: 30,
                       ),
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      item['name'],
+                      item.name,
                       style: greyTextStyle.copyWith(
                         fontWeight: regular,
                         fontSize: 10,
@@ -181,7 +198,7 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLocation() {
+  Widget _buildLocation(PantiAsuhanModel pantiAsuhan) {
     return Padding(
       padding: EdgeInsets.only(left: defaultMargin, right: defaultMargin),
       child: Column(
@@ -195,19 +212,39 @@ class DetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Container(
-            height: 170,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              color: kWhiteBgColor,
+          GestureDetector(
+            onTap: () async {
+              await Navigation.intentWithData(
+                  DetailMapPage.routeName, pantiAsuhan);
+            },
+            child: SizedBox(
+              height: 170,
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: AbsorbPointer(
+                  absorbing: true,
+                  child: GoogleMap(
+                    markers: _markers,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(pantiAsuhan.location.latitude,
+                          pantiAsuhan.location.longitude),
+                      zoom: 17,
+                    ),
+                    scrollGesturesEnabled: false,
+                    zoomGesturesEnabled: false,
+                    zoomControlsEnabled: false,
+                    mapType: MapType.normal,
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              'Makassar, Biringkanaya, 90242, Jl. Jend. Sudirman No. 53',
+              pantiAsuhan.address,
               style: greyTextStyle.copyWith(
                 fontSize: 12,
                 fontWeight: regular,

@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/utils/panti_helper.dart';
+import 'package:peka/data/model/panti_asuhan_model.dart';
+import 'package:responsive_grid/responsive_grid.dart';
 
-import '../../../common/navigation.dart';
+import '../../../../common/navigation.dart';
+import '../../../../services/firebase/firestore/firestore.dart';
+import '../../detail/detail_page.dart';
 
 class CategoryPage extends StatelessWidget {
   static const routeName = '/category-page';
@@ -11,15 +15,18 @@ class CategoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _category =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
     return SafeArea(
       child: Scaffold(
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: defaultMargin),
           child: Column(
             children: [
-              _buildHeader(),
+              _buildHeader(_category),
               const SizedBox(height: 20),
-              Expanded(child: _buildGridView(context)),
+              Expanded(child: _buildGridView(context, _category)),
             ],
           ),
         ),
@@ -27,7 +34,7 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(Map<String, dynamic> category) {
     return Padding(
       padding: const EdgeInsets.only(top: 30),
       child: Column(
@@ -45,7 +52,7 @@ class CategoryPage extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  'Beras',
+                  category['name'],
                   style: blackTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: semiBold,
@@ -60,23 +67,54 @@ class CategoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildGridView(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.only(bottom: 24),
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 200,
-        childAspectRatio: 0.7,
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
-      ),
-      itemBuilder: (context, index) {
-        return _pantiCard(index);
+  Widget _buildGridView(BuildContext context, Map<String, dynamic> category) {
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream:
+          Firestore.firebaseFirestore.collection('panti_asuhan').snapshots(),
+      builder: (_, snapshot) {
+        List<PantiAsuhanModel> listPantiAsuhan = [];
+
+        if (snapshot.data == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.data!.docs.isNotEmpty) {
+          snapshot.data!.docs.forEach((data) {
+            PantiAsuhanModel dataPanti = PantiAsuhanModel.fromDatabase(data);
+            for (var itemKebutuhan in dataPanti.kebutuhan) {
+              if (itemKebutuhan.name == category['name']) {
+                listPantiAsuhan.add(dataPanti);
+              }
+            }
+          });
+
+          return snapshot.hasData
+              ? ResponsiveGridRow(
+                  children: listPantiAsuhan.map((pantiAsuhan) {
+                  return ResponsiveGridCol(
+                      xs: 6,
+                      md: 3,
+                      sm: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigation.intentWithData(
+                                DetailPage.routeName, pantiAsuhan);
+                          },
+                          child: _pantiCard(pantiAsuhan),
+                        ),
+                      ));
+                }).toList())
+              : const CircularProgressIndicator();
+        } else {
+          return const SizedBox();
+        }
       },
-      itemCount: PantiHelper.pantiFromLocal.length,
     );
   }
 
-  Widget _pantiCard(int index) {
+  Widget _pantiCard(PantiAsuhanModel pantiAsuhan) {
     return Container(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
@@ -88,14 +126,15 @@ class CategoryPage extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(30),
-            child: Image.asset(
-              PantiHelper.pantiFromLocal[index]['image'],
+            child: Image.network(
+              pantiAsuhan.imgUrl,
+              fit: BoxFit.fill,
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10.0, left: 10, right: 6),
             child: Text(
-              PantiHelper.pantiFromLocal[index]['name'],
+              pantiAsuhan.name,
               overflow: TextOverflow.visible,
               maxLines: 1,
               style: blackTextStyle.copyWith(
@@ -116,7 +155,7 @@ class CategoryPage extends StatelessWidget {
                 ),
                 const SizedBox(width: 5),
                 Text(
-                  PantiHelper.pantiFromLocal[index]['location'],
+                  pantiAsuhan.address.split(', ')[4],
                   style:
                       greyTextStyle.copyWith(fontWeight: light, fontSize: 10),
                 ),
