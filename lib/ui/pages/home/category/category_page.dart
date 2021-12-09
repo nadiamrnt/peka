@@ -128,10 +128,14 @@ class CategoryPage extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(30),
-            child: Image.network(
-              pantiAsuhan.imgUrl,
-              height: 135,
-              fit: BoxFit.fill,
+            child: SizedBox(
+              width: 131,
+              height: 134,
+              child: Image.network(
+                pantiAsuhan.imgUrl,
+                height: 135,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Padding(
@@ -157,10 +161,13 @@ class CategoryPage extends StatelessWidget {
                   height: 14,
                 ),
                 const SizedBox(width: 5),
-                Text(
-                  pantiAsuhan.address.split(', ')[4],
-                  style:
-                      greyTextStyle.copyWith(fontWeight: light, fontSize: 10),
+                Flexible(
+                  child: Text(
+                    pantiAsuhan.address.split(', ')[4],
+                    style:
+                        greyTextStyle.copyWith(fontWeight: light, fontSize: 10),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),

@@ -356,11 +356,14 @@ class _HomePageContentState extends State<HomePageContent> {
                       width: 11,
                     ),
                     const SizedBox(width: 7),
-                    Text(
-                      pantiAsuhan.address.split(', ')[4],
-                      style: greyTextStyle.copyWith(
-                        fontSize: 14,
-                        fontWeight: light,
+                    Flexible(
+                      child: Text(
+                        pantiAsuhan.address.split(', ')[4],
+                        style: greyTextStyle.copyWith(
+                          fontSize: 14,
+                          fontWeight: light,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],

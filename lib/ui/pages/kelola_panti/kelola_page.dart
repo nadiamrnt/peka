@@ -209,11 +209,14 @@ class KelolaPage extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         _kebutuhanLenght! > 3
-                            ? Text(
-                                '+' + (_kebutuhanLenght! - 3).toString(),
-                                style: greyTextStyle.copyWith(
-                                  fontWeight: regular,
-                                  fontSize: 14,
+                            ? Flexible(
+                                child: Text(
+                                  '+' + (_kebutuhanLenght! - 3).toString(),
+                                  style: greyTextStyle.copyWith(
+                                    fontWeight: regular,
+                                    fontSize: 14,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               )
                             : const SizedBox(),
