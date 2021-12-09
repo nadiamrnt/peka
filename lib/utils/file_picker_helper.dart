@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:peka/services/firebase/auth/auth.dart';
 
 Future<PlatformFile?> getFileAndUpload() async {
   FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -15,8 +16,11 @@ Future<PlatformFile?> getFileAndUpload() async {
 }
 
 Future<String> documentFileUpload(String filePath) async {
-  Reference ref =
-      FirebaseStorage.instance.ref().child('surat_keterangan').child(filePath);
+  Reference ref = FirebaseStorage.instance
+      .ref()
+      .child('surat_keterangan')
+      .child(Auth.auth.currentUser!.uid)
+      .child(filePath.split('/').last);
 
   UploadTask task = ref.putFile(File(filePath));
   TaskSnapshot snapShot = await task;

@@ -38,7 +38,7 @@ class KelolaPage extends StatelessWidget {
                   children: [
                     _buildHeader(),
                     const SizedBox(height: 24),
-                    _buildListKelolaPanti(_listDataPanti),
+                    _buildListKelolaPanti(_listDataPanti, context),
                   ],
                 ),
               );
@@ -79,7 +79,8 @@ class KelolaPage extends StatelessWidget {
   }
 
   Widget _buildListKelolaPanti(
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> listDataPanti) {
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> listDataPanti,
+      BuildContext context) {
     return Flexible(
       child: ListView(
         children: listDataPanti.map((documentSnapshot) {
@@ -91,10 +92,14 @@ class KelolaPage extends StatelessWidget {
 
           return GestureDetector(
             onTap: () {
-              Navigation.intentWithData(RegisterAndUpdatePage.routeName, {
-                'panti_asuhan': _pantiAsuhan,
-                'document_id': documentSnapshot.id
-              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => RegisterAndUpdatePage(
+                      pantiAsuhan: _pantiAsuhan,
+                      documentId: documentSnapshot.id),
+                ),
+              );
             },
             child: Container(
               width: double.infinity,

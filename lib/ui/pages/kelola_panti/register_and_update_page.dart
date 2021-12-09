@@ -9,8 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
-import 'package:peka/services/firebase/auth/auth.dart';
-import 'package:peka/services/firebase/firestore/firestore.dart';
 import 'package:peka/ui/pages/maps/google_maps_page.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
@@ -19,12 +17,17 @@ import 'package:peka/utils/file_picker_helper.dart';
 
 import '../../../common/navigation.dart';
 import '../../../data/model/kebutuhan_model.dart';
+import '../../../services/firebase/auth/auth.dart';
+import '../../../services/firebase/firestore/firestore.dart';
 import '../../../utils/image_picker_helper.dart';
 
 class RegisterAndUpdatePage extends StatefulWidget {
   static const routeName = '/register-page';
+  final PantiAsuhanModel? pantiAsuhan;
+  final String? documentId;
 
-  const RegisterAndUpdatePage({Key? key}) : super(key: key);
+  const RegisterAndUpdatePage({Key? key, this.pantiAsuhan, this.documentId})
+      : super(key: key);
 
   @override
   State<RegisterAndUpdatePage> createState() => _RegisterAndUpdatePageState();
@@ -35,9 +38,13 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
   String? _address;
   GeoPoint? _location;
   GoogleMapController? _googleMapController;
+
   XFile? _image;
-  String? _imgUrl;
   PlatformFile? _file;
+
+  String? _imgUrl;
+  String? _fileUrl;
+
   final Set<Marker> _markers = {};
 
   bool _isLoading = false;
@@ -50,13 +57,15 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
 
   // isUpdate page
   bool _isUpdate = false;
-  PantiAsuhanModel? _pantiAsuhan;
-  String? _documentId;
+
+  @override
+  void initState() {
+    _isUpdateData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _isUpdateData();
-
     return SafeArea(
       child: Scaffold(
         body: LoadingOverlay(
@@ -145,7 +154,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
           ? ClipRRect(
               borderRadius: BorderRadius.circular(18),
               child: Image.network(
-                _pantiAsuhan!.imgUrl,
+                widget.pantiAsuhan!.imgUrl,
                 width: double.infinity,
                 height: 200,
                 fit: BoxFit.fitWidth,
@@ -368,6 +377,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
         GestureDetector(
           onTap: () async {
             try {
+              // TODO:: jika isUpdate arahkan ke lokasi panti
               final getData = await Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -386,6 +396,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                         zoom: 17)));
               }
             } catch (e) {
+              // TODO:: Toast
               const snackBar =
                   SnackBar(content: Text('Pilih lokasi dibatalkan'));
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -404,8 +415,8 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                           _googleMapController = controller;
                         },
                         initialCameraPosition: CameraPosition(
-                          target: LatLng(_pantiAsuhan!.location.latitude,
-                              _pantiAsuhan!.location.longitude),
+                          target: LatLng(widget.pantiAsuhan!.location.latitude,
+                              widget.pantiAsuhan!.location.longitude),
                           zoom: 17,
                         ),
                         scrollGesturesEnabled: false,
@@ -514,6 +525,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
             _listKebutuhan.add(dataPantiAsuhan);
           }
         });
+        print("list:: " + _listKebutuhan.toString());
       },
       child: Container(
         width: 80,
@@ -622,32 +634,30 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
   }
 
   void _isUpdateData() {
-    Map<String, dynamic>? _dataFromKelolaPage =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-    if (_dataFromKelolaPage != null) {
+    if (widget.pantiAsuhan != null) {
       _isUpdate = true;
 
-      PantiAsuhanModel _dataPantiAsuhan = _dataFromKelolaPage['panti_asuhan'];
-      _documentId = _dataFromKelolaPage['document_id'];
-
       setState(() {
-        _pantiAsuhan = _dataPantiAsuhan;
-        _nameController.text = _pantiAsuhan!.name;
-        _phoneController.text = _pantiAsuhan!.noTlpn;
-        _descController.text = _pantiAsuhan!.description;
+        _nameController.text = widget.pantiAsuhan!.name;
+        _phoneController.text = widget.pantiAsuhan!.noTlpn;
+        _descController.text = widget.pantiAsuhan!.description;
+
+        _fileUrl = widget.pantiAsuhan!.documentUrl;
+        _imgUrl = widget.pantiAsuhan!.imgUrl;
+        _address = widget.pantiAsuhan!.address;
 
         _markers.clear();
         _markers.add(
           Marker(
-            markerId: MarkerId(_pantiAsuhan!.location.latitude.toString()),
-            position: LatLng(_pantiAsuhan!.location.latitude,
-                _pantiAsuhan!.location.longitude),
+            markerId:
+                MarkerId(widget.pantiAsuhan!.location.latitude.toString()),
+            position: LatLng(widget.pantiAsuhan!.location.latitude,
+                widget.pantiAsuhan!.location.longitude),
             icon: BitmapDescriptor.defaultMarker,
           ),
         );
 
-        _listKebutuhan.addAll(_dataPantiAsuhan.kebutuhan);
+        _listKebutuhan.addAll(widget.pantiAsuhan!.kebutuhan);
       });
     }
   }
@@ -658,80 +668,21 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
     });
     try {
       if (_formKey.currentState!.validate()) {
-        if (_image != null) {
-          // Send Image
-          String _imagePath = _image!.path;
-          Reference ref = FirebaseStorage.instance
-              .ref()
-              .child('image_panti')
-              .child(_imagePath);
-          UploadTask task = ref.putFile(File(_image!.path));
-          TaskSnapshot snapShot = await task;
-          _imgUrl = await snapShot.ref.getDownloadURL();
-
-          // Send text content
-          final String _name = _nameController.text;
-          final String _noPhone = _phoneController.text;
-          final String _description = _descController.text;
-
-          // Send File
-          final String? _filePath = _file!.path;
-          String _fileUrl = await documentFileUpload(_filePath!);
-
-          // Send location
-          // Send list category
-          // Send to Firestore
-          // TODO:: Buatin fungsi tersendiri untuk add dan update
-          if (_isUpdate) {
-            Firestore.firebaseFirestore
-                .collection('users')
-                .doc(Auth.auth.currentUser!.uid)
-                .collection('kelola_panti')
-                .doc(_documentId)
-                .update({
-              'name': _name,
-              'img_url': _imgUrl ?? _pantiAsuhan!.imgUrl,
-              'description': _description,
-              'no_tlpn': _noPhone,
-              'address': _address,
-              'location': _location,
-              'document': _fileUrl,
-              'approved': false,
-              'kebutuhan': KebutuhanModel.convertToListMap(_listKebutuhan),
-            });
-
-            setState(() {
-              _isLoading = false;
-            });
-            Navigation.back();
-          } else {
-            Firestore.firebaseFirestore
-                .collection('users')
-                .doc(Auth.auth.currentUser!.uid)
-                .collection('kelola_panti')
-                .add({
-              'name': _name,
-              'img_url': _imgUrl,
-              'description': _description,
-              'no_tlpn': _noPhone,
-              'address': _address,
-              'location': _location,
-              'document': _fileUrl,
-              'approved': false, //TODO:: Jadikan true kalau di tampilkan
-              'kebutuhan': KebutuhanModel.convertToListMap(_listKebutuhan),
-            });
-          }
-
-          setState(() {
-            _isLoading = false;
-          });
+        if (_isUpdate) {
+          await _updateData();
+          setState(() => _isLoading = false);
+          Navigation.back();
+        } else if (_image != null &&
+            _file != null &&
+            _location != null &&
+            _listKebutuhan.isNotEmpty) {
+          await _registerData();
+          setState(() => _isLoading = false);
           Navigation.back();
         } else {
-          setState(() {
-            _isLoading = false;
-          });
           const snackBar = SnackBar(
-            content: Text('Mohon masukkan gambar panti asuhan'),
+            duration: Duration(seconds: 2),
+            content: Text('Mohon lengkapi registrasi panti asuhan anda'),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
@@ -742,10 +693,127 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _updateData() async {
+    // Send Image
+    if (_image != null) {
+      String _imagePath = _image!.path.split('/').last;
+      Reference ref =
+          FirebaseStorage.instance.ref().child('image_panti').child(_imagePath);
+
+      UploadTask task = ref.putFile(File(_image!.path));
+      TaskSnapshot snapShot = await task;
+      _imgUrl = await snapShot.ref.getDownloadURL();
+    }
+
+    // Send File
+    if (_file != null) {
+      final String? _filePath = _file!.path;
+      _fileUrl = await documentFileUpload(_filePath!);
+    }
+
+    // Send text content
+    final String _name = _nameController.text;
+    final String _noPhone = _phoneController.text;
+    final String _description = _descController.text;
+
+    PantiAsuhanModel dataPantiAsuhan = PantiAsuhanModel(
+      pantiAsuhanId: widget.documentId.toString(),
+      ownerId: widget.pantiAsuhan!.ownerId,
+      name: _name,
+      description: _description,
+      noTlpn: _noPhone,
+      imgUrl: _imgUrl!,
+      documentUrl: _fileUrl!,
+      address: _address ?? widget.pantiAsuhan!.address,
+      location: _location ?? widget.pantiAsuhan!.location,
+      approved: false,
+      kebutuhan: _listKebutuhan,
+    );
+
+    await Firestore.firebaseFirestore
+        .collection('users')
+        .doc(Auth.auth.currentUser!.uid)
+        .collection('kelola_panti')
+        .doc(widget.documentId)
+        .update(dataPantiAsuhan.setDataMap());
+
+    await Firestore.firebaseFirestore
+        .collection('panti_asuhan')
+        .doc(widget.documentId)
+        .set(dataPantiAsuhan.setDataMap());
+  }
+
+  Future<void> _registerData() async {
+    // Send Image
+    String _imagePath = _image!.path.split('/').last;
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child('image_panti')
+        .child(Auth.auth.currentUser!.uid)
+        .child(_imagePath);
+    UploadTask task = ref.putFile(File(_image!.path));
+    TaskSnapshot snapShot = await task;
+    _imgUrl = await snapShot.ref.getDownloadURL();
+
+    // Send File
+    final String? _filePath = _file!.path;
+    _fileUrl = await documentFileUpload(_filePath!);
+
+    // Send text content
+    final String _name = _nameController.text;
+    final String _noPhone = _phoneController.text;
+    final String _description = _descController.text;
+
+    PantiAsuhanModel dataPantiAsuhan = PantiAsuhanModel(
+      pantiAsuhanId: '',
+      ownerId: Auth.auth.currentUser!.uid,
+      name: _name,
+      description: _description,
+      noTlpn: _noPhone,
+      imgUrl: _imgUrl!,
+      documentUrl: _fileUrl!,
+      address: _address!,
+      location: _location!,
+      approved: false,
+      kebutuhan: _listKebutuhan,
+    );
+
+    await Firestore.firebaseFirestore
+        .collection('users')
+        .doc(Auth.auth.currentUser!.uid)
+        .collection('kelola_panti')
+        .add(dataPantiAsuhan.setDataMap())
+        .then((value) async {
+      await Firestore.firebaseFirestore
+          .collection('users')
+          .doc(Auth.auth.currentUser!.uid)
+          .collection('kelola_panti')
+          .doc(value.id)
+          .update({'id': value.id});
+
+      PantiAsuhanModel dataPantiAsuhanWithId = PantiAsuhanModel(
+        pantiAsuhanId: value.id,
+        ownerId: Auth.auth.currentUser!.uid,
+        name: _name,
+        description: _description,
+        noTlpn: _noPhone,
+        imgUrl: _imgUrl!,
+        documentUrl: _fileUrl!,
+        address: _address!,
+        location: _location!,
+        approved: false,
+        kebutuhan: _listKebutuhan,
+      );
+
+      await Firestore.firebaseFirestore
+          .collection('panti_asuhan')
+          .doc(value.id)
+          .set(dataPantiAsuhanWithId.setDataMap());
+    });
   }
 
   @override
@@ -753,7 +821,6 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
     _nameController.dispose();
     _phoneController.dispose();
     _descController.dispose();
-    _googleMapController?.dispose();
     super.dispose();
   }
 }
