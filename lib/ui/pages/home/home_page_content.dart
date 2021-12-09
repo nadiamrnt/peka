@@ -85,7 +85,7 @@ class _HomePageContentState extends State<HomePageContent> {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: user != null
+                        image: user!.imageProfile.isNotEmpty
                             ? Image.network(user!.imageProfile).image
                             : const AssetImage(
                                 'assets/icons/ic_add_profile.png',

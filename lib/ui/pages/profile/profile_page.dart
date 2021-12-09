@@ -77,19 +77,24 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildProfilePicture(UserModel? user) {
-    return ClipOval(
-      child: SizedBox(
-        width: 120.0,
-        height: 120.0,
-        child: user != null
-            ? Image.network(
-                user.imageProfile,
-                fit: BoxFit.cover,
-              )
-            : Image.asset(
-                'assets/images/img_profile.png',
-                fit: BoxFit.cover,
-              ),
+    return GestureDetector(
+      onTap: () {
+
+      },
+      child: ClipOval(
+        child: SizedBox(
+          width: 120.0,
+          height: 120.0,
+          child: user!.imageProfile.isNotEmpty
+              ? Image.network(
+                  user.imageProfile,
+                  fit: BoxFit.cover,
+                )
+              : Image.asset(
+                  'assets/images/img_profile.png',
+                  fit: BoxFit.cover,
+                ),
+        ),
       ),
     );
   }
