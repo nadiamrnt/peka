@@ -70,7 +70,7 @@ class KelolaPage extends StatelessWidget {
             Navigation.intent(RegisterAndUpdatePage.routeName);
           },
           child: Image.asset(
-            'assets/icons/ic_dots.png',
+            'assets/icons/ic_kelola_plus.png',
             width: 32,
           ),
         ),
