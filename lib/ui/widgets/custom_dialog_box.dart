@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/utils/province_helper.dart';
+import 'package:responsive_grid/responsive_grid.dart';
 
 import '../pages/home/category/category_page.dart';
 
@@ -57,17 +58,33 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
   }
 
   Widget _buildProvinceList() {
-    return GridView.builder(
-        itemCount: ProvinceHelper.provinceList.length,
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          childAspectRatio: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemBuilder: (context, index) {
-          return _buildProvinceCard(index);
-        });
+    return SingleChildScrollView(
+      child: ResponsiveGridRow(
+          children: ProvinceHelper.provinceList.map((e) {
+        var index = ProvinceHelper.provinceList.indexOf(e);
+        return ResponsiveGridCol(
+            xs: 6,
+            md: 3,
+            sm: 1,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 6, right: 6, bottom: 12),
+              child: _buildProvinceCard(index),
+            ));
+      }).toList()),
+    );
+
+    // GridView.builder(
+    //   itemCount: ProvinceHelper.provinceList.length,
+    //   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+    //     maxCrossAxisExtent: 200,
+    //     childAspectRatio: 2,
+    //     crossAxisSpacing: 10,
+    //     mainAxisSpacing: 10,
+    //   ),
+    //   itemBuilder: (context, index) {
+    //     return _buildProvinceCard(index);
+    //   },
+    // );
   }
 
   Widget _buildProvinceCard(int index) {

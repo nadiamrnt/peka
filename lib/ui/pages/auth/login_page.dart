@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/ui/pages/auth/forgot_password_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
@@ -112,7 +113,9 @@ class _LoginPageState extends State<LoginPage> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigation.intent(ForgotPasswordPage.routeName);
+                          },
                           child: Text(
                             "Lupa Sandi?",
                             style: purpleTextStyle,
