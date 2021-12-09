@@ -525,7 +525,6 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
             _listKebutuhan.add(dataPantiAsuhan);
           }
         });
-        print("list:: " + _listKebutuhan.toString());
       },
       child: Container(
         width: 80,
@@ -602,11 +601,21 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
               Button(
                 textButton: 'Ambil Foto',
                 onTap: () async {
-                  await ImagePickerHelper.imgFromCamera().then((image) {
-                    setState(() {
-                      _image = image;
+                  try {
+                    await ImagePickerHelper.imgFromCamera().then((image) {
+                      setState(() {
+                        _image = image;
+                      });
                     });
-                  });
+                  } catch (e) {
+                    print(e);
+                    const snackBar = SnackBar(
+                      duration: Duration(seconds: 2),
+                      content: Text('Opss.. gagal mengambil gambar'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+
                   Navigation.back();
                 },
               ),
