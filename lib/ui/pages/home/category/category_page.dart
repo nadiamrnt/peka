@@ -129,7 +129,7 @@ class CategoryPage extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(30),
             child: SizedBox(
-              width: 131,
+              width: double.infinity,
               height: 134,
               child: Image.network(
                 pantiAsuhan.imgUrl,

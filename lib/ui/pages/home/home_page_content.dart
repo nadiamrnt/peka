@@ -70,7 +70,7 @@ class _HomePageContentState extends State<HomePageContent> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Halo,\n${user?.name}',
+                      user != null ? 'Halo,\n${user?.name}' : '',
                       style: blackTextStyle.copyWith(
                         fontSize: 24,
                         fontWeight: semiBold,
@@ -81,13 +81,15 @@ class _HomePageContentState extends State<HomePageContent> {
                   Container(
                     width: 60,
                     height: 60,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage(
-                          'assets/images/img_profile.png',
-                        ),
+                        image: user != null
+                            ? Image.network(user!.imageProfile).image
+                            : const AssetImage(
+                                'assets/icons/ic_add_profile.png',
+                              ),
                       ),
                     ),
                   ),

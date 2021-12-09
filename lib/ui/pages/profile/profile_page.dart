@@ -9,30 +9,54 @@ import '../../../services/firebase/firestore/firestore.dart';
 import '../../widgets/profile_option.dart';
 import '../auth/login_page.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
   @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              children: [
-                _buildHeader(),
-                const SizedBox(height: 40),
-                _buildProfilePicture(),
-                const SizedBox(height: 20),
-                _buildName(),
-                const SizedBox(height: 40),
-                _buildOptionList(context),
-              ],
+    return StreamBuilder<DocumentSnapshot>(
+      stream: Firestore.firebaseFirestore
+          .collection('users')
+          .doc(Auth.auth.currentUser?.uid)
+          .snapshots(),
+      builder: (_, snapshot) {
+        UserModel? user;
+        if (snapshot.hasData) {
+          user = UserModel.getDataUser(snapshot.data!);
+        }
+
+        if (snapshot.data == null) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        return SafeArea(
+          child: Scaffold(
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 40),
+                    _buildProfilePicture(user),
+                    const SizedBox(height: 20),
+                    _buildName(user),
+                    const SizedBox(height: 40),
+                    _buildOptionList(context),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -52,58 +76,43 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfilePicture() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(100),
+  Widget _buildProfilePicture(UserModel? user) {
+    return ClipOval(
       child: SizedBox(
         width: 120.0,
         height: 120.0,
-        child: Image.asset(
-          'assets/images/img_profile.png',
-          fit: BoxFit.cover,
-        ),
+        child: user != null
+            ? Image.network(
+                user.imageProfile,
+                fit: BoxFit.cover,
+              )
+            : Image.asset(
+                'assets/images/img_profile.png',
+                fit: BoxFit.cover,
+              ),
       ),
     );
   }
 
-  Widget _buildName() {
-    return StreamBuilder<DocumentSnapshot>(
-      stream: Firestore.firebaseFirestore
-          .collection('users')
-          .doc(Auth.auth.currentUser?.uid)
-          .snapshots(),
-      builder: (_, snapshot) {
-        UserModel? user;
-        if (snapshot.hasData) {
-          user = UserModel.getDataUser(snapshot.data!);
-        }
-
-        if (snapshot.data == null) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        return Column(
-          children: [
-            Text(
-              user!.name,
-              style: blackTextStyle.copyWith(
-                fontSize: 16.0,
-                fontWeight: semiBold,
-              ),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              user.email,
-              style: greyTextStyle.copyWith(
-                fontSize: 16.0,
-                fontWeight: regular,
-              ),
-            ),
-          ],
-        );
-      },
+  Widget _buildName(UserModel? user) {
+    return Column(
+      children: [
+        Text(
+          user != null ? user.name : '',
+          style: blackTextStyle.copyWith(
+            fontSize: 16.0,
+            fontWeight: semiBold,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          user != null ? user.email : '',
+          style: greyTextStyle.copyWith(
+            fontSize: 16.0,
+            fontWeight: regular,
+          ),
+        ),
+      ],
     );
   }
 
