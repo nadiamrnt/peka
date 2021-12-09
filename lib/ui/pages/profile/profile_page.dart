@@ -95,19 +95,37 @@ class _ProfilePageState extends State<ProfilePage> {
         _modalBottomSheetMenu();
       },
       child: user != null
-          ? ClipOval(
-              child: SizedBox(
-                width: 120.0,
-                height: 120.0,
-                child: user.imageProfile.isNotEmpty
-                    ? Image.network(
-                        user.imageProfile,
-                        fit: BoxFit.cover,
-                      )
-                    : Image.asset(
-                        'assets/icons/ic_add_profile.png',
-                        fit: BoxFit.cover,
+          ? SizedBox(
+              width: 140,
+              height: 140,
+              child: Stack(
+                children: [
+                  ClipOval(
+                    child: SizedBox(
+                      width: 120.0,
+                      height: 120.0,
+                      child: user.imageProfile.isNotEmpty
+                          ? Image.network(
+                              user.imageProfile,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.asset(
+                              'assets/icons/ic_add_profile.png',
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Image.asset(
+                        'assets/icons/ic_pencil.png',
+                        width: 40,
                       ),
+                    ),
+                  ),
+                ],
               ),
             )
           : const SizedBox(),
