@@ -13,7 +13,8 @@ class SearchPage extends StatelessWidget {
           child: Column(
             children: [
               _buildSearch(),
-              const SizedBox(height: 24),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+              _buildIlustration(context),
             ],
           ),
         ),
@@ -66,6 +67,20 @@ class SearchPage extends StatelessWidget {
               minWidth: 24,
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIlustration(context) {
+    return Center(
+      child: SizedBox(
+        width: 250,
+        height: 250,
+        child: Image.asset(
+          'assets/images/ill_search.png',
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.cover,
         ),
       ),
     );

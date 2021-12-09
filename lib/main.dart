@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/splash_screen.dart';
 import 'package:peka/ui/pages/auth/login_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/category/category_page.dart';
@@ -26,8 +27,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue, scaffoldBackgroundColor: kWhiteColor),
       navigatorKey: navigatorKey,
-      initialRoute: LoginPage.routeName,
+      initialRoute: SplashScreen.routeName,
       routes: {
+        SplashScreen.routeName: (context) => SplashScreen(),
         LoginPage.routeName: (context) => const LoginPage(),
         SignupPage.routeName: (_) => const SignupPage(),
         DetailPage.routeName: (_) => const DetailPage(),

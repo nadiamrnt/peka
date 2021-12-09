@@ -3,6 +3,7 @@ import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/category/category_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
 import 'package:peka/ui/pages/home/search_page.dart';
+import 'package:peka/ui/widgets/custom_dialog_box.dart';
 import 'package:peka/utils/category_helper.dart';
 
 import '../../../common/navigation.dart';
@@ -19,7 +20,7 @@ class HomePageContent extends StatelessWidget {
             children: [
               _buildHeader(),
               const SizedBox(height: 30),
-              _buildSearch(),
+              _buildSearch(context),
               const SizedBox(height: 24),
               _buildCategory(),
               const SizedBox(height: 24),
@@ -84,7 +85,7 @@ class HomePageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildSearch() {
+  Widget _buildSearch(context) {
     return Padding(
       padding: EdgeInsets.only(
         left: defaultMargin,
@@ -140,16 +141,25 @@ class HomePageContent extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 6),
-          Container(
-            height: 45,
-            width: 47,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: kPrimaryColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Image.asset(
-              'assets/icons/ic_filter.png',
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return CustomDialogBox();
+                  });
+            },
+            child: Container(
+              height: 45,
+              width: 47,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: kPrimaryColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Image.asset(
+                'assets/icons/ic_filter.png',
+              ),
             ),
           ),
         ],
