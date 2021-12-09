@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/splash_screen.dart';
+import 'package:peka/ui/pages/auth/add_photo_page.dart';
 import 'package:peka/ui/pages/auth/login_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/category/category_page.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         KelolaPage.routeName: (_) => const KelolaPage(),
         CategoryPage.routeName: (_) => const CategoryPage(),
         SearchPage.routeName: (_) => const SearchPage(),
+        AddPhotoPage.routeName: (_) => const AddPhotoPage(),
       },
     );
   }

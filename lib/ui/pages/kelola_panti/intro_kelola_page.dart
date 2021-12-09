@@ -71,7 +71,7 @@ class _IntroKelolaPageState extends State<IntroKelolaPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 40.0,
+                  height: 60.0,
                 ),
                 //BUTTON DAFTAR PANTI
                 Button(

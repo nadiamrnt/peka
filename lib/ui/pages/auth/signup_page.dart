@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/ui/pages/auth/add_photo_page.dart';
 
 import '../../widgets/button.dart';
 
@@ -216,7 +218,9 @@ class SignupPage extends StatelessWidget {
                 ),
                 Button(
                   textButton: "Daftar",
-                  onTap: () {},
+                  onTap: () {
+                    Navigation.intentReplacement(AddPhotoPage.routeName);
+                  },
                 ),
               ],
             ),
