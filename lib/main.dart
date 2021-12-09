@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       initialRoute: SplashScreen.routeName,
       routes: {
-        SplashScreen.routeName: (context) => SplashScreen(),
+        SplashScreen.routeName: (context) => const SplashScreen(),
         LoginPage.routeName: (context) => const LoginPage(),
         SignupPage.routeName: (_) => const SignupPage(),
         DetailPage.routeName: (_) => const DetailPage(),

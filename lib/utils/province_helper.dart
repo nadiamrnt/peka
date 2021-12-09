@@ -1,37 +1,4 @@
-import 'package:flutter/cupertino.dart';
-
 class ProvinceHelper {
-  // String name;
-
-  // ProvinceHelper({required this.name});
-
-  // var provinceList = [
-  //   ProvinceHelper(name: 'Aceh'),
-  //   ProvinceHelper(name: 'Sumatera Utara'),
-  //   ProvinceHelper(name: 'Sumatera Selatan'),
-  //   ProvinceHelper(name: 'Sumatera Barat'),
-  //   ProvinceHelper(name: 'Bengkulu'),
-  //   ProvinceHelper(name: 'Riau'),
-  //   ProvinceHelper(name: 'Kep Riau'),
-  //   ProvinceHelper(name: 'Jambi'),
-  //   ProvinceHelper(name: 'Lampung'),
-  //   ProvinceHelper(name: 'Bangka Belitung'),
-  //   ProvinceHelper(name: 'Kalimantan Barat'),
-  //   ProvinceHelper(name: 'Kalimantan Timur'),
-  //   ProvinceHelper(name: 'Kalimantan Selatan'),
-  //   ProvinceHelper(name: 'Kalimantan Tengah'),
-  //   ProvinceHelper(name: 'Kalimantan Utara'),
-  //   ProvinceHelper(name: 'Aceh'),
-  //   ProvinceHelper(name: 'Aceh'),
-  //   ProvinceHelper(name: 'Aceh'),
-  //   ProvinceHelper(name: 'Aceh'),
-  //   ProvinceHelper(name: 'Aceh'),
-  //   ProvinceHelper(name: 'Aceh'),
-  //   ProvinceHelper(name: 'Aceh'),
-  //   ProvinceHelper(name: 'Aceh'),
-  //   ProvinceHelper(name: 'Aceh'),
-  // ];
-
   static List<String> provinceList = [
     'Aceh',
     'Sumatera Utara',

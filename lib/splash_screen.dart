@@ -7,6 +7,8 @@ import 'package:peka/ui/pages/auth/login_page.dart';
 class SplashScreen extends StatefulWidget {
   static const routeName = '/splash_screen';
 
+  const SplashScreen({Key? key}) : super(key: key);
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
