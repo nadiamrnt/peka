@@ -78,21 +78,23 @@ class _HomePageContentState extends State<HomePageContent> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: user!.imageProfile.isNotEmpty
-                            ? Image.network(user!.imageProfile).image
-                            : const AssetImage(
-                                'assets/icons/ic_add_profile.png',
-                              ),
-                      ),
-                    ),
-                  ),
+                  user != null
+                      ? Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: user!.imageProfile.isNotEmpty
+                                  ? Image.network(user!.imageProfile).image
+                                  : const AssetImage(
+                                      'assets/icons/ic_add_profile.png',
+                                    ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
                 ],
               ),
               const SizedBox(

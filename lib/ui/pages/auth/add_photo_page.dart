@@ -23,6 +23,7 @@ class AddPhotoPage extends StatefulWidget {
 
 class _AddPhotoPageState extends State<AddPhotoPage> {
   bool _isLoading = false;
+  XFile? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +45,6 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
       ),
     );
   }
-
-  XFile? _image;
 
   Widget _buildIconAdd() {
     return GestureDetector(
@@ -107,27 +106,30 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
               setState(() {
                 _isLoading = true;
               });
-              try {
-                // Send Image
-                String _imagePath = _image!.path.split('/').last;
-                Reference ref = FirebaseStorage.instance
-                    .ref()
-                    .child('image_profile')
-                    .child(_imagePath);
-                UploadTask task = ref.putFile(File(_image!.path));
-                TaskSnapshot snapShot = await task;
-                String _imgUrl = await snapShot.ref.getDownloadURL();
 
-                await Firestore.firebaseFirestore
-                    .collection('users')
-                    .doc(Auth.auth.currentUser!.uid)
-                    .update({'img_profile': _imgUrl});
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Opss.. terjadi kesalahan'),
-                  ),
-                );
+              if (_image != null) {
+                try {
+                  // Send Image
+                  String _imagePath = _image!.path.split('/').last;
+                  Reference ref = FirebaseStorage.instance
+                      .ref()
+                      .child('image_profile')
+                      .child(_imagePath);
+                  UploadTask task = ref.putFile(File(_image!.path));
+                  TaskSnapshot snapShot = await task;
+                  String _imgUrl = await snapShot.ref.getDownloadURL();
+
+                  await Firestore.firebaseFirestore
+                      .collection('users')
+                      .doc(Auth.auth.currentUser!.uid)
+                      .update({'img_profile': _imgUrl});
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Opss.. terjadi kesalahan'),
+                    ),
+                  );
+                }
               }
 
               setState(() {
