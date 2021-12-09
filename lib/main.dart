@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.blue, scaffoldBackgroundColor: kWhiteColor),
       navigatorKey: navigatorKey,
-      initialRoute: SplashScreen.routeName,
+      initialRoute: AddPhotoPage.routeName,
       routes: {
         SplashScreen.routeName: (context) => const SplashScreen(),
         LoginPage.routeName: (context) => const LoginPage(),

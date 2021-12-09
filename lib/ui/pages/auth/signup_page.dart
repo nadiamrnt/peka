@@ -7,7 +7,7 @@ import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
 import '../../widgets/button.dart';
-import '../home/home_page.dart';
+import 'add_photo_page.dart';
 
 class SignupPage extends StatefulWidget {
   static const routeName = '/signup-page';
@@ -227,7 +227,7 @@ class _SignupPageState extends State<SignupPage> {
 
           await Firestore.createUser(email, name, password);
           await Auth.signInEmail(email, password);
-          Navigation.intentReplacement(HomePage.routeName);
+          Navigation.intentReplacement(AddPhotoPage.routeName);
         }
       }
     } catch (e) {

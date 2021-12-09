@@ -217,9 +217,16 @@ class _DetailPageState extends State<DetailPage> {
               await Navigation.intentWithData(
                   DetailMapPage.routeName, pantiAsuhan);
             },
-            child: SizedBox(
+            child: Container(
               height: 170,
               width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  width: 3,
+                  color: kWhiteBgColor,
+                ),
+              ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(18),
                 child: AbsorbPointer(
