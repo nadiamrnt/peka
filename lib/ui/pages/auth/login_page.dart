@@ -147,7 +147,7 @@ class LoginPage extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: () {
-          // Navigation.intent(ForgotPasswordPage.routeName);
+          Navigation.intent(ForgotPasswordPage.routeName);
         },
         child: Text(
           "Lupa Sandi?",
