@@ -337,7 +337,7 @@ class _HomePageContentState extends State<HomePageContent> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               image: DecorationImage(
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 image: NetworkImage(pantiAsuhan.imgUrl),
               ),
             ),

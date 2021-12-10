@@ -16,12 +16,4 @@ class Firestore {
           userData.getDataMap(),
         );
   }
-
-  static Future<DocumentSnapshot> getUser(String userId) async {
-    return await firebaseFirestore.collection('users').doc(userId).get();
-  }
-
-  static Future<QuerySnapshot<Map<String, dynamic>>> getAllUser() async {
-    return await firebaseFirestore.collection('users').get();
-  }
 }

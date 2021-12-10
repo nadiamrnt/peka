@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
@@ -10,6 +8,7 @@ import 'package:peka/common/styles.dart';
 import 'package:peka/services/firebase/firestore/firestore.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/widgets/button.dart';
+import 'package:peka/utils/firebase_storage_helper.dart';
 
 import '../../../services/firebase/auth/auth.dart';
 import '../../../utils/image_picker_helper.dart';
@@ -24,7 +23,7 @@ class AddPhotoPage extends StatefulWidget {
 
 class _AddPhotoPageState extends State<AddPhotoPage> {
   bool _isLoading = false;
-  XFile? _image;
+  File? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +62,7 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
             _image != null
                 ? ClipOval(
                     child: Image.file(
-                      File(_image!.path),
+                      _image!,
                       height: double.infinity,
                       width: double.infinity,
                       fit: BoxFit.fill,
@@ -114,15 +113,10 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
               if (_image != null) {
                 try {
                   // Send Image
-                  String _imagePath = _image!.path.split('/').last;
-                  Reference ref = FirebaseStorage.instance
-                      .ref()
-                      .child('image_profile')
-                      .child(_imagePath);
-                  UploadTask task = ref.putFile(File(_image!.path));
-                  TaskSnapshot snapShot = await task;
-                  String _imgUrl = await snapShot.ref.getDownloadURL();
+                  String _imgUrl =
+                      await FirebaseStorageHelper.uploadImageProfile(_image!);
 
+                  // Send to Firestore
                   await Firestore.firebaseFirestore
                       .collection('users')
                       .doc(Auth.auth.currentUser!.uid)

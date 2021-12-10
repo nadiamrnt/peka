@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/utils/firebase_storage_helper.dart';
 
 import '../../../common/navigation.dart';
 import '../../../data/model/user_model.dart';
@@ -26,7 +26,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = false;
-  XFile? _image;
+  File? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -252,7 +252,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           .ref()
                           .child('image_profile')
                           .child(_imagePath);
-                      UploadTask task = ref.putFile(File(_image!.path));
+                      UploadTask task = ref.putFile(_image!);
                       TaskSnapshot snapShot = await task;
                       String _imgUrl = await snapShot.ref.getDownloadURL();
 
@@ -290,15 +290,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   if (_image != null) {
                     try {
                       // Send Image
-                      String _imagePath = _image!.path.split('/').last;
-                      Reference ref = FirebaseStorage.instance
-                          .ref()
-                          .child('image_profile')
-                          .child(_imagePath);
-                      UploadTask task = ref.putFile(File(_image!.path));
-                      TaskSnapshot snapShot = await task;
-                      String _imgUrl = await snapShot.ref.getDownloadURL();
-
+                      String _imgUrl =
+                          await FirebaseStorageHelper.uploadImageProfile(
+                              _image!);
                       await Firestore.firebaseFirestore
                           .collection('users')
                           .doc(Auth.auth.currentUser!.uid)

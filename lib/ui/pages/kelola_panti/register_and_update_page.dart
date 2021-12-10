@@ -2,10 +2,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:peka/common/styles.dart';
@@ -15,6 +13,7 @@ import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/utils/category_helper.dart';
 import 'package:peka/utils/file_picker_helper.dart';
+import 'package:peka/utils/firebase_storage_helper.dart';
 
 import '../../../common/navigation.dart';
 import '../../../data/model/kebutuhan_model.dart';
@@ -40,7 +39,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
   GeoPoint? _location;
   GoogleMapController? _googleMapController;
 
-  XFile? _image;
+  File? _image;
   PlatformFile? _file;
 
   String? _imgUrl;
@@ -169,7 +168,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(18),
                   child: Image.file(
-                    File(_image!.path),
+                    _image!,
                     width: double.infinity,
                     height: 200,
                     fit: BoxFit.fitWidth,
@@ -713,13 +712,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
   Future<void> _updateData() async {
     // Send Image
     if (_image != null) {
-      String _imagePath = _image!.path.split('/').last;
-      Reference ref =
-          FirebaseStorage.instance.ref().child('image_panti').child(_imagePath);
-
-      UploadTask task = ref.putFile(File(_image!.path));
-      TaskSnapshot snapShot = await task;
-      _imgUrl = await snapShot.ref.getDownloadURL();
+      _imgUrl = await FirebaseStorageHelper.uploadImagePantiAsuhan(_image!);
     }
 
     // Send File
@@ -762,18 +755,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
 
   Future<void> _registerData() async {
     // Send Image
-/*var compressImage = await ImagePickerHelper.testCompressAndGetFile(
-        File(_image!.path), _image!.path);*/
-
-    String _imagePath = _image!.path.split('/').last;
-    Reference ref = FirebaseStorage.instance
-        .ref()
-        .child('image_panti')
-        .child(Auth.auth.currentUser!.uid)
-        .child(_imagePath);
-    UploadTask task = ref.putFile(File(_image!.path));
-    TaskSnapshot snapShot = await task;
-    _imgUrl = await snapShot.ref.getDownloadURL();
+    _imgUrl = await FirebaseStorageHelper.uploadImagePantiAsuhan(_image!);
 
     // Send File
     final String? _filePath = _file!.path;

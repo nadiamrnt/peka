@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
+import 'package:peka/ui/widgets/card_grid_panti_asuhan.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
 import '../../../../common/navigation.dart';
@@ -94,20 +95,21 @@ class CategoryPage extends StatelessWidget {
                   child: ResponsiveGridRow(
                       children: listPantiAsuhan.map((pantiAsuhan) {
                     return ResponsiveGridCol(
-                        xs: 6,
-                        md: 3,
-                        sm: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 6, right: 6, bottom: 12),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigation.intentWithData(
-                                  DetailPage.routeName, pantiAsuhan);
-                            },
-                            child: _pantiCard(pantiAsuhan),
-                          ),
-                        ));
+                      xs: 6,
+                      md: 3,
+                      sm: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 6, right: 6, bottom: 12),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigation.intentWithData(
+                                DetailPage.routeName, pantiAsuhan);
+                          },
+                          child: CardGridPantiAsuhan(pantiAsuhan: pantiAsuhan),
+                        ),
+                      ),
+                    );
                   }).toList()),
                 )
               : LottieBuilder.asset('assets/raw/loading.json');
@@ -115,68 +117,6 @@ class CategoryPage extends StatelessWidget {
           return const SizedBox();
         }
       },
-    );
-  }
-
-  Widget _pantiCard(PantiAsuhanModel pantiAsuhan) {
-    return Container(
-      height: 205,
-      padding: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: kWhiteBgColor,
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: SizedBox(
-              width: double.infinity,
-              height: 134,
-              child: Image.network(
-                pantiAsuhan.imgUrl,
-                height: 135,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, left: 10, right: 6),
-            child: Text(
-              pantiAsuhan.name,
-              overflow: TextOverflow.visible,
-              maxLines: 1,
-              style: blackTextStyle.copyWith(
-                fontSize: 12,
-                fontWeight: medium,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-                top: 4, left: 10.0, right: 6.0, bottom: 8.0),
-            child: Row(
-              children: [
-                Image.asset(
-                  'assets/icons/ic_location.png',
-                  width: 11,
-                  height: 14,
-                ),
-                const SizedBox(width: 5),
-                Flexible(
-                  child: Text(
-                    pantiAsuhan.address.split(', ')[4],
-                    style:
-                        greyTextStyle.copyWith(fontWeight: light, fontSize: 10),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
