@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/services/firebase/firestore/firestore.dart';
@@ -29,6 +30,8 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: LoadingOverlay(
+        color: kGreyBgColor,
+        progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
         isLoading: _isLoading,
         child: SafeArea(
           child: Center(

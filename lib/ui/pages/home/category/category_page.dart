@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:responsive_grid/responsive_grid.dart';
@@ -75,7 +76,7 @@ class CategoryPage extends StatelessWidget {
         List<PantiAsuhanModel> listPantiAsuhan = [];
 
         if (snapshot.data == null) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(child: LottieBuilder.asset('assets/raw/loading.json'));
         }
 
         if (snapshot.data!.docs.isNotEmpty) {
@@ -109,7 +110,7 @@ class CategoryPage extends StatelessWidget {
                         ));
                   }).toList()),
                 )
-              : const CircularProgressIndicator();
+              : LottieBuilder.asset('assets/raw/loading.json');
         } else {
           return const SizedBox();
         }

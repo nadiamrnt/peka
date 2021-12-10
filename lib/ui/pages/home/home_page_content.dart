@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/data/model/user_model.dart';
@@ -291,8 +292,10 @@ class _HomePageContentState extends State<HomePageContent> {
                         PantiAsuhanModel pantiAsuhan =
                             PantiAsuhanModel.fromDatabase(data);
                         if (snapshot.data == null) {
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return Center(
+                            child:
+                                LottieBuilder.asset('assets/raw/loading.json'),
+                          );
                         }
 
                         return GestureDetector(
@@ -304,7 +307,8 @@ class _HomePageContentState extends State<HomePageContent> {
                         );
                       },
                     )
-                  : const Center(child: CircularProgressIndicator());
+                  : Center(
+                      child: LottieBuilder.asset('assets/raw/loading.json'));
             },
           ),
         ),

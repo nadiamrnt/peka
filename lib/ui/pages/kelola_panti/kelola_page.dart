@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
@@ -25,9 +26,9 @@ class KelolaPage extends StatelessWidget {
               .collection('kelola_panti')
               .snapshots(),
           builder: (_, snapshot) {
-            // TODO:: LoadingBar
             if (snapshot.data == null) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                  child: LottieBuilder.asset('assets/raw/loading.json'));
             }
 
             if (snapshot.data!.docs.isNotEmpty) {

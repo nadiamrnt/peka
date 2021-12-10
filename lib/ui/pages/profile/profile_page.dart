@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
 
 import '../../../common/navigation.dart';
@@ -30,6 +31,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return LoadingOverlay(
+      color: kGreyBgColor,
+      progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
       isLoading: _isLoading,
       child: StreamBuilder<DocumentSnapshot>(
         stream: Firestore.firebaseFirestore
@@ -43,8 +46,8 @@ class _ProfilePageState extends State<ProfilePage> {
           }
 
           if (snapshot.data == null) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: LottieBuilder.asset('assets/raw/loading.json'),
             );
           }
 

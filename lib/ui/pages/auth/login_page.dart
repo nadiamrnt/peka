@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/pages/auth/forgot_password_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
@@ -31,10 +32,10 @@ class _LoginPageState extends State<LoginPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: kWhiteColor,
-        // TODO:: LoadingBar
         body: LoadingOverlay(
+          progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
           isLoading: _isLoading,
-          color: kGreyColor,
+          color: kGreyBgColor,
           child: SingleChildScrollView(
             child: Padding(
               padding:

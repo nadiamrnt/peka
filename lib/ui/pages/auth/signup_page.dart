@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
@@ -33,10 +34,10 @@ class _SignupPageState extends State<SignupPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: kWhiteColor,
-        // TODO:: LoadingBar
         body: LoadingOverlay(
+          progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
           isLoading: _isLoading,
-          color: kGreyColor,
+          color: kGreyBgColor,
           child: SingleChildScrollView(
             child: Padding(
               padding:

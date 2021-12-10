@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loading_overlay/loading_overlay.dart';
+import 'package:lottie/lottie.dart' as lottie;
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/ui/pages/maps/google_maps_page.dart';
@@ -69,6 +70,9 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
     return SafeArea(
       child: Scaffold(
         body: LoadingOverlay(
+          color: kGreyBgColor,
+          progressIndicator:
+              lottie.LottieBuilder.asset('assets/raw/loading.json'),
           isLoading: _isLoading,
           child: SingleChildScrollView(
             child: Padding(

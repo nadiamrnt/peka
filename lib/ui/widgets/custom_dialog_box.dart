@@ -72,19 +72,6 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
             ));
       }).toList()),
     );
-
-    // GridView.builder(
-    //   itemCount: ProvinceHelper.provinceList.length,
-    //   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-    //     maxCrossAxisExtent: 200,
-    //     childAspectRatio: 2,
-    //     crossAxisSpacing: 10,
-    //     mainAxisSpacing: 10,
-    //   ),
-    //   itemBuilder: (context, index) {
-    //     return _buildProvinceCard(index);
-    //   },
-    // );
   }
 
   Widget _buildProvinceCard(int index) {
