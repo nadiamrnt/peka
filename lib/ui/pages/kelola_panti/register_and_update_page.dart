@@ -74,6 +74,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
           progressIndicator:
               lottie.LottieBuilder.asset('assets/raw/loading.json'),
           isLoading: _isLoading,
+          opacity: 0.7,
           child: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: defaultMargin),

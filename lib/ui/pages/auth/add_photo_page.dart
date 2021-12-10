@@ -33,6 +33,7 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
         color: kGreyBgColor,
         progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
         isLoading: _isLoading,
+        opacity: 0.7,
         child: SafeArea(
           child: Center(
             child: Column(

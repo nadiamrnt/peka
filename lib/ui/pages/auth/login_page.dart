@@ -36,6 +36,7 @@ class _LoginPageState extends State<LoginPage> {
           progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
           isLoading: _isLoading,
           color: kGreyBgColor,
+          opacity: 0.7,
           child: SingleChildScrollView(
             child: Padding(
               padding:
