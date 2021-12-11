@@ -12,6 +12,7 @@ import 'package:peka/ui/pages/donation/send_donation_page.dart';
 import 'package:peka/ui/pages/home/category_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/pages/home/search_page.dart';
+import 'package:peka/ui/pages/kelola_panti/detail_kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/maps/google_maps_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         AddPhotoPage.routeName: (_) => const AddPhotoPage(),
         ForgotPasswordPage.routeName: (_) => const ForgotPasswordPage(),
         SendDonationPage.routeName: (_) => const SendDonationPage(),
+        DetailKelolaPage.routeName: (_) => const DetailKelolaPage(),
       },
     );
   }

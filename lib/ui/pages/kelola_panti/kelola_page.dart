@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
+import 'package:peka/ui/pages/kelola_panti/detail_kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/intro_kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
 
@@ -93,14 +94,16 @@ class KelolaPage extends StatelessWidget {
 
           return GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => RegisterAndUpdatePage(
-                      pantiAsuhan: _pantiAsuhan,
-                      documentId: documentSnapshot.id),
-                ),
-              );
+              Navigation.intent(DetailKelolaPage.routeName);
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (_) =>
+              //     RegisterAndUpdatePage(
+              //         pantiAsuhan: _pantiAsuhan,
+              //         documentId: documentSnapshot.id),
+              //   ),
+              // );
             },
             child: Container(
               width: double.infinity,
