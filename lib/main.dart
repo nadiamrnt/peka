@@ -8,12 +8,12 @@ import 'package:peka/ui/pages/auth/login_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/detail/detail_map_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
-import 'package:peka/ui/pages/home/category/category_page.dart';
+import 'package:peka/ui/pages/home/category_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/pages/home/search_page.dart';
 import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
+import 'package:peka/ui/pages/kelola_panti/maps/google_maps_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
-import 'package:peka/ui/pages/maps/google_maps_page.dart';
 
 import 'common/navigation.dart';
 

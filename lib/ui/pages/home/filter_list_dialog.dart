@@ -4,16 +4,16 @@ import 'package:peka/common/styles.dart';
 import 'package:peka/utils/province_helper.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
-import '../pages/home/category/category_page.dart';
+import 'category_page.dart';
 
-class CustomDialogBox extends StatefulWidget {
-  const CustomDialogBox({Key? key}) : super(key: key);
+class FilterListDialog extends StatefulWidget {
+  const FilterListDialog({Key? key}) : super(key: key);
 
   @override
-  State<CustomDialogBox> createState() => _CustomDialogBoxState();
+  State<FilterListDialog> createState() => _FilterListDialogState();
 }
 
-class _CustomDialogBoxState extends State<CustomDialogBox> {
+class _FilterListDialogState extends State<FilterListDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -78,7 +78,7 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
     return GestureDetector(
       onTap: () {
         Navigation.intentReplacementWithData(CategoryPage.routeName,
-            {'name': ProvinceHelper.provinceList[index]});
+            {'address': ProvinceHelper.provinceList[index]});
       },
       child: Container(
         padding: const EdgeInsets.all(10),

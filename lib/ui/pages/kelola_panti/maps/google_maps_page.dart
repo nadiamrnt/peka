@@ -4,9 +4,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/button.dart';
 
-import '../../../common/navigation.dart';
-import '../../../services/maps/my_location.dart';
-import '../../../services/maps/permission.dart';
+import '../../../../common/navigation.dart';
+import '../../../../services/maps/my_location.dart';
+import '../../../../services/maps/permission.dart';
 
 class GoogleMapsPage extends StatefulWidget {
   static const routeName = '/google-maps-page';

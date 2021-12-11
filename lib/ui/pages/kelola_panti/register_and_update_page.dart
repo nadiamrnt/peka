@@ -8,7 +8,6 @@ import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart' as lottie;
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
-import 'package:peka/ui/pages/maps/google_maps_page.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/utils/category_helper.dart';
@@ -20,6 +19,7 @@ import '../../../data/model/kebutuhan_model.dart';
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
 import '../../../utils/image_picker_helper.dart';
+import 'maps/google_maps_page.dart';
 
 class RegisterAndUpdatePage extends StatefulWidget {
   static const routeName = '/register-page';

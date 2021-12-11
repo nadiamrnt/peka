@@ -10,9 +10,9 @@ import 'package:peka/utils/category_helper.dart';
 import '../../../common/navigation.dart';
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
-import '../../widgets/custom_dialog_box.dart';
 import '../detail/detail_page.dart';
-import 'category/category_page.dart';
+import 'category_page.dart';
+import 'filter_list_dialog.dart';
 
 class HomePageContent extends StatefulWidget {
   const HomePageContent({Key? key}) : super(key: key);
@@ -176,7 +176,7 @@ class _HomePageContentState extends State<HomePageContent> {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return const CustomDialogBox();
+                    return const FilterListDialog();
                   });
             },
             child: Container(

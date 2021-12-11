@@ -6,19 +6,32 @@ import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/ui/widgets/card_grid_panti_asuhan.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 
-import '../../../../common/navigation.dart';
-import '../../../../services/firebase/firestore/firestore.dart';
-import '../../detail/detail_page.dart';
+import '../../../common/navigation.dart';
+import '../../../services/firebase/firestore/firestore.dart';
+import '../detail/detail_page.dart';
 
-class CategoryPage extends StatelessWidget {
+class CategoryPage extends StatefulWidget {
   static const routeName = '/category-page';
 
   const CategoryPage({Key? key}) : super(key: key);
 
   @override
+  State<CategoryPage> createState() => _CategoryPageState();
+}
+
+class _CategoryPageState extends State<CategoryPage> {
+  bool _isFromFilter = false;
+
+  @override
   Widget build(BuildContext context) {
     final _category =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    if (_category.keys.first == 'address') {
+      setState(() {
+        _isFromFilter = true;
+      });
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -54,7 +67,7 @@ class CategoryPage extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  category['name'],
+                  _isFromFilter ? category['address'] : category['name'],
                   style: blackTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: semiBold,
@@ -83,9 +96,15 @@ class CategoryPage extends StatelessWidget {
         if (snapshot.data!.docs.isNotEmpty) {
           for (var data in snapshot.data!.docs) {
             PantiAsuhanModel dataPanti = PantiAsuhanModel.fromDatabase(data);
-            for (var itemKebutuhan in dataPanti.kebutuhan) {
-              if (itemKebutuhan.name == category['name']) {
+            if (_isFromFilter) {
+              if (dataPanti.address.split(', ').last == category['address']) {
                 listPantiAsuhan.add(dataPanti);
+              }
+            } else {
+              for (var itemKebutuhan in dataPanti.kebutuhan) {
+                if (itemKebutuhan.name == category['name']) {
+                  listPantiAsuhan.add(dataPanti);
+                }
               }
             }
           }
