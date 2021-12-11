@@ -26,9 +26,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   Widget build(BuildContext context) {
     var listHintText = widget.hintText.split(' ');
     bool _isDescription = listHintText[1] == 'deskripsi';
+    bool _isNote = listHintText[1] == 'catatan';
 
     return Container(
-      height: _isDescription ? 149.0 : 45.0,
+      height: _isDescription || _isNote ? 149.0 : 45.0,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       decoration: BoxDecoration(

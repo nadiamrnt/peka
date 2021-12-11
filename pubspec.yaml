@@ -28,6 +28,7 @@ dependencies:
   flutter_image_compress: ^1.0.0-nullsafety
   lottie: ^1.2.1
   path_provider: ^2.0.8
+  dropdown_search: ^2.0.1
 
 dev_dependencies:
   flutter_test:

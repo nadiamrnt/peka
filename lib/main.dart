@@ -8,6 +8,7 @@ import 'package:peka/ui/pages/auth/login_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/detail/detail_map_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
+import 'package:peka/ui/pages/donation/send_donation_page.dart';
 import 'package:peka/ui/pages/home/category_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/pages/home/search_page.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
         SearchPage.routeName: (_) => const SearchPage(),
         AddPhotoPage.routeName: (_) => const AddPhotoPage(),
         ForgotPasswordPage.routeName: (_) => const ForgotPasswordPage(),
+        SendDonationPage.routeName: (_) => const SendDonationPage(),
       },
     );
   }
