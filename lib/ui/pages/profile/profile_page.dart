@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/firebase_storage_helper.dart';
 
 import '../../../common/navigation.dart';
@@ -27,6 +30,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = false;
   File? _image;
+  String? toastTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +178,10 @@ class _ProfilePageState extends State<ProfilePage> {
         ProfileOption(
           imageAsset: 'ic_setting.png',
           title: 'Pengaturan',
-          onTap: () {},
+          onTap: () {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('success')));
+          },
         ),
         const SizedBox(height: 5),
         Divider(
@@ -185,7 +192,11 @@ class _ProfilePageState extends State<ProfilePage> {
         ProfileOption(
           imageAsset: 'ic_info.png',
           title: 'Tentang Kami',
-          onTap: () {},
+          onTap: () {
+            const Toast(toastTitle: 'sedang dalam pengembangan')
+                .cherryToast()
+                .show(context);
+          },
         ),
         const SizedBox(height: 5),
         Divider(
