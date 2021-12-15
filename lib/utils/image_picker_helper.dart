@@ -24,7 +24,7 @@ class ImagePickerHelper {
 
   static Future<File?> compressImage(File file) async {
     final String newPath = p.join((await getTemporaryDirectory()).path,
-        '${Auth.auth.currentUser!.uid}_${DateTime.now()}${p.extension(file.absolute.path)}');
+        '${Auth.firebaseAuth.currentUser!.uid}_${DateTime.now()}${p.extension(file.absolute.path)}');
 
     var result = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,
@@ -34,7 +34,6 @@ class ImagePickerHelper {
       quality: 80,
     );
 
-    print(result!.path);
     return result;
   }
 }

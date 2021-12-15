@@ -50,7 +50,7 @@ class _HomePageContentState extends State<HomePageContent> {
     return StreamBuilder<DocumentSnapshot>(
       stream: Firestore.firebaseFirestore
           .collection('users')
-          .doc(Auth.auth.currentUser?.uid)
+          .doc(Auth.firebaseAuth.currentUser?.uid)
           .snapshots(),
       builder: (_, snapshot) {
         if (snapshot.hasData) {

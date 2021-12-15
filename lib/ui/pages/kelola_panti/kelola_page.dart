@@ -94,16 +94,14 @@ class KelolaPage extends StatelessWidget {
 
           return GestureDetector(
             onTap: () {
-              Navigation.intent(DetailKelolaPage.routeName);
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (_) =>
-              //     RegisterAndUpdatePage(
-              //         pantiAsuhan: _pantiAsuhan,
-              //         documentId: documentSnapshot.id),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => DetailKelolaPage(
+                    pantiAsuhan: _pantiAsuhan,
+                  ),
+                ),
+              );
             },
             child: Container(
               width: double.infinity,
@@ -128,7 +126,7 @@ class KelolaPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18),
                             child: Image.network(
                               _pantiAsuhan.imgUrl,
-                              fit: BoxFit.fill,
+                              fit: BoxFit.cover,
                             ),
                           )),
                       const SizedBox(width: 15),

@@ -119,7 +119,7 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
                   // Send to Firestore
                   await Firestore.firebaseFirestore
                       .collection('users')
-                      .doc(Auth.auth.currentUser!.uid)
+                      .doc(Auth.firebaseAuth.currentUser!.uid)
                       .update({'img_profile': _imgUrl});
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(

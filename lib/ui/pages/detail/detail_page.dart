@@ -5,6 +5,7 @@ import 'package:peka/data/model/panti_asuhan_model.dart';
 
 import '../../../common/navigation.dart';
 import '../../widgets/button.dart';
+import '../donation/send_donation_page.dart';
 import 'detail_map_page.dart';
 
 class DetailPage extends StatefulWidget {
@@ -24,18 +25,6 @@ class _DetailPageState extends State<DetailPage> {
     final _pantiAsuhan =
         ModalRoute.of(context)?.settings.arguments as PantiAsuhanModel;
 
-    setState(() {
-      _markers.clear();
-      _markers.add(
-        Marker(
-          markerId: MarkerId(_pantiAsuhan.location.longitude.toString()),
-          position: LatLng(
-              _pantiAsuhan.location.latitude, _pantiAsuhan.location.longitude),
-          icon: BitmapDescriptor.defaultMarker,
-        ),
-      );
-    });
-
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -51,7 +40,11 @@ class _DetailPageState extends State<DetailPage> {
               const SizedBox(height: 40),
               Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
-                child: Button(textButton: 'Navigasi', onTap: () {}),
+                child: Button(
+                    textButton: 'Donasi',
+                    onTap: () {
+                      _modalBottomSheetMenu(context, _pantiAsuhan);
+                    }),
               ),
               const SizedBox(height: 30),
             ],
@@ -199,6 +192,18 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildLocation(PantiAsuhanModel pantiAsuhan) {
+    setState(() {
+      _markers.clear();
+      _markers.add(
+        Marker(
+          markerId: MarkerId(pantiAsuhan.location.longitude.toString()),
+          position: LatLng(
+              pantiAsuhan.location.latitude, pantiAsuhan.location.longitude),
+          icon: BitmapDescriptor.defaultMarker,
+        ),
+      );
+    });
+
     return Padding(
       padding: EdgeInsets.only(left: defaultMargin, right: defaultMargin),
       child: Column(
@@ -261,6 +266,62 @@ class _DetailPageState extends State<DetailPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _modalBottomSheetMenu(
+      BuildContext context, PantiAsuhanModel pantiAsuhan) async {
+    await showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (builder) {
+        return Container(
+          height: 150,
+          padding: const EdgeInsets.only(
+            top: 24,
+            left: 70,
+            right: 70,
+          ),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(10.0),
+            ),
+          ),
+          child: Column(
+            children: [
+              Button(
+                textButton: 'Kirim Donasi',
+                onTap: () async {
+                  await Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            SendDonationPage(pantiAsuhan: pantiAsuhan),
+                      ));
+                },
+              ),
+              const SizedBox(height: 6),
+              TextButton(
+                onPressed: () {
+                  Navigation.back();
+                },
+                child: Text(
+                  'Donasi Langsung',
+                  style:
+                      greyTextStyle.copyWith(fontSize: 16, fontWeight: medium),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

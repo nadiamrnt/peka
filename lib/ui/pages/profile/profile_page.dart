@@ -41,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: StreamBuilder<DocumentSnapshot>(
         stream: Firestore.firebaseFirestore
             .collection('users')
-            .doc(Auth.auth.currentUser?.uid)
+            .doc(Auth.firebaseAuth.currentUser?.uid)
             .snapshots(),
         builder: (_, snapshot) {
           UserModel? user;
@@ -208,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
           imageAsset: 'ic_logout.png',
           title: 'Keluar',
           onTap: () async {
-            await Auth.auth.signOut();
+            await Auth.firebaseAuth.signOut();
             Navigation.intentReplacement(LoginPage.routeName);
           },
         ),
@@ -269,7 +269,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                       await Firestore.firebaseFirestore
                           .collection('users')
-                          .doc(Auth.auth.currentUser!.uid)
+                          .doc(Auth.firebaseAuth.currentUser!.uid)
                           .update({'img_profile': _imgUrl});
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -306,7 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               _image!);
                       await Firestore.firebaseFirestore
                           .collection('users')
-                          .doc(Auth.auth.currentUser!.uid)
+                          .doc(Auth.firebaseAuth.currentUser!.uid)
                           .update({'img_profile': _imgUrl});
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(

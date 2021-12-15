@@ -41,4 +41,6 @@ class CategoryHelper {
       'image': 'assets/icons/ic_diaper.png',
     },
   ];
+
+  static List<String> listCourier = ['JNE', 'JNT', 'SICEPAT', 'POS', 'TIKI'];
 }

@@ -26,4 +26,17 @@ class FirebaseStorageHelper {
     var _imgUrl = await snapShot.ref.getDownloadURL();
     return _imgUrl;
   }
+
+  static Future<String> uploadImageDonation(File file) async {
+    String _imagePath = file.path.split('/').last;
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child('image_donation')
+        .child(_imagePath);
+
+    UploadTask task = ref.putFile(file);
+    TaskSnapshot snapShot = await task;
+    var _imgUrl = await snapShot.ref.getDownloadURL();
+    return _imgUrl;
+  }
 }

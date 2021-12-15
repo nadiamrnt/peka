@@ -19,7 +19,7 @@ Future<String> documentFileUpload(String filePath) async {
   Reference ref = FirebaseStorage.instance
       .ref()
       .child('surat_keterangan')
-      .child(Auth.auth.currentUser!.uid)
+      .child(Auth.firebaseAuth.currentUser!.uid)
       .child(filePath.split('/').last);
 
   UploadTask task = ref.putFile(File(filePath));

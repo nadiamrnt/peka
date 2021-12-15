@@ -9,6 +9,7 @@ import 'package:lottie/lottie.dart' as lottie;
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/ui/widgets/button.dart';
+import 'package:peka/ui/widgets/custom_snack_bar.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/utils/category_helper.dart';
 import 'package:peka/utils/file_picker_helper.dart';
@@ -24,10 +25,8 @@ import 'maps/google_maps_page.dart';
 class RegisterAndUpdatePage extends StatefulWidget {
   static const routeName = '/register-page';
   final PantiAsuhanModel? pantiAsuhan;
-  final String? documentId;
 
-  const RegisterAndUpdatePage({Key? key, this.pantiAsuhan, this.documentId})
-      : super(key: key);
+  const RegisterAndUpdatePage({Key? key, this.pantiAsuhan}) : super(key: key);
 
   @override
   State<RegisterAndUpdatePage> createState() => _RegisterAndUpdatePageState();
@@ -381,7 +380,6 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
         GestureDetector(
           onTap: () async {
             try {
-              // TODO:: jika isUpdate arahkan ke lokasi panti
               final getData = await Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -692,18 +690,12 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
           setState(() => _isLoading = false);
           Navigation.back();
         } else {
-          const snackBar = SnackBar(
-            duration: Duration(seconds: 2),
-            content: Text('Mohon lengkapi registrasi panti asuhan anda'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          CustomSnackBar.snackBar(
+              context, 'Mohon lengkapi registrasi panti asuhan anda');
         }
       }
     } catch (e) {
-      const snackBar = SnackBar(
-        content: Text('Opss.. terjadi kesalahan, coba lagi'),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      CustomSnackBar.snackBar(context, 'Opss.. terjadi kesalahan, coba lagi');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -725,9 +717,8 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
     final String _name = _nameController.text;
     final String _noPhone = _phoneController.text;
     final String _description = _descController.text;
-
     PantiAsuhanModel dataPantiAsuhan = PantiAsuhanModel(
-      pantiAsuhanId: widget.documentId.toString(),
+      pantiAsuhanId: widget.pantiAsuhan!.pantiAsuhanId,
       ownerId: widget.pantiAsuhan!.ownerId,
       name: _name,
       description: _description,
@@ -742,14 +733,14 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
 
     await Firestore.firebaseFirestore
         .collection('users')
-        .doc(Auth.auth.currentUser!.uid)
+        .doc(Auth.firebaseAuth.currentUser!.uid)
         .collection('kelola_panti')
-        .doc(widget.documentId)
+        .doc(widget.pantiAsuhan?.pantiAsuhanId)
         .update(dataPantiAsuhan.setDataMap());
 
     await Firestore.firebaseFirestore
         .collection('panti_asuhan')
-        .doc(widget.documentId)
+        .doc(widget.pantiAsuhan?.pantiAsuhanId)
         .set(dataPantiAsuhan.setDataMap());
   }
 
@@ -768,7 +759,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
 
     PantiAsuhanModel dataPantiAsuhan = PantiAsuhanModel(
       pantiAsuhanId: '',
-      ownerId: Auth.auth.currentUser!.uid,
+      ownerId: Auth.firebaseAuth.currentUser!.uid,
       name: _name,
       description: _description,
       noTlpn: _noPhone,
@@ -782,20 +773,20 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
 
     await Firestore.firebaseFirestore
         .collection('users')
-        .doc(Auth.auth.currentUser!.uid)
+        .doc(Auth.firebaseAuth.currentUser!.uid)
         .collection('kelola_panti')
         .add(dataPantiAsuhan.setDataMap())
         .then((value) async {
       await Firestore.firebaseFirestore
           .collection('users')
-          .doc(Auth.auth.currentUser!.uid)
+          .doc(Auth.firebaseAuth.currentUser!.uid)
           .collection('kelola_panti')
           .doc(value.id)
-          .update({'id': value.id});
+          .update({'panti_asuhan_id': value.id});
 
       PantiAsuhanModel dataPantiAsuhanWithId = PantiAsuhanModel(
         pantiAsuhanId: value.id,
-        ownerId: Auth.auth.currentUser!.uid,
+        ownerId: Auth.firebaseAuth.currentUser!.uid,
         name: _name,
         description: _description,
         noTlpn: _noPhone,

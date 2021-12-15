@@ -1,12 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/utils/category_helper.dart';
+import 'package:peka/data/model/donatur_model.dart';
+import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
+import '../../../data/model/panti_asuhan_model.dart';
+import '../../../services/firebase/firestore/firestore.dart';
 
 class DetailKelolaPage extends StatelessWidget {
   static const routeName = '/detail-kelola-page';
+  final PantiAsuhanModel? pantiAsuhan;
 
-  const DetailKelolaPage({Key? key}) : super(key: key);
+  const DetailKelolaPage({Key? key, this.pantiAsuhan}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +27,7 @@ class DetailKelolaPage extends StatelessWidget {
             children: [
               _buildHeader(),
               const SizedBox(height: 30.0),
-              _buildImage(),
+              _buildImage(context),
               const SizedBox(height: 24.0),
               Text('Daftar Donatur',
                   style: blackTextStyle.copyWith(
@@ -51,7 +59,7 @@ class DetailKelolaPage extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  'Kirim Donasi',
+                  'Detail Kelola Panti Asuhan',
                   style: blackTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: semiBold,
@@ -66,7 +74,7 @@ class DetailKelolaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildImage() {
+  Widget _buildImage(BuildContext context) {
     return Stack(
       children: [
         SizedBox(
@@ -74,15 +82,19 @@ class DetailKelolaPage extends StatelessWidget {
           width: double.infinity,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(30),
-            child: Image.asset(
-              'assets/images/img_house.png',
+            child: Image.network(
+              pantiAsuhan!.imgUrl,
               fit: BoxFit.cover,
             ),
           ),
         ),
-        SizedBox(
+        Container(
           height: 230,
           width: double.infinity,
+          decoration: BoxDecoration(
+            color: kBlackColor.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(30),
+          ),
           child: Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
             child: Column(
@@ -90,7 +102,7 @@ class DetailKelolaPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Panti Asuhan Barokah',
+                  pantiAsuhan!.name,
                   style: whiteTextStyle.copyWith(
                       fontSize: 16, fontWeight: semiBold),
                 ),
@@ -103,7 +115,7 @@ class DetailKelolaPage extends StatelessWidget {
                     ),
                     const SizedBox(width: 7),
                     Text(
-                      'Indonesia, Makassar',
+                      '${pantiAsuhan!.address.split(', ')[4]}, ${pantiAsuhan!.address.split(', ')[5]}',
                       style: whiteTextStyle.copyWith(
                           fontSize: 14, fontWeight: light),
                     ),
@@ -111,7 +123,14 @@ class DetailKelolaPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              RegisterAndUpdatePage(pantiAsuhan: pantiAsuhan),
+                        ));
+                  },
                   style: ElevatedButton.styleFrom(
                     primary: kGreyColor,
                     minimumSize: const Size(55, 24),
@@ -134,85 +153,114 @@ class DetailKelolaPage extends StatelessWidget {
   }
 
   Widget _buildListDonatur() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: 5,
-        itemBuilder: (context, index) {
-          return _buildCardDonatur();
-        },
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: Firestore.firebaseFirestore
+          .collection('panti_asuhan')
+          .doc(pantiAsuhan!.pantiAsuhanId)
+          .collection('daftar_donatur')
+          .snapshots(),
+      builder: (_, snapshot) {
+        if (snapshot.data == null) {
+          return Center(child: LottieBuilder.asset('assets/raw/loading.json'));
+        }
+
+        if (snapshot.data!.docs.isNotEmpty) {
+          var _listDonatur = snapshot.data!.docs;
+          return Expanded(
+              child: ListView(
+            children: _listDonatur.map((dataDonatur) {
+              DonaturModel donaturModel =
+                  DonaturModel.fromDatabase(dataDonatur);
+              return _buildCardDonatur(donaturModel);
+            }).toList(),
+          ));
+        } else {
+          // TODO: Tambahin ilustrasi tidak ada donatur
+          return const Center(
+            child: Text('Opss Tidak ada donatur nihh'),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildCardDonatur(DonaturModel donatur) {
+    var date = donatur.date.toDate();
+    timeago.setLocaleMessages('id', timeago.IdMessages());
+    var timeAgo = timeago.format(date, locale: 'id');
+
+    return GestureDetector(
+      onTap: () {
+        Navigation.intentWithData(routeName, {'donatur': donatur});
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            width: double.infinity,
+            height: 208,
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: kWhiteBgColor,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(18)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: ClipOval(
+                        child: Image.network(
+                          donatur.ownerImage,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          donatur.ownerName,
+                          style: blackTextStyle.copyWith(
+                              fontSize: 16, fontWeight: medium),
+                        ),
+                        Row(
+                          children: [
+                            Image.asset(
+                              'assets/icons/ic_calendar.png',
+                              width: 14,
+                              height: 14,
+                            ),
+                            const SizedBox(width: 7),
+                            Text(
+                              timeAgo,
+                              style: greyTextStyle.copyWith(
+                                  fontSize: 13, fontWeight: light),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                _buildCategory(donatur),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
       ),
     );
   }
 
-  Widget _buildCardDonatur() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          width: double.infinity,
-          height: 208,
-          decoration: BoxDecoration(
-              border: Border.all(
-                color: kWhiteBgColor,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(18)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(1000),
-                      child: Image.asset(
-                        'assets/images/img_profile.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Muhammad Ridhoi',
-                        style: blackTextStyle.copyWith(
-                            fontSize: 16, fontWeight: medium),
-                      ),
-                      Row(
-                        children: [
-                          Image.asset(
-                            'assets/icons/ic_calendar.png',
-                            width: 14,
-                            height: 14,
-                          ),
-                          const SizedBox(width: 7),
-                          Text(
-                            '19 Desember 2021',
-                            style: greyTextStyle.copyWith(
-                                fontSize: 13, fontWeight: light),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              _buildCategory(),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-
-  Widget _buildCategory() {
+  Widget _buildCategory(DonaturModel donatur) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -225,7 +273,7 @@ class DetailKelolaPage extends StatelessWidget {
           height: 70,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            children: CategoryHelper.categoryFromLocal.map((item) {
+            children: donatur.donation.map((item) {
               return Padding(
                 padding: const EdgeInsets.only(right: 18.0),
                 child: Column(
@@ -235,20 +283,18 @@ class DetailKelolaPage extends StatelessWidget {
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: CategoryHelper.categoryFromLocal
-                                .indexOf(item)
-                                .isEven
+                        color: donatur.donation.indexOf(item).isEven
                             ? kBlueBgColor
                             : kPinkBgColor,
                       ),
                       child: Image.asset(
-                        item['image'],
+                        item.image,
                         width: 30,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      item['name'],
+                      item.name,
                       style: greyTextStyle.copyWith(
                         fontWeight: regular,
                         fontSize: 10,
