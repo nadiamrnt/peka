@@ -717,6 +717,9 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
     final String _name = _nameController.text;
     final String _noPhone = _phoneController.text;
     final String _description = _descController.text;
+
+    print(widget.pantiAsuhan!.pantiAsuhanId);
+
     PantiAsuhanModel dataPantiAsuhan = PantiAsuhanModel(
       pantiAsuhanId: widget.pantiAsuhan!.pantiAsuhanId,
       ownerId: widget.pantiAsuhan!.ownerId,

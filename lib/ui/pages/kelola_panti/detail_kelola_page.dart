@@ -169,6 +169,8 @@ class DetailKelolaPage extends StatelessWidget {
           return Center(child: LottieBuilder.asset('assets/raw/loading.json'));
         }
 
+        print('aaaa:${pantiAsuhan!.pantiAsuhanId}');
+
         if (snapshot.data!.docs.isNotEmpty) {
           var _listDonatur = snapshot.data!.docs;
           return Expanded(

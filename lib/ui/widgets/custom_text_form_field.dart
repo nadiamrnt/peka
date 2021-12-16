@@ -39,7 +39,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       child: TextFormField(
         obscureText: widget.obscureText,
         controller: widget.controller,
-        maxLines: _isDescription ? 6 : 1,
+        maxLines: _isDescription || _isNote ? 6 : 1,
         decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: greyHintTextStyle,

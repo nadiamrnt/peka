@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:lottie/lottie.dart' as lottie;
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 
 import '../../../common/navigation.dart';
+import '../../../services/firebase/firestore/firestore.dart';
 import '../../widgets/button.dart';
 import '../donation/send_donation_page.dart';
 import 'detail_map_page.dart';
@@ -100,38 +103,149 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildContent(PantiAsuhanModel pantiAsuhan) {
-    return Padding(
-      padding: EdgeInsets.only(left: defaultMargin, right: defaultMargin),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            pantiAsuhan.name,
-            style: blackTextStyle.copyWith(fontSize: 18, fontWeight: semiBold),
-          ),
-          const SizedBox(height: 7),
-          Row(
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: Firestore.firebaseFirestore
+          .collection('panti_asuhan')
+          .doc(pantiAsuhan.pantiAsuhanId)
+          .collection('daftar_donatur')
+          .snapshots(),
+      builder: (_, snapshot) {
+        List<String> _listImgDonatur = [];
+        int? _jumlahDonatur;
+
+        if (snapshot.data == null) {
+          return Center(
+              child: lottie.LottieBuilder.asset('assets/raw/loading.json'));
+        }
+
+        if (snapshot.data!.docs.isNotEmpty) {
+          _jumlahDonatur = snapshot.data!.docs.length;
+          for (var dataDonatur in snapshot.data!.docs) {
+            _listImgDonatur.add(dataDonatur.get('owner_image'));
+          }
+        }
+
+        _listImgDonatur = [..._listImgDonatur, ''];
+
+        return Padding(
+          padding: EdgeInsets.only(left: defaultMargin, right: defaultMargin),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(
-                'assets/icons/ic_location.png',
-                width: 11,
-                height: 14,
-              ),
-              const SizedBox(width: 7),
               Text(
-                pantiAsuhan.address.split(', ')[4],
+                pantiAsuhan.name,
                 style:
-                    greyTextStyle.copyWith(fontSize: 14, fontWeight: regular),
+                    blackTextStyle.copyWith(fontSize: 18, fontWeight: semiBold),
+              ),
+              const SizedBox(height: 7),
+              SizedBox(
+                width: double.infinity,
+                child: _listImgDonatur.length >= 4
+                    ? Stack(
+                        children: _listImgDonatur
+                            .asMap()
+                            .keys
+                            .toList()
+                            .map(
+                              (index) {
+                                return (index == 0)
+                                    ? Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            width: 1,
+                                            color: kWhiteBgColor,
+                                          ),
+                                        ),
+                                        child: ClipOval(
+                                          child: Image.network(
+                                              _listImgDonatur[index],
+                                              fit: BoxFit.cover),
+                                        ),
+                                      )
+                                    : (index == 4 &&
+                                                _listImgDonatur.length > 5 ||
+                                            index == 3 &&
+                                                _listImgDonatur.length == 5 ||
+                                            index == 2 &&
+                                                _listImgDonatur.length == 4)
+                                        ? Positioned(
+                                            left: (index == 3 &&
+                                                    _listImgDonatur.length == 5)
+                                                ? 82
+                                                : index == 2 &&
+                                                        _listImgDonatur
+                                                                .length ==
+                                                            4
+                                                    ? 62
+                                                    : 104,
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              height: 30,
+                                              child: Text(
+                                                (index == 4 &&
+                                                        _listImgDonatur.length >
+                                                            5)
+                                                    ? '+${_jumlahDonatur! - index} Berdonasi'
+                                                    : 'Berdonasi',
+                                                style: greyTextStyle,
+                                              ),
+                                            ),
+                                          )
+                                        : Positioned(
+                                            left: (index * 22),
+                                            child: Container(
+                                              width: 30,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  width: 1,
+                                                  color: kWhiteBgColor,
+                                                ),
+                                              ),
+                                              child: ClipOval(
+                                                child: Image.network(
+                                                    _listImgDonatur[index],
+                                                    fit: BoxFit.cover),
+                                              ),
+                                            ),
+                                          );
+                              },
+                            )
+                            .toList()
+                            .getRange(
+                                0, (_jumlahDonatur! > 5) ? 5 : _jumlahDonatur)
+                            .toList(),
+                      )
+                    : Row(
+                        children: [
+                          Image.asset(
+                            'assets/icons/ic_location.png',
+                            width: 11,
+                            height: 14,
+                          ),
+                          const SizedBox(width: 7),
+                          Text(
+                            pantiAsuhan.address.split(', ')[4],
+                            style: greyTextStyle.copyWith(
+                                fontSize: 14, fontWeight: regular),
+                          ),
+                        ],
+                      ),
+              ),
+              const SizedBox(height: 15),
+              Text(
+                pantiAsuhan.description,
+                style:
+                    greyTextStyle.copyWith(height: 1.75, fontWeight: regular),
               ),
             ],
           ),
-          const SizedBox(height: 15),
-          Text(
-            pantiAsuhan.description,
-            style: greyTextStyle.copyWith(height: 1.75, fontWeight: regular),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
