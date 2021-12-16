@@ -6,6 +6,7 @@ import 'package:peka/ui/pages/auth/forgot_password_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
+import 'package:peka/ui/widgets/toast.dart';
 
 import '../../../common/navigation.dart';
 import '../../../services/firebase/auth/auth.dart';
@@ -183,9 +184,9 @@ class _LoginPageState extends State<LoginPage> {
         Navigation.intentReplacement(HomePage.routeName);
       }
     } catch (e) {
-      const snackBar = SnackBar(
-          content: Text('Opss.. masukkan email/kata sandi dengan benar'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      const Toast(toastTitle: 'Opss.. masukkan email/kata sandi dengan benar')
+          .failedToast()
+          .show(context);
     } finally {
       setState(() {
         _isLoading = false;

@@ -12,13 +12,42 @@ class Toast extends StatelessWidget {
     return Container();
   }
 
-  CherryToast cherryToast() {
+  CherryToast successToast() {
     return CherryToast(
       title: toastTitle,
       titleStyle: blackTextStyle.copyWith(fontSize: 14),
       toastDuration: const Duration(milliseconds: 3000),
       icon: Icons.done_rounded,
-      displayIcon: false,
+      iconColor: Colors.green,
+      iconSize: 30,
+      themeColor: kWhiteBgColor,
+      toastPosition: POSITION.BOTTOM,
+      autoDismiss: true,
+    );
+  }
+
+  CherryToast failedToast() {
+    return CherryToast(
+      title: toastTitle,
+      titleStyle: blackTextStyle.copyWith(fontSize: 14),
+      toastDuration: const Duration(milliseconds: 3000),
+      icon: Icons.close,
+      iconColor: Colors.red,
+      iconSize: 30,
+      themeColor: kWhiteBgColor,
+      toastPosition: POSITION.BOTTOM,
+      autoDismiss: true,
+    );
+  }
+
+  CherryToast waitingToast() {
+    return CherryToast(
+      title: toastTitle,
+      titleStyle: blackTextStyle.copyWith(fontSize: 14),
+      toastDuration: const Duration(milliseconds: 3000),
+      icon: Icons.access_time,
+      iconColor: Colors.blue,
+      iconSize: 30,
       themeColor: kWhiteBgColor,
       toastPosition: POSITION.BOTTOM,
       autoDismiss: true,

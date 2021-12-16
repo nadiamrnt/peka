@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/donatur_model.dart';
+import 'package:peka/ui/pages/kelola_panti/donatur/detail_donatur_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -114,10 +115,13 @@ class DetailKelolaPage extends StatelessWidget {
                       height: 14,
                     ),
                     const SizedBox(width: 7),
-                    Text(
-                      '${pantiAsuhan!.address.split(', ')[4]}, ${pantiAsuhan!.address.split(', ')[5]}',
-                      style: whiteTextStyle.copyWith(
-                          fontSize: 14, fontWeight: light),
+                    Flexible(
+                      child: Text(
+                        '${pantiAsuhan!.address.split(', ')[4]}, ${pantiAsuhan!.address.split(', ')[5]}',
+                        style: whiteTextStyle.copyWith(
+                            fontSize: 14, fontWeight: light),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),
@@ -125,11 +129,12 @@ class DetailKelolaPage extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () async {
                     await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              RegisterAndUpdatePage(pantiAsuhan: pantiAsuhan),
-                        ));
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            RegisterAndUpdatePage(pantiAsuhan: pantiAsuhan),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     primary: kGreyColor,
@@ -175,9 +180,20 @@ class DetailKelolaPage extends StatelessWidget {
             }).toList(),
           ));
         } else {
-          // TODO: Tambahin ilustrasi tidak ada donatur
-          return const Center(
-            child: Text('Opss Tidak ada donatur nihh'),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/no_data.png',
+                  width: 180,
+                ),
+                Text(
+                  'Opss Tidak ada donatur nihh',
+                  style: greyTextStyle.copyWith(fontSize: 14),
+                ),
+              ],
+            ),
           );
         }
       },
@@ -191,7 +207,7 @@ class DetailKelolaPage extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigation.intentWithData(routeName, {'donatur': donatur});
+        Navigation.intentWithData(DetailDonatur.routeName, donatur);
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,37 +289,39 @@ class DetailKelolaPage extends StatelessWidget {
           height: 70,
           child: ListView(
             scrollDirection: Axis.horizontal,
-            children: donatur.donation.map((item) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 18.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: donatur.donation.indexOf(item).isEven
-                            ? kBlueBgColor
-                            : kPinkBgColor,
+            children: donatur.donation.map(
+              (item) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 18.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: donatur.donation.indexOf(item).isEven
+                              ? kBlueBgColor
+                              : kPinkBgColor,
+                        ),
+                        child: Image.asset(
+                          item.image,
+                          width: 30,
+                        ),
                       ),
-                      child: Image.asset(
-                        item.image,
-                        width: 30,
+                      const SizedBox(height: 8),
+                      Text(
+                        item.name,
+                        style: greyTextStyle.copyWith(
+                          fontWeight: regular,
+                          fontSize: 10,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      item.name,
-                      style: greyTextStyle.copyWith(
-                        fontWeight: regular,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
+                    ],
+                  ),
+                );
+              },
+            ).toList(),
           ),
         ),
       ],

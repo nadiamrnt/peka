@@ -9,8 +9,8 @@ import 'package:lottie/lottie.dart' as lottie;
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/ui/widgets/button.dart';
-import 'package:peka/ui/widgets/custom_snack_bar.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
+import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/category_helper.dart';
 import 'package:peka/utils/file_picker_helper.dart';
 import 'package:peka/utils/firebase_storage_helper.dart';
@@ -398,10 +398,9 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                         zoom: 17)));
               }
             } catch (e) {
-              // TODO:: Toast
-              const snackBar =
-                  SnackBar(content: Text('Pilih lokasi dibatalkan'));
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              const Toast(toastTitle: 'Pilih lokasi dibatalkan')
+                  .failedToast()
+                  .show(context);
             }
           },
           child: (_isUpdate && _location == null)
@@ -610,11 +609,9 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                       });
                     });
                   } catch (e) {
-                    const snackBar = SnackBar(
-                      duration: Duration(seconds: 2),
-                      content: Text('Opss.. gagal mengambil gambar'),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    const Toast(toastTitle: 'Opss.. gagal mengambil gambar')
+                        .failedToast()
+                        .show(context);
                   }
 
                   Navigation.back();
@@ -690,12 +687,15 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
           setState(() => _isLoading = false);
           Navigation.back();
         } else {
-          CustomSnackBar.snackBar(
-              context, 'Mohon lengkapi registrasi panti asuhan anda');
+          const Toast(toastTitle: 'Mohon lengkapi registrasi panti asuhan anda')
+              .failedToast()
+              .show(context);
         }
       }
     } catch (e) {
-      CustomSnackBar.snackBar(context, 'Opss.. terjadi kesalahan, coba lagi');
+      const Toast(toastTitle: 'Opss.. terjadi kesalahan, coba lagi')
+          .failedToast()
+          .show(context);
     } finally {
       setState(() => _isLoading = false);
     }

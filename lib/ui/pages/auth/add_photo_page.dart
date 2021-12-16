@@ -8,6 +8,7 @@ import 'package:peka/common/styles.dart';
 import 'package:peka/services/firebase/firestore/firestore.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/widgets/button.dart';
+import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/firebase_storage_helper.dart';
 
 import '../../../services/firebase/auth/auth.dart';
@@ -122,11 +123,9 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
                       .doc(Auth.firebaseAuth.currentUser!.uid)
                       .update({'img_profile': _imgUrl});
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Opss.. terjadi kesalahan'),
-                    ),
-                  );
+                  const Toast(toastTitle: 'Opss.. terjadi kesalahan')
+                      .failedToast()
+                      .show(context);
                 }
               }
 

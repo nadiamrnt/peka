@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
+import 'package:peka/ui/widgets/toast.dart';
 
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
@@ -212,11 +213,9 @@ class _SignupPageState extends State<SignupPage> {
       if (_formKey.currentState!.validate()) {
         if (_password1Controller.text != _password2Controller.text) {
           _password2Controller.clear();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Kata sandi tidak sesuai'),
-            ),
-          );
+          const Toast(toastTitle: 'Kata sandi tidak sesuai')
+              .failedToast()
+              .show(context);
           setState(() {
             _isLoading = false;
           });
@@ -232,11 +231,9 @@ class _SignupPageState extends State<SignupPage> {
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Opss.. terjadi kesalahan'),
-        ),
-      );
+      const Toast(toastTitle: 'Opss.. terjadi kesalahan')
+          .failedToast()
+          .show(context);
     } finally {
       setState(() {
         _isLoading = false;

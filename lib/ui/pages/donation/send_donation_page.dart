@@ -13,13 +13,13 @@ import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/data/model/user_model.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
+import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/category_helper.dart';
 
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
 import '../../../utils/firebase_storage_helper.dart';
 import '../../../utils/image_picker_helper.dart';
-import '../../widgets/custom_snack_bar.dart';
 
 class SendDonationPage extends StatefulWidget {
   static const routeName = '/send-donation-page';
@@ -426,51 +426,57 @@ class _SendDonationPageState extends State<SendDonationPage> {
             .doc(widget.pantiAsuhan!.pantiAsuhanId)
             .collection('daftar_donatur')
             .add(_donatur.setDataMap())
-            .then((value) async {
-          await Firestore.firebaseFirestore
-              .collection('users')
-              .doc(widget.pantiAsuhan!.ownerId)
-              .collection('kelola_panti')
-              .doc(widget.pantiAsuhan!.pantiAsuhanId)
-              .collection('daftar_donatur')
-              .doc(value.id)
-              .update({'donation_id': value.id});
+            .then(
+          (value) async {
+            await Firestore.firebaseFirestore
+                .collection('users')
+                .doc(widget.pantiAsuhan!.ownerId)
+                .collection('kelola_panti')
+                .doc(widget.pantiAsuhan!.pantiAsuhanId)
+                .collection('daftar_donatur')
+                .doc(value.id)
+                .update({'donation_id': value.id});
 
-          DonaturModel _donaturWithId = DonaturModel(
-            ownerId: user!.userId,
-            ownerName: user!.name,
-            ownerImage: user!.imageProfile,
-            donationId: value.id,
-            courier: _courier!,
-            note: _noteController.text,
-            noReceipt: _noReceiptController.text,
-            imgDonation: _imgUrl,
-            date: _timeNow,
-            donation: _listKebutuhan,
-          );
+            DonaturModel _donaturWithId = DonaturModel(
+              ownerId: user!.userId,
+              ownerName: user!.name,
+              ownerImage: user!.imageProfile,
+              donationId: value.id,
+              courier: _courier!,
+              note: _noteController.text,
+              noReceipt: _noReceiptController.text,
+              imgDonation: _imgUrl,
+              date: _timeNow,
+              donation: _listKebutuhan,
+            );
 
-          await Firestore.firebaseFirestore
-              .collection('users')
-              .doc(Auth.firebaseAuth.currentUser!.uid)
-              .collection('daftar_donasi')
-              .doc(value.id)
-              .set(_donaturWithId.setDataMap());
+            await Firestore.firebaseFirestore
+                .collection('users')
+                .doc(Auth.firebaseAuth.currentUser!.uid)
+                .collection('daftar_donasi')
+                .doc(value.id)
+                .set(_donaturWithId.setDataMap());
 
-          await Firestore.firebaseFirestore
-              .collection('panti_asuhan')
-              .doc(widget.pantiAsuhan!.pantiAsuhanId)
-              .collection('daftar_donatur')
-              .doc(value.id)
-              .set(_donaturWithId.setDataMap());
-        });
+            await Firestore.firebaseFirestore
+                .collection('panti_asuhan')
+                .doc(widget.pantiAsuhan!.pantiAsuhanId)
+                .collection('daftar_donatur')
+                .doc(value.id)
+                .set(_donaturWithId.setDataMap());
+          },
+        );
       } catch (e) {
-        CustomSnackBar.snackBar(context, 'Opss.. Sepertinya terjadi kesalahan');
+        const Toast(toastTitle: 'Opss.. Sepertinya terjadi kesalahan')
+            .failedToast()
+            .show(context);
       }
 
       setState(() => _isLoading = false);
       Navigation.back();
     } else {
-      CustomSnackBar.snackBar(context, 'Mohon lengkapi data anda');
+      const Toast(toastTitle: 'Mohon lengkapi data anda')
+          .failedToast()
+          .show(context);
       setState(() => _isLoading = false);
     }
   }

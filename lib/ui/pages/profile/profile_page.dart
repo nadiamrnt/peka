@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:cherry_toast/cherry_toast.dart';
-import 'package:cherry_toast/resources/arrays.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -167,7 +165,11 @@ class _ProfilePageState extends State<ProfilePage> {
         ProfileOption(
           imageAsset: 'ic_edit_profile.png',
           title: 'Edit Profil',
-          onTap: () {},
+          onTap: () {
+            const Toast(toastTitle: 'sedang dalam pengembangan')
+                .waitingToast()
+                .show(context);
+          },
         ),
         const SizedBox(height: 5),
         Divider(
@@ -179,8 +181,9 @@ class _ProfilePageState extends State<ProfilePage> {
           imageAsset: 'ic_setting.png',
           title: 'Pengaturan',
           onTap: () {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('success')));
+            const Toast(toastTitle: 'sedang dalam pengembangan')
+                .waitingToast()
+                .show(context);
           },
         ),
         const SizedBox(height: 5),
@@ -194,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
           title: 'Tentang Kami',
           onTap: () {
             const Toast(toastTitle: 'sedang dalam pengembangan')
-                .cherryToast()
+                .waitingToast()
                 .show(context);
           },
         ),
@@ -271,12 +274,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           .collection('users')
                           .doc(Auth.firebaseAuth.currentUser!.uid)
                           .update({'img_profile': _imgUrl});
+
+                      Navigation.back();
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Opss.. terjadi kesalahan'),
-                        ),
-                      );
+                      const Toast(toastTitle: 'Opss.. terjadi kesalahan')
+                          .failedToast()
+                          .show(context);
                     }
                   }
 
@@ -309,11 +312,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           .doc(Auth.firebaseAuth.currentUser!.uid)
                           .update({'img_profile': _imgUrl});
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Opss.. terjadi kesalahan'),
-                        ),
-                      );
+                      const Toast(toastTitle: 'Opss.. terjadi kesalahan')
+                          .failedToast()
+                          .show(context);
                     }
                   }
 
