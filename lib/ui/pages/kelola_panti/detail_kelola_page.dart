@@ -186,10 +186,12 @@ class DetailKelolaPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 24),
                 Image.asset(
                   'assets/images/no_data.png',
                   width: 180,
                 ),
+                const SizedBox(height: 6),
                 Text(
                   'Opss Tidak ada donatur nihh',
                   style: greyTextStyle.copyWith(fontSize: 14),

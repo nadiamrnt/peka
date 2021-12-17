@@ -110,22 +110,16 @@ class _DetailPageState extends State<DetailPage> {
           .collection('daftar_donatur')
           .snapshots(),
       builder: (_, snapshot) {
-        List<String> _listImgDonatur = [];
-        int? _jumlahDonatur;
-
         if (snapshot.data == null) {
           return Center(
               child: lottie.LottieBuilder.asset('assets/raw/loading.json'));
         }
 
+        var dataDonatur = snapshot.data!.docs;
         if (snapshot.data!.docs.isNotEmpty) {
-          _jumlahDonatur = snapshot.data!.docs.length;
-          for (var dataDonatur in snapshot.data!.docs) {
-            _listImgDonatur.add(dataDonatur.get('owner_image'));
-          }
+          dataDonatur.add(snapshot.data!.docs.last);
         }
-
-        _listImgDonatur = [..._listImgDonatur, ''];
+        int donaturLenght = dataDonatur.length;
 
         return Padding(
           padding: EdgeInsets.only(left: defaultMargin, right: defaultMargin),
@@ -140,14 +134,16 @@ class _DetailPageState extends State<DetailPage> {
               const SizedBox(height: 7),
               SizedBox(
                 width: double.infinity,
-                child: _listImgDonatur.length >= 4
+                child: snapshot.data!.docs.length >= 2
                     ? Stack(
-                        children: _listImgDonatur
+                        children: dataDonatur
                             .asMap()
-                            .keys
+                            .entries
                             .toList()
                             .map(
-                              (index) {
+                              (item) {
+                                int index = item.key;
+                                String imgDonatur = item.value.get('owner_image');
                                 return (index == 0)
                                     ? Container(
                                         width: 30,
@@ -160,35 +156,32 @@ class _DetailPageState extends State<DetailPage> {
                                           ),
                                         ),
                                         child: ClipOval(
-                                          child: Image.network(
-                                              _listImgDonatur[index],
+                                          child: Image.network(imgDonatur,
                                               fit: BoxFit.cover),
                                         ),
                                       )
-                                    : (index == 4 &&
-                                                _listImgDonatur.length > 5 ||
-                                            index == 3 &&
-                                                _listImgDonatur.length == 5 ||
-                                            index == 2 &&
-                                                _listImgDonatur.length == 4)
+                                    : (index == 4 && donaturLenght > 5 ||
+                                            index == 4 && donaturLenght == 5 ||
+                                            index == 3 && donaturLenght == 4 ||
+                                            index == 2 && donaturLenght == 3)
                                         ? Positioned(
                                             left: (index == 3 &&
-                                                    _listImgDonatur.length == 5)
+                                                    donaturLenght == 4)
                                                 ? 82
                                                 : index == 2 &&
-                                                        _listImgDonatur
-                                                                .length ==
-                                                            4
+                                                        donaturLenght == 3
                                                     ? 62
-                                                    : 104,
+                                                    : index == 4 &&
+                                                            donaturLenght == 5
+                                                        ? 104
+                                                        : 104,
                                             child: Container(
                                               alignment: Alignment.center,
                                               height: 30,
                                               child: Text(
                                                 (index == 4 &&
-                                                        _listImgDonatur.length >
-                                                            5)
-                                                    ? '+${_jumlahDonatur! - index} Berdonasi'
+                                                        donaturLenght > 5)
+                                                    ? '+${donaturLenght - 1 - index} Berdonasi'
                                                     : 'Berdonasi',
                                                 style: greyTextStyle,
                                               ),
@@ -207,8 +200,7 @@ class _DetailPageState extends State<DetailPage> {
                                                 ),
                                               ),
                                               child: ClipOval(
-                                                child: Image.network(
-                                                    _listImgDonatur[index],
+                                                child: Image.network(imgDonatur,
                                                     fit: BoxFit.cover),
                                               ),
                                             ),
@@ -217,7 +209,7 @@ class _DetailPageState extends State<DetailPage> {
                             )
                             .toList()
                             .getRange(
-                                0, (_jumlahDonatur! > 5) ? 5 : _jumlahDonatur)
+                                0, (donaturLenght > 5) ? 5 : donaturLenght)
                             .toList(),
                       )
                     : Row(
