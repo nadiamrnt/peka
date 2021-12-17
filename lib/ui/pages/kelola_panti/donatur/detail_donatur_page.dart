@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/donatur_model.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
-import 'package:peka/ui/widgets/toast.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import '../../../widgets/custom_toast.dart';
 
 class DetailDonatur extends StatefulWidget {
   static const routeName = '/detail-donatur';
@@ -284,9 +286,11 @@ class _DetailDonaturState extends State<DetailDonatur> {
                 textButton: 'Kirim Ucapan',
                 onTap: () async {
                   Navigation.back();
-                  Toast(
-                    toastTitle: 'Ucapan Terkirim!',
-                  ).successToast().show(context);
+                  SmartDialog.showToast('',
+                      widget: const CustomToast(
+                        msg: 'Opss.. sepertinya terjadi kesalahan',
+                        isError: true,
+                      ));
                 },
               ),
             ],

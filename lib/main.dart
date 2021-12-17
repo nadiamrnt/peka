@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/splash_screen.dart';
 import 'package:peka/ui/pages/auth/add_photo_page.dart';
@@ -36,6 +37,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.blue, scaffoldBackgroundColor: kWhiteColor),
+      navigatorObservers: [FlutterSmartDialog.observer],
+      builder: FlutterSmartDialog.init(),
       navigatorKey: navigatorKey,
       initialRoute: SplashScreen.routeName,
       routes: {
