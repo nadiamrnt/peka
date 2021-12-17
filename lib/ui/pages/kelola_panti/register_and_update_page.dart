@@ -12,7 +12,6 @@ import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/ui/widgets/custom_toast.dart';
-import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/category_helper.dart';
 import 'package:peka/utils/file_picker_helper.dart';
 import 'package:peka/utils/firebase_storage_helper.dart';
@@ -612,18 +611,11 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                 onTap: () async {
                   try {
                     await ImagePickerHelper.imgFromCamera().then((image) {
-                      setState(() {
-                        _image = image;
-                      });
+                      setState(() => _image = image);
                     });
                   } catch (e) {
-                    SmartDialog.showToast(
-                      '',
-                      widget: const CustomToast(
-                        msg: 'Opss.. gagal mengambil gambar',
-                        isError: true,
-                      ),
-                    );
+                    SmartDialog.showToast('Ambil gambar dibatalkan');
+                    setState(() => _isLoading = false);
                   }
 
                   Navigation.back();
@@ -632,11 +624,13 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
               const SizedBox(height: 6),
               TextButton(
                 onPressed: () async {
-                  await ImagePickerHelper.imgFromGallery().then((image) {
-                    setState(() {
-                      _image = image;
+                  try {
+                    await ImagePickerHelper.imgFromGallery().then((image) {
+                      setState(() => _image = image);
                     });
-                  });
+                  } catch (e) {
+                    SmartDialog.showToast('Pilih gambar dibatalkan');
+                  }
                   Navigation.back();
                 },
                 child: Text(
@@ -682,15 +676,19 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
   }
 
   void _registerOrUpdateButton() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
     try {
       if (_formKey.currentState!.validate()) {
         if (_isUpdate) {
           await _updateData();
           setState(() => _isLoading = false);
           Navigation.back();
+          SmartDialog.showToast(
+            '',
+            widget: const CustomToast(
+              msg: 'Pengajuan perbaruan panti asuhan telah berhasil',
+            ),
+          );
         } else if (_image != null &&
             _file != null &&
             _location != null &&
@@ -698,6 +696,12 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
           await _registerData();
           setState(() => _isLoading = false);
           Navigation.back();
+          SmartDialog.showToast(
+            '',
+            widget: const CustomToast(
+              msg: 'Pengajuan pendaftaran panti asuhan telah berhasil',
+            ),
+          );
         } else {
           SmartDialog.showToast(
             '',
@@ -737,8 +741,6 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
     final String _name = _nameController.text;
     final String _noPhone = _phoneController.text;
     final String _description = _descController.text;
-
-    print(widget.pantiAsuhan!.pantiAsuhanId);
 
     PantiAsuhanModel dataPantiAsuhan = PantiAsuhanModel(
       pantiAsuhanId: widget.pantiAsuhan!.pantiAsuhanId,

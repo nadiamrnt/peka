@@ -40,8 +40,8 @@ class CustomToast extends StatelessWidget {
               child: Container(
                   width: 24,
                   height: 24,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+                  padding: const EdgeInsets.only(
+                      left: 4, right: 5.5, top: 4, bottom: 4),
                   decoration: BoxDecoration(
                     color: isError ? Colors.red : Colors.green,
                     shape: BoxShape.circle,

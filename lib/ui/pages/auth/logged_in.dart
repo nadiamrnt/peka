@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:peka/common/navigation.dart';
-import 'package:peka/ui/pages/auth/login_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 
 class LoggedIn extends StatefulWidget {

@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/ui/widgets/custom_toast.dart';
 import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/firebase_storage_helper.dart';
 
@@ -259,11 +261,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     _isLoading = true;
                   });
 
-                  await ImagePickerHelper.imgFromCamera().then((image) {
-                    setState(() {
-                      _image = image;
+                  try {
+                    await ImagePickerHelper.imgFromCamera().then((image) {
+                      setState(() => _image = image);
                     });
-                  });
+                  } catch (e) {
+                    SmartDialog.showToast('Ambil gambar dibatalkan');
+                    setState(() => _isLoading = false);
+                  }
+
                   if (_image != null) {
                     try {
                       // Send Image
@@ -289,9 +295,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     }
                   }
 
-                  setState(() {
-                    _isLoading = false;
-                  });
+                  setState(() => _isLoading = false);
 
                   Navigation.back();
                 },
@@ -299,18 +303,19 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 6),
               TextButton(
                 onPressed: () async {
-                  setState(() {
-                    _isLoading = true;
-                  });
-                  await ImagePickerHelper.imgFromGallery().then((image) {
-                    setState(() {
-                      _image = image;
+                  setState(() => _isLoading = true);
+                  try {
+                    await ImagePickerHelper.imgFromGallery().then((image) {
+                      setState(() => _image = image);
                     });
-                  });
+                  } catch (e) {
+                    setState(() => _isLoading = true);
+                    SmartDialog.showToast('Pilih gambar dibatalkan');
+                  }
+
                   if (_image != null) {
                     try {
                       Navigation.back();
-                      // Send Image
                       String _imgUrl =
                           await FirebaseStorageHelper.uploadImageProfile(
                               _image!);
@@ -319,15 +324,16 @@ class _ProfilePageState extends State<ProfilePage> {
                           .doc(Auth.firebaseAuth.currentUser!.uid)
                           .update({'img_profile': _imgUrl});
                     } catch (e) {
-                      Toast(toastTitle: 'Opss.. terjadi kesalahan')
-                          .failedToast()
-                          .show(context);
+                      Toast(toastTitle: '').failedToast().show(context);
+                      SmartDialog.showToast(
+                        '',
+                        widget:
+                            const CustomToast(msg: 'Opss.. terjadi kesalahan'),
+                      );
                     }
                   }
 
-                  setState(() {
-                    _isLoading = false;
-                  });
+                  setState(() => _isLoading = false);
 
                   Navigation.back();
                 },

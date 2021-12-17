@@ -3,9 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'kebutuhan_model.dart';
 
 class DonaturModel {
-  final String ownerId;
-  final String ownerName;
-  final String ownerImage;
+  final String userId;
   final String donationId;
   final String courier;
   final String note;
@@ -15,9 +13,7 @@ class DonaturModel {
   final List<KebutuhanModel> donation;
 
   DonaturModel({
-    required this.ownerId,
-    required this.ownerName,
-    required this.ownerImage,
+    required this.userId,
     required this.donationId,
     required this.courier,
     required this.note,
@@ -28,9 +24,7 @@ class DonaturModel {
   });
 
   factory DonaturModel.fromDatabase(DocumentSnapshot? data) => DonaturModel(
-        ownerId: data?.get('owner_id') ?? '',
-        ownerName: data?.get('owner_name') ?? '',
-        ownerImage: data?.get('owner_image') ?? '',
+        userId: data?.get('owner_id') ?? '',
         donationId: data?.get('donation_id') ?? '',
         courier: data?.get('courier') ?? '',
         note: data?.get('note') ?? '',
@@ -47,9 +41,7 @@ class DonaturModel {
 
   Map<String, dynamic> setDataMap() {
     return {
-      "owner_id": ownerId,
-      "owner_name": ownerName,
-      "owner_image": ownerImage,
+      "owner_id": userId, //TODO::ubah owner_id jadi user_id
       "donation_id": donationId,
       "courier": courier,
       "note": note,

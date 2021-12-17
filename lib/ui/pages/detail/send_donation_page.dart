@@ -15,7 +15,6 @@ import 'package:peka/data/model/user_model.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/ui/widgets/custom_toast.dart';
-import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/category_helper.dart';
 
 import '../../../services/firebase/auth/auth.dart';
@@ -66,11 +65,11 @@ class _SendDonationPageState extends State<SendDonationPage> {
                   const SizedBox(height: 30.0),
                   _buildAddImage(),
                   const SizedBox(height: 24.0),
+                  _buildCourier(),
                   Form(
                     key: _formKey,
                     child: Column(
                       children: [
-                        _buildCourier(),
                         const SizedBox(height: 16.0),
                         _buildReceiptNumber(),
                         const SizedBox(height: 16.0),
@@ -372,22 +371,28 @@ class _SendDonationPageState extends State<SendDonationPage> {
               Button(
                 textButton: 'Ambil Foto',
                 onTap: () async {
-                  await ImagePickerHelper.imgFromCamera().then((image) {
-                    setState(() {
-                      _image = image;
+                  try {
+                    await ImagePickerHelper.imgFromCamera().then((image) {
+                      setState(() => _image = image);
                     });
-                  });
+                  } catch (e) {
+                    SmartDialog.showToast('Ambil gambar dibatalkan');
+                  }
+
                   Navigation.back();
                 },
               ),
               const SizedBox(height: 6),
               TextButton(
                 onPressed: () async {
-                  await ImagePickerHelper.imgFromGallery().then((image) {
-                    setState(() {
-                      _image = image;
+                  try {
+                    await ImagePickerHelper.imgFromGallery().then((image) {
+                      setState(() => _image = image);
                     });
-                  });
+                  } catch (e) {
+                    SmartDialog.showToast('Pilih gambar dibatalkan');
+                  }
+
                   Navigation.back();
                 },
                 child: Text(
@@ -406,87 +411,107 @@ class _SendDonationPageState extends State<SendDonationPage> {
   Future<void> _sendDonation() async {
     setState(() => _isLoading = true);
 
-    if (_image != null || _courier != null) {
-      String _imgUrl = await FirebaseStorageHelper.uploadImageDonation(_image!);
-      Timestamp _timeNow = Timestamp.now();
+    try {
+      if (_image != null && _courier != null && _listKebutuhan.isNotEmpty) {
+        if (_formKey.currentState!.validate()) {
+          String _imgUrl =
+              await FirebaseStorageHelper.uploadImageDonation(_image!);
+          Timestamp _timeNow = Timestamp.now();
 
-      DonaturModel _donatur = DonaturModel(
-        ownerId: user!.userId,
-        ownerName: user!.name,
-        ownerImage: user!.imageProfile,
-        donationId: '',
-        courier: _courier!,
-        note: _noteController.text,
-        noReceipt: _noReceiptController.text,
-        imgDonation: _imgUrl,
-        date: _timeNow,
-        donation: _listKebutuhan,
-      );
+          DonaturModel _donatur = DonaturModel(
+            userId: user!.userId,
+            donationId: '',
+            courier: _courier!,
+            note: _noteController.text,
+            noReceipt: _noReceiptController.text,
+            imgDonation: _imgUrl,
+            date: _timeNow,
+            donation: _listKebutuhan,
+          );
 
-      try {
-        await Firestore.firebaseFirestore
-            .collection('users')
-            .doc(widget.pantiAsuhan!.ownerId)
-            .collection('kelola_panti')
-            .doc(widget.pantiAsuhan!.pantiAsuhanId)
-            .collection('daftar_donatur')
-            .add(_donatur.setDataMap())
-            .then(
-          (value) async {
+          try {
             await Firestore.firebaseFirestore
                 .collection('users')
                 .doc(widget.pantiAsuhan!.ownerId)
                 .collection('kelola_panti')
                 .doc(widget.pantiAsuhan!.pantiAsuhanId)
                 .collection('daftar_donatur')
-                .doc(value.id)
-                .update({'donation_id': value.id});
+                .add(_donatur.setDataMap())
+                .then(
+              (value) async {
+                await Firestore.firebaseFirestore
+                    .collection('users')
+                    .doc(widget.pantiAsuhan!.ownerId)
+                    .collection('kelola_panti')
+                    .doc(widget.pantiAsuhan!.pantiAsuhanId)
+                    .collection('daftar_donatur')
+                    .doc(value.id)
+                    .update({'donation_id': value.id});
 
-            DonaturModel _donaturWithId = DonaturModel(
-              ownerId: user!.userId,
-              ownerName: user!.name,
-              ownerImage: user!.imageProfile,
-              donationId: value.id,
-              courier: _courier!,
-              note: _noteController.text,
-              noReceipt: _noReceiptController.text,
-              imgDonation: _imgUrl,
-              date: _timeNow,
-              donation: _listKebutuhan,
+                DonaturModel _donaturWithId = DonaturModel(
+                  userId: user!.userId,
+                  donationId: value.id,
+                  courier: _courier!,
+                  note: _noteController.text,
+                  noReceipt: _noReceiptController.text,
+                  imgDonation: _imgUrl,
+                  date: _timeNow,
+                  donation: _listKebutuhan,
+                );
+
+                await Firestore.firebaseFirestore
+                    .collection('users')
+                    .doc(Auth.firebaseAuth.currentUser!.uid)
+                    .collection('daftar_donasi')
+                    .doc(value.id)
+                    .set(_donaturWithId.setDataMap());
+
+                await Firestore.firebaseFirestore
+                    .collection('panti_asuhan')
+                    .doc(widget.pantiAsuhan!.pantiAsuhanId)
+                    .collection('daftar_donatur')
+                    .doc(value.id)
+                    .set(_donaturWithId.setDataMap());
+              },
             );
+          } catch (e) {
+            SmartDialog.showToast(
+              '',
+              widget: const CustomToast(
+                msg: 'Opss.. Sepertinya terjadi kesalahan',
+                isError: true,
+              ),
+            );
+          }
 
-            await Firestore.firebaseFirestore
-                .collection('users')
-                .doc(Auth.firebaseAuth.currentUser!.uid)
-                .collection('daftar_donasi')
-                .doc(value.id)
-                .set(_donaturWithId.setDataMap());
-
-            await Firestore.firebaseFirestore
-                .collection('panti_asuhan')
-                .doc(widget.pantiAsuhan!.pantiAsuhanId)
-                .collection('daftar_donatur')
-                .doc(value.id)
-                .set(_donaturWithId.setDataMap());
-          },
-        );
-      } catch (e) {
+          setState(() => _isLoading = false);
+          Navigation.back();
+          SmartDialog.showToast(
+            '',
+            widget: const CustomToast(
+              msg: 'Mengirim donasi telah berhasil',
+            ),
+          );
+        }
+      } else {
         SmartDialog.showToast(
           '',
           widget: const CustomToast(
-            msg: 'Opss.. Sepertinya terjadi kesalahan',
+            msg: 'Mohon lengkapi data anda',
             isError: true,
           ),
         );
+        setState(() => _isLoading = false);
       }
-
-      setState(() => _isLoading = false);
-      Navigation.back();
-    } else {
-      const CustomToast(
-        msg: 'Mohon lengkapi data anda',
-        isError: true,
+    } catch (e) {
+      SmartDialog.showToast(
+        '',
+        widget: const CustomToast(
+          msg: 'Opss.. terjadi kesalahan, coba lagi',
+          isError: true,
+        ),
       );
+    } finally {
       setState(() => _isLoading = false);
     }
   }

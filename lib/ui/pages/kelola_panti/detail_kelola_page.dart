@@ -214,18 +214,17 @@ class DetailKelolaPage extends StatelessWidget {
     return StreamBuilder<DocumentSnapshot>(
         stream: Firestore.firebaseFirestore
             .collection('users')
-            .doc(donatur.ownerId)
+            .doc(donatur.userId)
             .snapshots(),
         builder: (_, userData) {
           if (!userData.hasData) {
             return Wrap();
           }
+
           return GestureDetector(
             onTap: () {
-              Navigation.intentWithData(DetailDonatur.routeName, {
-                'data_donasi': donatur,
-                'profil_donatur': userData.data?.get('img_profile')
-              });
+              Navigation.intentWithData(DetailDonatur.routeName,
+                  {'data_donasi': donatur, 'data_user': userData.data});
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,7 +259,7 @@ class DetailKelolaPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                donatur.ownerName,
+                                userData.data!.get('name'),
                                 style: blackTextStyle.copyWith(
                                     fontSize: 16, fontWeight: medium),
                               ),

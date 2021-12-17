@@ -10,7 +10,6 @@ import 'package:peka/services/firebase/firestore/firestore.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_toast.dart';
-import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/firebase_storage_helper.dart';
 
 import '../../../services/firebase/auth/auth.dart';
@@ -179,22 +178,28 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
               Button(
                 textButton: 'Ambil Foto',
                 onTap: () async {
-                  await ImagePickerHelper.imgFromCamera().then((image) {
-                    setState(() {
-                      _image = image;
+                  try {
+                    await ImagePickerHelper.imgFromCamera().then((image) {
+                      setState(() => _image = image);
                     });
-                  });
+                  } catch (e) {
+                    SmartDialog.showToast('Ambil gambar dibatalkan');
+                  }
+
                   Navigation.back();
                 },
               ),
               const SizedBox(height: 6),
               TextButton(
                 onPressed: () async {
-                  await ImagePickerHelper.imgFromGallery().then((image) {
-                    setState(() {
-                      _image = image;
+                  try {
+                    await ImagePickerHelper.imgFromGallery().then((image) {
+                      setState(() => _image = image);
                     });
-                  });
+                  } catch (e) {
+                    SmartDialog.showToast('Pilih gambar dibatalkan');
+                  }
+
                   Navigation.back();
                 },
                 child: Text(

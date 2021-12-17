@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/logged_in.dart';
 import 'package:peka/services/firebase/auth/auth.dart';
-import 'package:peka/not_logged_in.dart';
 import 'package:peka/ui/pages/auth/add_photo_page.dart';
 import 'package:peka/ui/pages/auth/forgot_password_page.dart';
+import 'package:peka/ui/pages/auth/logged_in.dart';
 import 'package:peka/ui/pages/auth/login_page.dart';
+import 'package:peka/ui/pages/auth/not_logged_in.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/detail/detail_map_page.dart';
 import 'package:peka/ui/pages/detail/detail_page.dart';
-import 'package:peka/ui/pages/donation/send_donation_page.dart';
+import 'package:peka/ui/pages/detail/send_donation_page.dart';
 import 'package:peka/ui/pages/home/category_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/pages/home/search_page.dart';
@@ -36,6 +36,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //TODO:: HAPUS SEBELUM RILIS
+
     // return MaterialApp(
     //   title: 'Peka',
     //   debugShowCheckedModeBanner: false,
@@ -44,9 +46,9 @@ class MyApp extends StatelessWidget {
     //   navigatorObservers: [FlutterSmartDialog.observer],
     //   builder: FlutterSmartDialog.init(),
     //   navigatorKey: navigatorKey,
-    //   initialRoute: SplashScreen.routeName,
+    //   initialRoute: NotLoggedIn.routeName,
     //   routes: {
-    //     SplashScreen.routeName: (context) => const SplashScreen(),
+    //     NotLoggedIn.routeName: (context) => const NotLoggedIn(),
     //     LoginPage.routeName: (context) => const LoginPage(),
     //     SignupPage.routeName: (_) => const SignupPage(),
     //     DetailPage.routeName: (_) => const DetailPage(),

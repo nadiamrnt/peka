@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/donatur_model.dart';
+import 'package:peka/data/model/user_model.dart';
 import 'package:peka/ui/widgets/button.dart';
-import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import '../../../widgets/custom_toast.dart';
+import '../../../widgets/dialog_kirim_ucapan.dart';
 
 class DetailDonatur extends StatefulWidget {
   static const routeName = '/detail-donatur';
@@ -19,38 +18,36 @@ class DetailDonatur extends StatefulWidget {
 }
 
 class _DetailDonaturState extends State<DetailDonatur> {
-  final TextEditingController _ucapanController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final data =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     DonaturModel _dataDonasi = data['data_donasi'];
-    String _profileDonatur = data['profil_donatur'];
+    UserModel _userData = UserModel.getDataUser(data['data_user']);
 
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.only(
-                left: defaultMargin,
-                right: defaultMargin,
-                top: 30,
-                bottom: defaultMargin),
+                left: defaultMargin, right: defaultMargin, top: 30, bottom: 30),
             child: Column(
               children: [
                 _buildHeader(_dataDonasi),
                 const SizedBox(height: 30),
-                _buildProfile(_dataDonasi, _profileDonatur),
+                _buildProfile(_dataDonasi, _userData),
                 const SizedBox(height: 24),
                 _buildKurir(_dataDonasi),
                 const SizedBox(height: 24),
                 _buildContent(_dataDonasi),
-                const SizedBox(height: 24),
+                const SizedBox(height: 40),
                 Button(
                     textButton: 'Kirim Ucapan',
                     onTap: () {
-                      _modalBottomSheetMenu(context);
+                      showDialog(
+                        context: context,
+                        builder: (_) => const DialogReview(),
+                      );
                     }),
               ],
             ),
@@ -101,7 +98,7 @@ class _DetailDonaturState extends State<DetailDonatur> {
     );
   }
 
-  Widget _buildProfile(DonaturModel donatur, String profilDonatur) {
+  Widget _buildProfile(DonaturModel donatur, UserModel userModel) {
     var date = donatur.date.toDate();
     timeago.setLocaleMessages('id', timeago.IdMessages());
     var timeAgo = timeago.format(date, locale: 'id');
@@ -111,14 +108,14 @@ class _DetailDonaturState extends State<DetailDonatur> {
         SizedBox(
           width: 60,
           height: 60,
-          child:
-              ClipOval(child: Image.network(profilDonatur, fit: BoxFit.cover)),
+          child: ClipOval(
+              child: Image.network(userModel.imageProfile, fit: BoxFit.cover)),
         ),
         const SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(donatur.ownerName,
+            Text(userModel.name,
                 style:
                     blackTextStyle.copyWith(fontSize: 16, fontWeight: medium)),
             const SizedBox(height: 7),
@@ -146,33 +143,39 @@ class _DetailDonaturState extends State<DetailDonatur> {
       children: [
         Text('Pengiriman',
             style: blackTextStyle.copyWith(fontSize: 16, fontWeight: medium)),
-        const SizedBox(height: 6),
+        const SizedBox(height: 7),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Image.asset(
-                  'assets/icons/ic_delivery.png',
-                  width: 24,
-                ),
-                const SizedBox(width: 10),
-                Text(donatur.courier,
-                    style: greyTextStyle.copyWith(
-                        fontWeight: regular, fontSize: 14)),
-              ],
+            Flexible(
+              child: Row(
+                children: [
+                  Image.asset(
+                    'assets/icons/ic_delivery.png',
+                    width: 24,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(donatur.courier,
+                      style: greyTextStyle.copyWith(
+                          fontWeight: regular, fontSize: 14)),
+                ],
+              ),
             ),
-            Row(
-              children: [
-                Image.asset(
-                  'assets/icons/ic_receipt.png',
-                  width: 24,
-                ),
-                const SizedBox(width: 10),
-                Text(donatur.noReceipt,
-                    style: greyTextStyle.copyWith(
-                        fontWeight: regular, fontSize: 14)),
-              ],
+            Flexible(
+              child: Row(
+                children: [
+                  Image.asset(
+                    'assets/icons/ic_receipt.png',
+                    width: 24,
+                  ),
+                  const SizedBox(width: 10),
+                  Flexible(
+                    child: Text(donatur.noReceipt,
+                        style: greyTextStyle.copyWith(
+                            fontWeight: regular, fontSize: 14)),
+                  ),
+                ],
+              ),
             ),
           ],
         )
@@ -239,66 +242,6 @@ class _DetailDonaturState extends State<DetailDonatur> {
           ),
         ),
       ],
-    );
-  }
-
-  void _modalBottomSheetMenu(BuildContext context) async {
-    await showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (builder) {
-        return Container(
-          height: 300,
-          padding: const EdgeInsets.only(
-            top: 24,
-            left: 24,
-            right: 24,
-          ),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(10.0),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Pesan ke donatur : ',
-                style: blackTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: medium,
-                ),
-              ),
-              const SizedBox(height: 12),
-              CustomTextFormField(
-                  hintText: "Tulis ucapan kebaikan untuk donatur",
-                  errorText: "Tulis ucapan kebaikan untuk donatur",
-                  controller: _ucapanController),
-              const SizedBox(height: 16),
-              Button(
-                textButton: 'Kirim Ucapan',
-                onTap: () async {
-                  Navigation.back();
-                  SmartDialog.showToast(
-                    '',
-                    widget: const CustomToast(
-                      msg: 'Opss.. sepertinya terjadi kesalahan',
-                      isError: true,
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

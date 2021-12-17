@@ -6,7 +6,6 @@ import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/ui/widgets/custom_toast.dart';
-import 'package:peka/ui/widgets/toast.dart';
 
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
@@ -234,7 +233,29 @@ class _SignupPageState extends State<SignupPage> {
           final email = _emailController.text;
           final password = _password1Controller.text;
 
-          await Firestore.createUser(email, name, password);
+          try {
+            await Firestore.createUser(email, name, password);
+          } catch (e) {
+            if (e.toString() ==
+                '[firebase_auth/invalid-email] The email address is badly formatted.') {
+              SmartDialog.showToast(
+                '',
+                widget: const CustomToast(
+                  msg: 'Masukkan email dengan benar',
+                  isError: true,
+                ),
+              );
+            } else if (e.toString() ==
+                '[firebase_auth/weak-password] Password should be at least 6 characters') {
+              SmartDialog.showToast(
+                '',
+                widget: const CustomToast(
+                  msg: 'Kata sandi minimal 6 karakter',
+                  isError: true,
+                ),
+              );
+            }
+          }
           await Auth.signInEmail(email, password);
           Navigation.intentReplacement(AddPhotoPage.routeName);
         }
@@ -243,7 +264,7 @@ class _SignupPageState extends State<SignupPage> {
       SmartDialog.showToast(
         '',
         widget: const CustomToast(
-          msg: 'Opss.. terjadi kesalahan',
+          msg: 'Terjadi kesalahan, silahkan coba lagi',
           isError: true,
         ),
       );

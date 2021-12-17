@@ -8,8 +8,8 @@ import 'package:peka/data/model/panti_asuhan_model.dart';
 import '../../../common/navigation.dart';
 import '../../../services/firebase/firestore/firestore.dart';
 import '../../widgets/button.dart';
-import '../donation/send_donation_page.dart';
 import 'detail_map_page.dart';
+import 'send_donation_page.dart';
 
 class DetailPage extends StatefulWidget {
   static const routeName = '/detail-page';
