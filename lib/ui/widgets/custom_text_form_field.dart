@@ -27,9 +27,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     var listHintText = widget.hintText.split(' ');
     bool _isDescription = listHintText[1] == 'deskripsi';
     bool _isNote = listHintText[1] == 'catatan';
+    bool _isGreeting = listHintText[1] == 'ucapan';
 
     return Container(
-      height: _isDescription || _isNote ? 149.0 : 45.0,
+      height: _isDescription || _isNote || _isGreeting ? 149.0 : 45.0,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 15.0),
       decoration: BoxDecoration(
@@ -39,7 +40,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       child: TextFormField(
         obscureText: widget.obscureText,
         controller: widget.controller,
-        maxLines: _isDescription || _isNote ? 6 : 1,
+        maxLines: _isDescription || _isNote || _isGreeting ? 6 : 1,
         decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: greyHintTextStyle,

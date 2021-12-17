@@ -169,8 +169,6 @@ class DetailKelolaPage extends StatelessWidget {
           return Center(child: LottieBuilder.asset('assets/raw/loading.json'));
         }
 
-        print('aaaa:${pantiAsuhan!.pantiAsuhanId}');
-
         if (snapshot.data!.docs.isNotEmpty) {
           var _listDonatur = snapshot.data!.docs;
           return Expanded(
@@ -209,75 +207,88 @@ class DetailKelolaPage extends StatelessWidget {
     timeago.setLocaleMessages('id', timeago.IdMessages());
     var timeAgo = timeago.format(date, locale: 'id');
 
-    return GestureDetector(
-      onTap: () {
-        Navigation.intentWithData(DetailDonatur.routeName, donatur);
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            width: double.infinity,
-            height: 208,
-            decoration: BoxDecoration(
-                border: Border.all(
-                  color: kWhiteBgColor,
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(18)),
+    return StreamBuilder<DocumentSnapshot>(
+        stream: Firestore.firebaseFirestore
+            .collection('users')
+            .doc(donatur.ownerId)
+            .snapshots(),
+        builder: (_, userData) {
+          if (!userData.hasData) {
+            return Wrap();
+          }
+          return GestureDetector(
+            onTap: () {
+              Navigation.intentWithData(DetailDonatur.routeName, {
+                'data_donasi': donatur,
+                'profil_donatur': userData.data?.get('img_profile')
+              });
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: ClipOval(
-                        child: Image.network(
-                          donatur.ownerImage,
-                          fit: BoxFit.cover,
-                        ),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  width: double.infinity,
+                  height: 208,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: kWhiteBgColor,
+                        width: 2,
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          donatur.ownerName,
-                          style: blackTextStyle.copyWith(
-                              fontSize: 16, fontWeight: medium),
-                        ),
-                        Row(
-                          children: [
-                            Image.asset(
-                              'assets/icons/ic_calendar.png',
-                              width: 14,
-                              height: 14,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: ClipOval(
+                              child: Image.network(
+                                userData.data?.get('img_profile'),
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                            const SizedBox(width: 7),
-                            Text(
-                              timeAgo,
-                              style: greyTextStyle.copyWith(
-                                  fontSize: 13, fontWeight: light),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                donatur.ownerName,
+                                style: blackTextStyle.copyWith(
+                                    fontSize: 16, fontWeight: medium),
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/icons/ic_calendar.png',
+                                    width: 14,
+                                    height: 14,
+                                  ),
+                                  const SizedBox(width: 7),
+                                  Text(
+                                    timeAgo,
+                                    style: greyTextStyle.copyWith(
+                                        fontSize: 13, fontWeight: light),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      _buildCategory(donatur),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 10),
-                _buildCategory(donatur),
+                const SizedBox(height: 16),
               ],
             ),
-          ),
-          const SizedBox(height: 16),
-        ],
-      ),
-    );
+          );
+        });
   }
 
   Widget _buildCategory(DonaturModel donatur) {

@@ -213,7 +213,7 @@ class _SignupPageState extends State<SignupPage> {
       if (_formKey.currentState!.validate()) {
         if (_password1Controller.text != _password2Controller.text) {
           _password2Controller.clear();
-          const Toast(toastTitle: 'Kata sandi tidak sesuai')
+          Toast(toastTitle: 'Kata sandi tidak sesuai')
               .failedToast()
               .show(context);
           setState(() {
@@ -231,9 +231,7 @@ class _SignupPageState extends State<SignupPage> {
         }
       }
     } catch (e) {
-      const Toast(toastTitle: 'Opss.. terjadi kesalahan')
-          .failedToast()
-          .show(context);
+      Toast(toastTitle: 'Opss.. terjadi kesalahan').failedToast().show(context);
     } finally {
       setState(() {
         _isLoading = false;

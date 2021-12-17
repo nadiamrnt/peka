@@ -466,7 +466,7 @@ class _SendDonationPageState extends State<SendDonationPage> {
           },
         );
       } catch (e) {
-        const Toast(toastTitle: 'Opss.. Sepertinya terjadi kesalahan')
+        Toast(toastTitle: 'Opss.. Sepertinya terjadi kesalahan')
             .failedToast()
             .show(context);
       }
@@ -474,9 +474,7 @@ class _SendDonationPageState extends State<SendDonationPage> {
       setState(() => _isLoading = false);
       Navigation.back();
     } else {
-      const Toast(toastTitle: 'Mohon lengkapi data anda')
-          .failedToast()
-          .show(context);
+      Toast(toastTitle: 'Mohon lengkapi data anda').failedToast().show(context);
       setState(() => _isLoading = false);
     }
   }

@@ -166,7 +166,7 @@ class _ProfilePageState extends State<ProfilePage> {
           imageAsset: 'ic_edit_profile.png',
           title: 'Edit Profil',
           onTap: () {
-            const Toast(toastTitle: 'sedang dalam pengembangan')
+            Toast(toastTitle: 'sedang dalam pengembangan')
                 .waitingToast()
                 .show(context);
           },
@@ -181,7 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
           imageAsset: 'ic_setting.png',
           title: 'Pengaturan',
           onTap: () {
-            const Toast(toastTitle: 'sedang dalam pengembangan')
+            Toast(toastTitle: 'sedang dalam pengembangan')
                 .waitingToast()
                 .show(context);
           },
@@ -196,7 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
           imageAsset: 'ic_info.png',
           title: 'Tentang Kami',
           onTap: () {
-            const Toast(toastTitle: 'sedang dalam pengembangan')
+            Toast(toastTitle: 'sedang dalam pengembangan')
                 .waitingToast()
                 .show(context);
           },
@@ -277,7 +277,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                       Navigation.back();
                     } catch (e) {
-                      const Toast(toastTitle: 'Opss.. terjadi kesalahan')
+                      Toast(toastTitle: 'Opss.. terjadi kesalahan')
                           .failedToast()
                           .show(context);
                     }
@@ -312,7 +312,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           .doc(Auth.firebaseAuth.currentUser!.uid)
                           .update({'img_profile': _imgUrl});
                     } catch (e) {
-                      const Toast(toastTitle: 'Opss.. terjadi kesalahan')
+                      Toast(toastTitle: 'Opss.. terjadi kesalahan')
                           .failedToast()
                           .show(context);
                     }

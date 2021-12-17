@@ -184,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigation.intentReplacement(HomePage.routeName);
       }
     } catch (e) {
-      const Toast(toastTitle: 'Opss.. masukkan email/kata sandi dengan benar')
+      Toast(toastTitle: 'Opss.. masukkan email/kata sandi dengan benar')
           .failedToast()
           .show(context);
     } finally {

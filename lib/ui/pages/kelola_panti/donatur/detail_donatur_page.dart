@@ -9,6 +9,7 @@ import 'package:timeago/timeago.dart' as timeago;
 
 class DetailDonatur extends StatefulWidget {
   static const routeName = '/detail-donatur';
+
   const DetailDonatur({Key? key}) : super(key: key);
 
   @override
@@ -20,7 +21,10 @@ class _DetailDonaturState extends State<DetailDonatur> {
 
   @override
   Widget build(BuildContext context) {
-    final _donatur = ModalRoute.of(context)?.settings.arguments as DonaturModel;
+    final data =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    DonaturModel _dataDonasi = data['data_donasi'];
+    String _profileDonatur = data['profil_donatur'];
 
     return Scaffold(
       body: SafeArea(
@@ -33,18 +37,18 @@ class _DetailDonaturState extends State<DetailDonatur> {
                 bottom: defaultMargin),
             child: Column(
               children: [
-                _buildHeader(_donatur),
+                _buildHeader(_dataDonasi),
                 const SizedBox(height: 30),
-                _buildProfile(_donatur),
+                _buildProfile(_dataDonasi, _profileDonatur),
                 const SizedBox(height: 24),
-                _buildKurir(_donatur),
+                _buildKurir(_dataDonasi),
                 const SizedBox(height: 24),
-                _buildContent(_donatur),
+                _buildContent(_dataDonasi),
                 const SizedBox(height: 24),
                 Button(
                     textButton: 'Kirim Ucapan',
                     onTap: () {
-                      _modalBottomSheetMenu(context, _donatur);
+                      _modalBottomSheetMenu(context);
                     }),
               ],
             ),
@@ -95,7 +99,7 @@ class _DetailDonaturState extends State<DetailDonatur> {
     );
   }
 
-  Widget _buildProfile(DonaturModel donatur) {
+  Widget _buildProfile(DonaturModel donatur, String profilDonatur) {
     var date = donatur.date.toDate();
     timeago.setLocaleMessages('id', timeago.IdMessages());
     var timeAgo = timeago.format(date, locale: 'id');
@@ -105,8 +109,8 @@ class _DetailDonaturState extends State<DetailDonatur> {
         SizedBox(
           width: 60,
           height: 60,
-          child: ClipOval(
-              child: Image.network(donatur.ownerImage, fit: BoxFit.cover)),
+          child:
+              ClipOval(child: Image.network(profilDonatur, fit: BoxFit.cover)),
         ),
         const SizedBox(width: 10),
         Column(
@@ -236,7 +240,7 @@ class _DetailDonaturState extends State<DetailDonatur> {
     );
   }
 
-  void _modalBottomSheetMenu(BuildContext context, DonaturModel donatur) async {
+  void _modalBottomSheetMenu(BuildContext context) async {
     await showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -247,11 +251,11 @@ class _DetailDonaturState extends State<DetailDonatur> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (builder) {
         return Container(
-          height: 150,
+          height: 300,
           padding: const EdgeInsets.only(
             top: 24,
-            left: 70,
-            right: 70,
+            left: 24,
+            right: 24,
           ),
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -261,17 +265,26 @@ class _DetailDonaturState extends State<DetailDonatur> {
             ),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                'Pesan ke donatur : ',
+                style: blackTextStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: medium,
+                ),
+              ),
+              const SizedBox(height: 12),
               CustomTextFormField(
-                  hintText: "Tulis ucapan untuk donatur",
-                  errorText: "Tulis ucapan untuk donatur",
+                  hintText: "Tulis ucapan kebaikan untuk donatur",
+                  errorText: "Tulis ucapan kebaikan untuk donatur",
                   controller: _ucapanController),
               const SizedBox(height: 16),
               Button(
                 textButton: 'Kirim Ucapan',
-                onTap: () {
+                onTap: () async {
                   Navigation.back();
-                  const Toast(
+                  Toast(
                     toastTitle: 'Ucapan Terkirim!',
                   ).successToast().show(context);
                 },

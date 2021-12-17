@@ -123,7 +123,7 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
                       .doc(Auth.firebaseAuth.currentUser!.uid)
                       .update({'img_profile': _imgUrl});
                 } catch (e) {
-                  const Toast(toastTitle: 'Opss.. terjadi kesalahan')
+                  Toast(toastTitle: 'Opss.. terjadi kesalahan')
                       .failedToast()
                       .show(context);
                 }

@@ -398,7 +398,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                         zoom: 17)));
               }
             } catch (e) {
-              const Toast(toastTitle: 'Pilih lokasi dibatalkan')
+              Toast(toastTitle: 'Pilih lokasi dibatalkan')
                   .failedToast()
                   .show(context);
             }
@@ -609,7 +609,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                       });
                     });
                   } catch (e) {
-                    const Toast(toastTitle: 'Opss.. gagal mengambil gambar')
+                    Toast(toastTitle: 'Opss.. gagal mengambil gambar')
                         .failedToast()
                         .show(context);
                   }
@@ -687,13 +687,13 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
           setState(() => _isLoading = false);
           Navigation.back();
         } else {
-          const Toast(toastTitle: 'Mohon lengkapi registrasi panti asuhan anda')
+          Toast(toastTitle: 'Mohon lengkapi registrasi panti asuhan anda')
               .failedToast()
               .show(context);
         }
       }
     } catch (e) {
-      const Toast(toastTitle: 'Opss.. terjadi kesalahan, coba lagi')
+      Toast(toastTitle: 'Opss.. terjadi kesalahan, coba lagi')
           .failedToast()
           .show(context);
     } finally {

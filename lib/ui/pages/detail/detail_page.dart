@@ -119,6 +119,7 @@ class _DetailPageState extends State<DetailPage> {
         if (snapshot.data!.docs.isNotEmpty) {
           dataDonatur.add(snapshot.data!.docs.last);
         }
+
         int donaturLenght = dataDonatur.length;
 
         return Padding(
@@ -143,53 +144,17 @@ class _DetailPageState extends State<DetailPage> {
                             .map(
                               (item) {
                                 int index = item.key;
-                                String imgDonatur = item.value.get('owner_image');
-                                return (index == 0)
-                                    ? Container(
-                                        width: 30,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            width: 1,
-                                            color: kWhiteBgColor,
-                                          ),
-                                        ),
-                                        child: ClipOval(
-                                          child: Image.network(imgDonatur,
-                                              fit: BoxFit.cover),
-                                        ),
-                                      )
-                                    : (index == 4 && donaturLenght > 5 ||
-                                            index == 4 && donaturLenght == 5 ||
-                                            index == 3 && donaturLenght == 4 ||
-                                            index == 2 && donaturLenght == 3)
-                                        ? Positioned(
-                                            left: (index == 3 &&
-                                                    donaturLenght == 4)
-                                                ? 82
-                                                : index == 2 &&
-                                                        donaturLenght == 3
-                                                    ? 62
-                                                    : index == 4 &&
-                                                            donaturLenght == 5
-                                                        ? 104
-                                                        : 104,
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              height: 30,
-                                              child: Text(
-                                                (index == 4 &&
-                                                        donaturLenght > 5)
-                                                    ? '+${donaturLenght - 1 - index} Berdonasi'
-                                                    : 'Berdonasi',
-                                                style: greyTextStyle,
-                                              ),
-                                            ),
-                                          )
-                                        : Positioned(
-                                            left: (index * 22),
-                                            child: Container(
+                                return StreamBuilder<DocumentSnapshot>(
+                                    stream: Firestore.firebaseFirestore
+                                        .collection('users')
+                                        .doc(item.value.get('owner_id'))
+                                        .snapshots(),
+                                    builder: (_, userData) {
+                                      if (!userData.hasData) {
+                                        return Wrap();
+                                      }
+                                      return (index == 0)
+                                          ? Container(
                                               width: 30,
                                               height: 30,
                                               decoration: BoxDecoration(
@@ -200,11 +165,64 @@ class _DetailPageState extends State<DetailPage> {
                                                 ),
                                               ),
                                               child: ClipOval(
-                                                child: Image.network(imgDonatur,
+                                                child: Image.network(
+                                                    userData.data
+                                                        ?.get('img_profile'),
                                                     fit: BoxFit.cover),
                                               ),
-                                            ),
-                                          );
+                                            )
+                                          : (index == 4 && donaturLenght > 5 ||
+                                                  index == 4 &&
+                                                      donaturLenght == 5 ||
+                                                  index == 3 &&
+                                                      donaturLenght == 4 ||
+                                                  index == 2 &&
+                                                      donaturLenght == 3)
+                                              ? Positioned(
+                                                  left: (index == 3 &&
+                                                          donaturLenght == 4)
+                                                      ? 82
+                                                      : index == 2 &&
+                                                              donaturLenght == 3
+                                                          ? 62
+                                                          : index == 4 &&
+                                                                  donaturLenght ==
+                                                                      5
+                                                              ? 104
+                                                              : 104,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    height: 30,
+                                                    child: Text(
+                                                      (index == 4 &&
+                                                              donaturLenght > 5)
+                                                          ? '+${donaturLenght - 1 - index} Berdonasi'
+                                                          : 'Berdonasi',
+                                                      style: greyTextStyle,
+                                                    ),
+                                                  ),
+                                                )
+                                              : Positioned(
+                                                  left: (index * 22),
+                                                  child: Container(
+                                                    width: 30,
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        width: 1,
+                                                        color: kWhiteBgColor,
+                                                      ),
+                                                    ),
+                                                    child: ClipOval(
+                                                      child: Image.network(
+                                                          userData.data?.get(
+                                                              'img_profile'),
+                                                          fit: BoxFit.cover),
+                                                    ),
+                                                  ),
+                                                );
+                                    });
                               },
                             )
                             .toList()
