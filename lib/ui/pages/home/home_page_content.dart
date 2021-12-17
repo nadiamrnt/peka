@@ -293,8 +293,10 @@ class _HomePageContentState extends State<HomePageContent> {
                             PantiAsuhanModel.fromDatabase(data);
                         if (snapshot.data == null) {
                           return Center(
-                            child:
-                                LottieBuilder.asset('assets/raw/loading.json'),
+                            child: LottieBuilder.asset(
+                              'assets/raw/loading.json',
+                              width: 200,
+                            ),
                           );
                         }
 
@@ -308,7 +310,10 @@ class _HomePageContentState extends State<HomePageContent> {
                       },
                     )
                   : Center(
-                      child: LottieBuilder.asset('assets/raw/loading.json'));
+                      child: LottieBuilder.asset(
+                      'assets/raw/loading.json',
+                      width: 200,
+                    ));
             },
           ),
         ),

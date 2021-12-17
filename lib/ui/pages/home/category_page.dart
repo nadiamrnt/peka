@@ -90,7 +90,11 @@ class _CategoryPageState extends State<CategoryPage> {
         List<PantiAsuhanModel> listPantiAsuhan = [];
 
         if (snapshot.data == null) {
-          return Center(child: LottieBuilder.asset('assets/raw/loading.json'));
+          return Center(
+              child: LottieBuilder.asset(
+            'assets/raw/loading.json',
+            width: 200,
+          ));
         }
 
         if (snapshot.data!.docs.isNotEmpty) {
@@ -131,7 +135,10 @@ class _CategoryPageState extends State<CategoryPage> {
                     );
                   }).toList()),
                 )
-              : LottieBuilder.asset('assets/raw/loading.json');
+              : LottieBuilder.asset(
+                  'assets/raw/loading.json',
+                  width: 200,
+                );
         } else {
           return const SizedBox();
         }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
@@ -8,6 +9,7 @@ import 'package:peka/common/styles.dart';
 import 'package:peka/services/firebase/firestore/firestore.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/widgets/button.dart';
+import 'package:peka/ui/widgets/custom_toast.dart';
 import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/firebase_storage_helper.dart';
 
@@ -31,7 +33,10 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
     return Scaffold(
       body: LoadingOverlay(
         color: kGreyBgColor,
-        progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
+        progressIndicator: LottieBuilder.asset(
+          'assets/raw/loading.json',
+          width: 200,
+        ),
         isLoading: _isLoading,
         opacity: 0.7,
         child: SafeArea(
@@ -123,9 +128,13 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
                       .doc(Auth.firebaseAuth.currentUser!.uid)
                       .update({'img_profile': _imgUrl});
                 } catch (e) {
-                  Toast(toastTitle: 'Opss.. terjadi kesalahan')
-                      .failedToast()
-                      .show(context);
+                  SmartDialog.showToast(
+                    '',
+                    widget: const CustomToast(
+                      msg: 'Opss.. terjadi kesalahan',
+                      isError: true,
+                    ),
+                  );
                 }
               }
 

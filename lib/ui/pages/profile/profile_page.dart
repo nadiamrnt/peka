@@ -34,7 +34,10 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return LoadingOverlay(
       color: kGreyBgColor,
-      progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
+      progressIndicator: LottieBuilder.asset(
+        'assets/raw/loading.json',
+        width: 200,
+      ),
       isLoading: _isLoading,
       child: StreamBuilder<DocumentSnapshot>(
         stream: Firestore.firebaseFirestore
@@ -49,7 +52,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
           if (snapshot.data == null) {
             return Center(
-              child: LottieBuilder.asset('assets/raw/loading.json'),
+              child: LottieBuilder.asset(
+                'assets/raw/loading.json',
+                width: 200,
+              ),
             );
           }
 
@@ -303,6 +309,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   });
                   if (_image != null) {
                     try {
+                      Navigation.back();
                       // Send Image
                       String _imgUrl =
                           await FirebaseStorageHelper.uploadImageProfile(

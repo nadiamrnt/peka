@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
+import 'package:peka/ui/widgets/custom_toast.dart';
 import 'package:peka/ui/widgets/toast.dart';
 
 import '../../../services/firebase/auth/auth.dart';
@@ -36,7 +38,10 @@ class _SignupPageState extends State<SignupPage> {
       child: Scaffold(
         backgroundColor: kWhiteColor,
         body: LoadingOverlay(
-          progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
+          progressIndicator: LottieBuilder.asset(
+            'assets/raw/loading.json',
+            width: 200,
+          ),
           isLoading: _isLoading,
           color: kGreyBgColor,
           child: SingleChildScrollView(
@@ -213,9 +218,13 @@ class _SignupPageState extends State<SignupPage> {
       if (_formKey.currentState!.validate()) {
         if (_password1Controller.text != _password2Controller.text) {
           _password2Controller.clear();
-          Toast(toastTitle: 'Kata sandi tidak sesuai')
-              .failedToast()
-              .show(context);
+          SmartDialog.showToast(
+            '',
+            widget: const CustomToast(
+              msg: 'Kata sandi tidak sesuai',
+              isError: true,
+            ),
+          );
           setState(() {
             _isLoading = false;
           });
@@ -231,7 +240,13 @@ class _SignupPageState extends State<SignupPage> {
         }
       }
     } catch (e) {
-      Toast(toastTitle: 'Opss.. terjadi kesalahan').failedToast().show(context);
+      SmartDialog.showToast(
+        '',
+        widget: const CustomToast(
+          msg: 'Opss.. terjadi kesalahan',
+          isError: true,
+        ),
+      );
     } finally {
       setState(() {
         _isLoading = false;

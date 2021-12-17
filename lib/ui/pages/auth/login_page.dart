@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
@@ -6,6 +7,7 @@ import 'package:peka/ui/pages/auth/forgot_password_page.dart';
 import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
+import 'package:peka/ui/widgets/custom_toast.dart';
 import 'package:peka/ui/widgets/toast.dart';
 
 import '../../../common/navigation.dart';
@@ -34,7 +36,10 @@ class _LoginPageState extends State<LoginPage> {
       child: Scaffold(
         backgroundColor: kWhiteColor,
         body: LoadingOverlay(
-          progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
+          progressIndicator: LottieBuilder.asset(
+            'assets/raw/loading.json',
+            width: 200,
+          ),
           isLoading: _isLoading,
           color: kGreyBgColor,
           opacity: 0.7,
@@ -184,9 +189,13 @@ class _LoginPageState extends State<LoginPage> {
         Navigation.intentReplacement(HomePage.routeName);
       }
     } catch (e) {
-      Toast(toastTitle: 'Opss.. masukkan email/kata sandi dengan benar')
-          .failedToast()
-          .show(context);
+      SmartDialog.showToast(
+        '',
+        widget: const CustomToast(
+          msg: 'Opss.. masukkan email/kata sandi dengan benar',
+          isError: true,
+        ),
+      );
     } finally {
       setState(() {
         _isLoading = false;

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart' as lottie;
@@ -10,6 +11,7 @@ import 'package:peka/common/styles.dart';
 import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
+import 'package:peka/ui/widgets/custom_toast.dart';
 import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/category_helper.dart';
 import 'package:peka/utils/file_picker_helper.dart';
@@ -69,8 +71,10 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
       child: Scaffold(
         body: LoadingOverlay(
           color: kGreyBgColor,
-          progressIndicator:
-              lottie.LottieBuilder.asset('assets/raw/loading.json'),
+          progressIndicator: lottie.LottieBuilder.asset(
+            'assets/raw/loading.json',
+            width: 200,
+          ),
           isLoading: _isLoading,
           opacity: 0.7,
           child: SingleChildScrollView(
@@ -398,9 +402,13 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                         zoom: 17)));
               }
             } catch (e) {
-              Toast(toastTitle: 'Pilih lokasi dibatalkan')
-                  .failedToast()
-                  .show(context);
+              SmartDialog.showToast(
+                '',
+                widget: const CustomToast(
+                  msg: 'Pilih lokasi dibatalkan',
+                  isError: true,
+                ),
+              );
             }
           },
           child: (_isUpdate && _location == null)
@@ -609,9 +617,13 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
                       });
                     });
                   } catch (e) {
-                    Toast(toastTitle: 'Opss.. gagal mengambil gambar')
-                        .failedToast()
-                        .show(context);
+                    SmartDialog.showToast(
+                      '',
+                      widget: const CustomToast(
+                        msg: 'Opss.. gagal mengambil gambar',
+                        isError: true,
+                      ),
+                    );
                   }
 
                   Navigation.back();
@@ -687,15 +699,23 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
           setState(() => _isLoading = false);
           Navigation.back();
         } else {
-          Toast(toastTitle: 'Mohon lengkapi registrasi panti asuhan anda')
-              .failedToast()
-              .show(context);
+          SmartDialog.showToast(
+            '',
+            widget: const CustomToast(
+              msg: 'Mohon lengkapi registrasi panti asuhan anda',
+              isError: true,
+            ),
+          );
         }
       }
     } catch (e) {
-      Toast(toastTitle: 'Opss.. terjadi kesalahan, coba lagi')
-          .failedToast()
-          .show(context);
+      SmartDialog.showToast(
+        '',
+        widget: const CustomToast(
+          msg: 'Opss.. terjadi kesalahan, coba lagi',
+          isError: true,
+        ),
+      );
     } finally {
       setState(() => _isLoading = false);
     }

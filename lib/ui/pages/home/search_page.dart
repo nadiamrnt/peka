@@ -139,7 +139,10 @@ class _SearchPageState extends State<SearchPage> {
                             ));
                       }).toList()),
                     )
-                  : LottieBuilder.asset('assets/raw/loading.json');
+                  : LottieBuilder.asset(
+                      'assets/raw/loading.json',
+                      width: 200,
+                    );
             })
         : Center(
             child: SizedBox(

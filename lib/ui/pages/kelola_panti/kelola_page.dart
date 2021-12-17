@@ -29,7 +29,10 @@ class KelolaPage extends StatelessWidget {
           builder: (_, snapshot) {
             if (snapshot.data == null) {
               return Center(
-                  child: LottieBuilder.asset('assets/raw/loading.json'));
+                  child: LottieBuilder.asset(
+                'assets/raw/loading.json',
+                width: 200,
+              ));
             }
 
             if (snapshot.data!.docs.isNotEmpty) {

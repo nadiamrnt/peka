@@ -286,11 +286,13 @@ class _DetailDonaturState extends State<DetailDonatur> {
                 textButton: 'Kirim Ucapan',
                 onTap: () async {
                   Navigation.back();
-                  SmartDialog.showToast('',
-                      widget: const CustomToast(
-                        msg: 'Opss.. sepertinya terjadi kesalahan',
-                        isError: true,
-                      ));
+                  SmartDialog.showToast(
+                    '',
+                    widget: const CustomToast(
+                      msg: 'Opss.. sepertinya terjadi kesalahan',
+                      isError: true,
+                    ),
+                  );
                 },
               ),
             ],

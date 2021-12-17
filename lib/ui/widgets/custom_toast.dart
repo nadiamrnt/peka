@@ -13,7 +13,7 @@ class CustomToast extends StatelessWidget {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 30),
+        margin: const EdgeInsets.only(bottom: 30, right: 24, left: 24),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
         decoration: BoxDecoration(
           color: kWhiteColor,
@@ -55,7 +55,12 @@ class CustomToast extends StatelessWidget {
                     alignment: Alignment.center,
                   )),
             ),
-            Text(msg, style: blackTextStyle.copyWith(fontSize: 14)),
+            Expanded(
+              child: Text(
+                msg,
+                style: blackTextStyle.copyWith(fontSize: 14),
+              ),
+            ),
           ],
         ),
       ),

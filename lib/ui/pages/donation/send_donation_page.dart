@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/navigation.dart';
@@ -13,6 +14,7 @@ import 'package:peka/data/model/panti_asuhan_model.dart';
 import 'package:peka/data/model/user_model.dart';
 import 'package:peka/ui/widgets/button.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
+import 'package:peka/ui/widgets/custom_toast.dart';
 import 'package:peka/ui/widgets/toast.dart';
 import 'package:peka/utils/category_helper.dart';
 
@@ -48,7 +50,10 @@ class _SendDonationPageState extends State<SendDonationPage> {
   Widget build(BuildContext context) {
     return LoadingOverlay(
       isLoading: _isLoading,
-      progressIndicator: LottieBuilder.asset('assets/raw/loading.json'),
+      progressIndicator: LottieBuilder.asset(
+        'assets/raw/loading.json',
+        width: 200,
+      ),
       child: SafeArea(
         child: Scaffold(
           body: SingleChildScrollView(
@@ -466,15 +471,22 @@ class _SendDonationPageState extends State<SendDonationPage> {
           },
         );
       } catch (e) {
-        Toast(toastTitle: 'Opss.. Sepertinya terjadi kesalahan')
-            .failedToast()
-            .show(context);
+        SmartDialog.showToast(
+          '',
+          widget: const CustomToast(
+            msg: 'Opss.. Sepertinya terjadi kesalahan',
+            isError: true,
+          ),
+        );
       }
 
       setState(() => _isLoading = false);
       Navigation.back();
     } else {
-      Toast(toastTitle: 'Mohon lengkapi data anda').failedToast().show(context);
+      const CustomToast(
+        msg: 'Mohon lengkapi data anda',
+        isError: true,
+      );
       setState(() => _isLoading = false);
     }
   }
