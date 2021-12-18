@@ -111,15 +111,16 @@ class _DonateListState extends State<DonateList> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
-                                height: 104,
-                                width: 100,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(18),
-                                  child: Image.network(
-                                    donasi.imgDonation,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )),
+                              height: 104,
+                              width: 100,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(18),
+                                child: Image.network(
+                                  donasi.imgDonation,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                             const SizedBox(width: 15),
                             Expanded(
                               child: Column(

@@ -41,7 +41,7 @@ class DonaturModel {
 
   Map<String, dynamic> setDataMap() {
     return {
-      "owner_id": userId, //TODO::ubah owner_id jadi user_id
+      "owner_id": userId,
       "donation_id": donationId,
       "courier": courier,
       "note": note,

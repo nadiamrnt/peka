@@ -388,12 +388,20 @@ class _HomePageContentState extends State<HomePageContent> {
 
   Future<List<PantiAsuhanModel>> getDataPantiAsuhan() async {
     List<PantiAsuhanModel> pantiAsuhan = [];
+    List<PantiAsuhanModel> approvedPantiAsuhan = [];
     await _pantiAsuhanCollection.get().then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
         pantiAsuhan.add(PantiAsuhanModel.fromDatabase(doc));
       }
     });
-    return pantiAsuhan;
+
+    for (var item in pantiAsuhan) {
+      if (item.approved == true) {
+        approvedPantiAsuhan.add(item);
+      }
+    }
+
+    return approvedPantiAsuhan;
   }
 
   Future<UserModel?> getDataUser() async {
