@@ -248,6 +248,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   } catch (e) {
                     SmartDialog.showToast('Ambil gambar dibatalkan');
                     setState(() => _isLoading = false);
+                    Navigation.back();
                   }
 
                   if (_image != null) {

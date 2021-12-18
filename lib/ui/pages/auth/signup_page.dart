@@ -6,6 +6,7 @@ import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/ui/widgets/custom_toast.dart';
+
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
 import '../../widgets/button.dart';
@@ -260,6 +261,15 @@ class _SignupPageState extends State<SignupPage> {
                 '',
                 widget: const CustomToast(
                   msg: 'Kata sandi minimal 6 karakter',
+                  isError: true,
+                ),
+              );
+            } else if (e.toString() ==
+                '[firebase_auth/network-request-failed] A network error (such as timeout, interrupted connection or unreachable host) has occurred.') {
+              SmartDialog.showToast(
+                '',
+                widget: const CustomToast(
+                  msg: 'Tidak ada koneksi internet',
                   isError: true,
                 ),
               );

@@ -22,7 +22,11 @@ class HomePageContent extends StatefulWidget {
 }
 
 class _HomePageContentState extends State<HomePageContent> {
-  UserModel? user;
+  final _pantiAsuhanCollection =
+      Firestore.firebaseFirestore.collection('panti_asuhan');
+  final _userCollection = Firestore.firebaseFirestore
+      .collection('users')
+      .doc(Auth.firebaseAuth.currentUser!.uid);
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +51,12 @@ class _HomePageContentState extends State<HomePageContent> {
   }
 
   Widget _buildHeader() {
-    return StreamBuilder<DocumentSnapshot>(
-      stream: Firestore.firebaseFirestore
-          .collection('users')
-          .doc(Auth.firebaseAuth.currentUser?.uid)
-          .snapshots(),
+    return FutureBuilder<UserModel?>(
+      future: getDataUser(),
       builder: (_, snapshot) {
+        UserModel? userData;
         if (snapshot.hasData) {
-          var data = snapshot.data;
-          user = UserModel.getDataUser(data!);
+          userData = snapshot.data;
         }
 
         return Padding(
@@ -71,7 +72,7 @@ class _HomePageContentState extends State<HomePageContent> {
                 children: [
                   Expanded(
                     child: Text(
-                      user != null ? 'Halo,\n${user?.name}' : '',
+                      userData != null ? 'Halo,\n${userData.name}' : '',
                       style: blackTextStyle.copyWith(
                         fontSize: 24,
                         fontWeight: semiBold,
@@ -79,7 +80,7 @@ class _HomePageContentState extends State<HomePageContent> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  user != null
+                  userData != null
                       ? Container(
                           width: 60,
                           height: 60,
@@ -87,8 +88,8 @@ class _HomePageContentState extends State<HomePageContent> {
                             shape: BoxShape.circle,
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: user!.imageProfile.isNotEmpty
-                                  ? Image.network(user!.imageProfile).image
+                              image: userData.imageProfile.isNotEmpty
+                                  ? Image.network(userData.imageProfile).image
                                   : const AssetImage(
                                       'assets/icons/ic_add_profile.png',
                                     ),
@@ -277,20 +278,15 @@ class _HomePageContentState extends State<HomePageContent> {
         const SizedBox(height: 20),
         SizedBox(
           height: 330,
-          child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: Firestore.firebaseFirestore
-                .collection('panti_asuhan')
-                .snapshots(),
+          child: FutureBuilder<List<PantiAsuhanModel>>(
+            future: getDataPantiAsuhan(),
             builder: (_, snapshot) {
               return snapshot.hasData
                   ? ListView.builder(
                       padding: const EdgeInsets.only(left: 24),
                       scrollDirection: Axis.horizontal,
-                      itemCount: snapshot.data!.docs.length,
+                      itemCount: snapshot.data?.length,
                       itemBuilder: (BuildContext context, int index) {
-                        DocumentSnapshot data = snapshot.data!.docs[index];
-                        PantiAsuhanModel pantiAsuhan =
-                            PantiAsuhanModel.fromDatabase(data);
                         if (snapshot.data == null) {
                           return Center(
                             child: LottieBuilder.asset(
@@ -303,17 +299,18 @@ class _HomePageContentState extends State<HomePageContent> {
                         return GestureDetector(
                           onTap: () {
                             Navigation.intentWithData(
-                                DetailPage.routeName, pantiAsuhan);
+                                DetailPage.routeName, snapshot.data![index]);
                           },
-                          child: _itemPantiAsuhan(pantiAsuhan),
+                          child: _itemPantiAsuhan(snapshot.data![index]),
                         );
                       },
                     )
                   : Center(
                       child: LottieBuilder.asset(
-                      'assets/raw/loading.json',
-                      width: 200,
-                    ));
+                        'assets/raw/loading.json',
+                        width: 200,
+                      ),
+                    );
             },
           ),
         ),
@@ -387,5 +384,23 @@ class _HomePageContentState extends State<HomePageContent> {
         ],
       ),
     );
+  }
+
+  Future<List<PantiAsuhanModel>> getDataPantiAsuhan() async {
+    List<PantiAsuhanModel> pantiAsuhan = [];
+    await _pantiAsuhanCollection.get().then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        pantiAsuhan.add(PantiAsuhanModel.fromDatabase(doc));
+      }
+    });
+    return pantiAsuhan;
+  }
+
+  Future<UserModel?> getDataUser() async {
+    UserModel? userModel;
+    await _userCollection.get().then((DocumentSnapshot documentSnapshot) {
+      userModel = UserModel.getDataUser(documentSnapshot);
+    });
+    return userModel;
   }
 }

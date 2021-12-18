@@ -29,9 +29,9 @@ dependencies:
   lottie: ^1.2.1
   path_provider: ^2.0.8
   dropdown_search: ^2.0.1
-  cherry_toast: ^1.0.2
   timeago: ^3.1.0
   flutter_smart_dialog: ^3.0.12
+  connectivity_plus: ^2.1.0
 
 dev_dependencies:
   flutter_test:

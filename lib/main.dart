@@ -23,6 +23,7 @@ import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/maps/google_maps_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
 import 'package:peka/ui/pages/profile/about_page.dart';
+import 'package:peka/ui/pages/profile/donate_list.dart';
 import 'package:peka/ui/pages/profile/edit_profile_page.dart';
 
 import 'common/navigation.dart';
@@ -30,6 +31,7 @@ import 'common/navigation.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -73,6 +75,7 @@ class MyApp extends StatelessWidget {
               SendDonationPage.routeName: (_) => const SendDonationPage(),
               DetailKelolaPage.routeName: (_) => const DetailKelolaPage(),
               DetailDonatur.routeName: (_) => const DetailDonatur(),
+              DonateList.routeName: (_) => const DonateList(),
               EditProfilePage.routeName: (_) => const EditProfilePage(),
               AboutPage.routeName: (_) => const AboutPage(),
             },

@@ -7,6 +7,9 @@ import 'package:peka/data/model/panti_asuhan_model.dart';
 
 import '../../../common/navigation.dart';
 import '../../../services/firebase/firestore/firestore.dart';
+import '../../../services/maps/my_location.dart';
+import '../../../services/maps/permission.dart';
+import '../../../services/maps/url_launcher.dart';
 import '../../widgets/button.dart';
 import 'detail_map_page.dart';
 import 'send_donation_page.dart';
@@ -433,7 +436,13 @@ class _DetailPageState extends State<DetailPage> {
               ),
               const SizedBox(height: 6),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
+                  await Permission.checkPermission();
+                  LatLng myPosition = await MyLocation.getMyPosition();
+                  String myLocation = await MyLocation.getAddress(
+                      myPosition.latitude, myPosition.longitude);
+
+                  await UrlLauncher.openMap(myLocation, pantiAsuhan.address);
                   Navigation.back();
                 },
                 child: Text(

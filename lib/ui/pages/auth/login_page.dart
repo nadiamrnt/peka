@@ -8,6 +8,7 @@ import 'package:peka/ui/pages/auth/signup_page.dart';
 import 'package:peka/ui/pages/home/home_page.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/ui/widgets/custom_toast.dart';
+
 import '../../../common/navigation.dart';
 import '../../../services/firebase/auth/auth.dart';
 import '../../widgets/button.dart';
@@ -204,13 +205,34 @@ class _LoginPageState extends State<LoginPage> {
         Navigation.intentReplacement(HomePage.routeName);
       }
     } catch (e) {
-      SmartDialog.showToast(
-        '',
-        widget: const CustomToast(
-          msg: 'Opss.. masukkan email/kata sandi dengan benar',
-          isError: true,
-        ),
-      );
+      if (e.toString() ==
+          '[firebase_auth/wrong-password] The password is invalid or the user does not have a password.') {
+        SmartDialog.showToast(
+          '',
+          widget: const CustomToast(
+            msg: 'Masukkan kata sandi dengan benar',
+            isError: true,
+          ),
+        );
+      } else if (e.toString() ==
+          '[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted.') {
+        SmartDialog.showToast(
+          '',
+          widget: const CustomToast(
+            msg: 'Email tidak ditemukan',
+            isError: true,
+          ),
+        );
+      } else if (e.toString() ==
+          '[firebase_auth/network-request-failed] A network error (such as timeout, interrupted connection or unreachable host) has occurred.') {
+        SmartDialog.showToast(
+          '',
+          widget: const CustomToast(
+            msg: 'Tidak ada koneksi internet',
+            isError: true,
+          ),
+        );
+      }
     } finally {
       setState(() {
         _isLoading = false;
