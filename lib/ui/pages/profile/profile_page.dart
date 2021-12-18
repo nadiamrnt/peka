@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
+import 'package:peka/ui/pages/profile/about_page.dart';
 import 'package:peka/ui/pages/profile/edit_profile_page.dart';
 import 'package:peka/ui/widgets/toast.dart';
 
@@ -174,9 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
           imageAsset: 'ic_info.png',
           title: 'Tentang Kami',
           onTap: () {
-            Toast(toastTitle: 'sedang dalam pengembangan')
-                .waitingToast()
-                .show(context);
+            Navigation.intent(AboutPage.routeName);
           },
         ),
         const SizedBox(height: 5),

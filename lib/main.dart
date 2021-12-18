@@ -22,6 +22,7 @@ import 'package:peka/ui/pages/kelola_panti/donatur/detail_donatur_page.dart';
 import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/maps/google_maps_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
+import 'package:peka/ui/pages/profile/about_page.dart';
 import 'package:peka/ui/pages/profile/edit_profile_page.dart';
 
 import 'common/navigation.dart';
@@ -73,6 +74,7 @@ class MyApp extends StatelessWidget {
               DetailKelolaPage.routeName: (_) => const DetailKelolaPage(),
               DetailDonatur.routeName: (_) => const DetailDonatur(),
               EditProfilePage.routeName: (_) => const EditProfilePage(),
+              AboutPage.routeName: (_) => const AboutPage(),
             },
           );
         } else {
