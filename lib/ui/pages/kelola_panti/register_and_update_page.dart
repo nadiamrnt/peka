@@ -826,13 +826,7 @@ class _RegisterAndUpdatePageState extends State<RegisterAndUpdatePage> {
       await Firestore.firebaseFirestore
           .collection('panti_asuhan')
           .doc(value.id)
-          .set(dataPantiAsuhanWithId.setDataMap())
-          .then((pantiId) => Firestore.firebaseFirestore
-              .collection('panti_asuhan')
-              .doc(value.id)
-              .collection('daftar_donatur')
-              .doc('empty_donatur')
-              .set({'owner_image': ''}));
+          .set(dataPantiAsuhanWithId.setDataMap());
     });
   }
 
