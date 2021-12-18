@@ -1,4 +1,4 @@
-package com.anakmami.peka
+package com.niatbaik.peka
 
 import io.flutter.embedding.android.FlutterActivity
 

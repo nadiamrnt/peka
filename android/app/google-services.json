@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1083252737459:android:340c94a55fc1a56456b7c6",
+        "mobilesdk_app_id": "1:1083252737459:android:98a8c58b3b2d142656b7c6",
         "android_client_info": {
-          "package_name": "com.anakmami.peka"
+          "package_name": "com.niatbaik.peka"
         }
       },
       "oauth_client": [
