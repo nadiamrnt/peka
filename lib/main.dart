@@ -22,6 +22,7 @@ import 'package:peka/ui/pages/kelola_panti/donatur/detail_donatur_page.dart';
 import 'package:peka/ui/pages/kelola_panti/kelola_page.dart';
 import 'package:peka/ui/pages/kelola_panti/maps/google_maps_page.dart';
 import 'package:peka/ui/pages/kelola_panti/register_and_update_page.dart';
+import 'package:peka/ui/pages/profile/edit_profile_page.dart';
 
 import 'common/navigation.dart';
 
@@ -36,36 +37,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO:: HAPUS SEBELUM RILIS
-
-    // return MaterialApp(
-    //   title: 'Peka',
-    //   debugShowCheckedModeBanner: false,
-    //   theme: ThemeData(
-    //       primarySwatch: Colors.blue, scaffoldBackgroundColor: kWhiteColor),
-    //   navigatorObservers: [FlutterSmartDialog.observer],
-    //   builder: FlutterSmartDialog.init(),
-    //   navigatorKey: navigatorKey,
-    //   initialRoute: NotLoggedIn.routeName,
-    //   routes: {
-    //     NotLoggedIn.routeName: (context) => const NotLoggedIn(),
-    //     LoginPage.routeName: (context) => const LoginPage(),
-    //     SignupPage.routeName: (_) => const SignupPage(),
-    //     DetailPage.routeName: (_) => const DetailPage(),
-    //     HomePage.routeName: (_) => const HomePage(),
-    //     RegisterAndUpdatePage.routeName: (_) => const RegisterAndUpdatePage(),
-    //     KelolaPage.routeName: (_) => const KelolaPage(),
-    //     CategoryPage.routeName: (_) => const CategoryPage(),
-    //     GoogleMapsPage.routeName: (_) => const GoogleMapsPage(),
-    //     DetailMapPage.routeName: (_) => const DetailMapPage(),
-    //     SearchPage.routeName: (_) => const SearchPage(),
-    //     AddPhotoPage.routeName: (_) => const AddPhotoPage(),
-    //     ForgotPasswordPage.routeName: (_) => const ForgotPasswordPage(),
-    //     SendDonationPage.routeName: (_) => const SendDonationPage(),
-    //     DetailKelolaPage.routeName: (_) => const DetailKelolaPage(),
-    //     DetailDonatur.routeName: (_) => const DetailDonatur(),
-    //   },
-    // );
     return StreamBuilder<User?>(
       stream: Auth().streamAuthStatus(),
       builder: (context, snapshot) {
@@ -101,6 +72,7 @@ class MyApp extends StatelessWidget {
               SendDonationPage.routeName: (_) => const SendDonationPage(),
               DetailKelolaPage.routeName: (_) => const DetailKelolaPage(),
               DetailDonatur.routeName: (_) => const DetailDonatur(),
+              EditProfilePage.routeName: (_) => const EditProfilePage(),
             },
           );
         } else {

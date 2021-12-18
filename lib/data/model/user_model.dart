@@ -29,4 +29,13 @@ class UserModel {
       imageProfile: data.get('img_profile'),
     );
   }
+
+  Map<String, dynamic> setDataMap() {
+    return {
+      "userId": userId,
+      "email": email,
+      "name": name,
+      "img_profile": imageProfile,
+    };
+  }
 }

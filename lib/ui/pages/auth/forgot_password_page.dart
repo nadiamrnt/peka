@@ -17,7 +17,7 @@ class ForgotPasswordPage extends StatelessWidget {
               _buildHeader(context),
               SizedBox(height: MediaQuery.of(context).size.height * 0.15),
               _buildIllustrasi(context),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.10),
               _buildEmail(),
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Button(

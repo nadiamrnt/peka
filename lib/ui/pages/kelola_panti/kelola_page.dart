@@ -70,7 +70,6 @@ class KelolaPage extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          //TODO:: Add Panti Asuhan button
           onTap: () {
             Navigation.intent(RegisterAndUpdatePage.routeName);
           },

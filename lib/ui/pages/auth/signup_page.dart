@@ -6,7 +6,6 @@ import 'package:peka/common/navigation.dart';
 import 'package:peka/common/styles.dart';
 import 'package:peka/ui/widgets/custom_text_form_field.dart';
 import 'package:peka/ui/widgets/custom_toast.dart';
-
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
 import '../../widgets/button.dart';
@@ -52,112 +51,15 @@ class _SignupPageState extends State<SignupPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // HEADER HALAMAN SIGN UP
                     _buildHeader(),
-                    const SizedBox(
-                      height: 24.0,
-                    ),
-                    //ILUSTRASI SIGN UP
-                    Center(
-                      child: SizedBox(
-                        width: 210,
-                        height: 210,
-                        child: Image.asset(
-                          'assets/images/ill_signup.png',
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 24.0,
-                    ),
-                    //TEXT NAMA LENGKAP
-                    Text(
-                      "Nama Lengkap",
-                      style: blackTextStyle.copyWith(
-                          fontSize: 16, fontWeight: regular),
-                    ),
-                    const SizedBox(
-                      height: 5.0,
-                    ),
-                    //TEXT FIELD UNTUK NAMA DEPAN DAN NAMA BELAKANG
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomTextFormField(
-                            controller: _firstNameController,
-                            errorText: 'Mohon isi nama depan anda',
-                            hintText: 'Nama depan',
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10.0,
-                        ),
-                        Expanded(
-                          child: CustomTextFormField(
-                            controller: _lastNameController,
-                            errorText: 'Mohon isi nama belakang anda',
-                            hintText: 'Nama belakang',
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    //TEXT ALAMAT EMAIL
-                    Text(
-                      "Alamat Email",
-                      style: blackTextStyle.copyWith(
-                          fontSize: 16, fontWeight: regular),
-                    ),
-                    const SizedBox(
-                      height: 5.0,
-                    ),
-                    CustomTextFormField(
-                      hintText: 'Tulis alamat email kamu',
-                      errorText: 'Mohon isi email anda',
-                      controller: _emailController,
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    //TEXT KATA SANDI
-                    Text(
-                      "Kata Sandi",
-                      style: blackTextStyle.copyWith(
-                          fontSize: 16, fontWeight: regular),
-                    ),
-                    const SizedBox(
-                      height: 5.0,
-                    ),
-                    //TEXTFIELD UNTUK KATA SANDI
-                    CustomTextFormField(
-                      hintText: 'Tulis kata sandi kamu',
-                      errorText: 'Mohon isi kata sandi anda',
-                      controller: _password1Controller,
-                      obscureText: true,
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    //TEXT ULANG KATA SANDI
-                    Text(
-                      "Ulang kata Sandi",
-                      style: blackTextStyle.copyWith(
-                          fontSize: 16, fontWeight: regular),
-                    ),
-                    const SizedBox(
-                      height: 5.0,
-                    ),
-                    //TEXTFIELD UNTUK ULANG KATA SANDI
-                    CustomTextFormField(
-                      hintText: 'Tulis ulang kata sandi kamu',
-                      errorText: 'Tulis masukkan lagi kata sandi anda',
-                      controller: _password2Controller,
-                      obscureText: true,
-                    ),
+                    const SizedBox(height: 24.0),
+                    _buildIlustrasi(context),
+                    const SizedBox(height: 24.0),
+                    _buildName(),
+                    const SizedBox(height: 10.0),
+                    _buildEmail(),
+                    const SizedBox(height: 10.0),
+                    _buildPassword(),
                     const SizedBox(
                       height: 35.0,
                     ),
@@ -170,6 +72,113 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPassword() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Kata Sandi",
+          style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
+        ),
+        const SizedBox(
+          height: 5.0,
+        ),
+        CustomTextFormField(
+          hintText: 'Tulis kata sandi kamu',
+          errorText: 'Mohon isi kata sandi anda',
+          controller: _password1Controller,
+          obscureText: true,
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Text(
+          "Ulang kata Sandi",
+          style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
+        ),
+        const SizedBox(
+          height: 5.0,
+        ),
+        CustomTextFormField(
+          hintText: 'Tulis ulang kata sandi kamu',
+          errorText: 'Tulis masukkan lagi kata sandi anda',
+          controller: _password2Controller,
+          obscureText: true,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmail() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Alamat Email",
+          style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
+        ),
+        const SizedBox(
+          height: 5.0,
+        ),
+        CustomTextFormField(
+          hintText: 'Tulis alamat email kamu',
+          errorText: 'Mohon isi email anda',
+          controller: _emailController,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildName() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Nama Lengkap",
+          style: blackTextStyle.copyWith(fontSize: 16, fontWeight: regular),
+        ),
+        const SizedBox(
+          height: 5.0,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: CustomTextFormField(
+                controller: _firstNameController,
+                errorText: 'Mohon isi nama depan anda',
+                hintText: 'Nama depan',
+              ),
+            ),
+            const SizedBox(
+              width: 10.0,
+            ),
+            Expanded(
+              child: CustomTextFormField(
+                controller: _lastNameController,
+                errorText: 'Mohon isi nama belakang anda',
+                hintText: 'Nama belakang',
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIlustrasi(BuildContext context) {
+    return Center(
+      child: SizedBox(
+        width: 210,
+        height: 210,
+        child: Image.asset(
+          'assets/images/ill_signup.png',
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.cover,
         ),
       ),
     );

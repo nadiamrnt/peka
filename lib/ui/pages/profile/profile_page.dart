@@ -1,22 +1,15 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:lottie/lottie.dart';
 import 'package:peka/common/styles.dart';
-import 'package:peka/ui/widgets/custom_toast.dart';
+import 'package:peka/ui/pages/profile/edit_profile_page.dart';
 import 'package:peka/ui/widgets/toast.dart';
-import 'package:peka/utils/firebase_storage_helper.dart';
 
 import '../../../common/navigation.dart';
 import '../../../data/model/user_model.dart';
 import '../../../services/firebase/auth/auth.dart';
 import '../../../services/firebase/firestore/firestore.dart';
-import '../../../utils/image_picker_helper.dart';
-import '../../widgets/button.dart';
 import '../../widgets/profile_option.dart';
 import '../auth/login_page.dart';
 
@@ -28,9 +21,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool _isLoading = false;
-  File? _image;
-  String? toastTitle;
+  final bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -103,46 +94,27 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildProfilePicture(UserModel? user) {
-    return GestureDetector(
-      onTap: () async {
-        _modalBottomSheetMenu();
-      },
-      child: user != null
-          ? SizedBox(
-              width: 140,
-              height: 140,
-              child: Stack(
-                children: [
-                  ClipOval(
-                    child: SizedBox(
-                      width: 120.0,
-                      height: 120.0,
-                      child: user.imageProfile.isNotEmpty
-                          ? Image.network(
-                              user.imageProfile,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.asset(
-                              'assets/icons/ic_add_profile.png',
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: Image.asset(
-                        'assets/icons/ic_pencil.png',
-                        width: 40,
+    return user != null
+        ? SizedBox(
+            width: 140,
+            height: 140,
+            child: ClipOval(
+              child: SizedBox(
+                width: 120.0,
+                height: 120.0,
+                child: user.imageProfile.isNotEmpty
+                    ? Image.network(
+                        user.imageProfile,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        'assets/icons/ic_add_profile.png',
+                        fit: BoxFit.cover,
                       ),
-                    ),
-                  ),
-                ],
               ),
-            )
-          : const SizedBox(),
-    );
+            ),
+          )
+        : const SizedBox();
   }
 
   Widget _buildName(UserModel? user) {
@@ -174,9 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
           imageAsset: 'ic_edit_profile.png',
           title: 'Edit Profil',
           onTap: () {
-            Toast(toastTitle: 'sedang dalam pengembangan')
-                .waitingToast()
-                .show(context);
+            Navigation.intent(EditProfilePage.routeName);
           },
         ),
         const SizedBox(height: 5),
@@ -225,128 +195,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         const SizedBox(height: 5),
       ],
-    );
-  }
-
-  void _modalBottomSheetMenu() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (builder) {
-        return Container(
-          height: 150,
-          padding: const EdgeInsets.only(
-            top: 24,
-            left: 70,
-            right: 70,
-          ),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10.0),
-              topRight: Radius.circular(10.0),
-            ),
-          ),
-          child: Column(
-            children: [
-              Button(
-                textButton: 'Ambil Foto',
-                onTap: () async {
-                  setState(() {
-                    _isLoading = true;
-                  });
-
-                  try {
-                    await ImagePickerHelper.imgFromCamera().then((image) {
-                      setState(() => _image = image);
-                    });
-                  } catch (e) {
-                    SmartDialog.showToast('Ambil gambar dibatalkan');
-                    setState(() => _isLoading = false);
-                  }
-
-                  if (_image != null) {
-                    try {
-                      // Send Image
-                      String _imagePath = _image!.path.split('/').last;
-                      Reference ref = FirebaseStorage.instance
-                          .ref()
-                          .child('image_profile')
-                          .child(_imagePath);
-                      UploadTask task = ref.putFile(_image!);
-                      TaskSnapshot snapShot = await task;
-                      String _imgUrl = await snapShot.ref.getDownloadURL();
-
-                      await Firestore.firebaseFirestore
-                          .collection('users')
-                          .doc(Auth.firebaseAuth.currentUser!.uid)
-                          .update({'img_profile': _imgUrl});
-
-                      Navigation.back();
-                    } catch (e) {
-                      Toast(toastTitle: 'Opss.. terjadi kesalahan')
-                          .failedToast()
-                          .show(context);
-                    }
-                  }
-
-                  setState(() => _isLoading = false);
-
-                  Navigation.back();
-                },
-              ),
-              const SizedBox(height: 6),
-              TextButton(
-                onPressed: () async {
-                  setState(() => _isLoading = true);
-                  try {
-                    await ImagePickerHelper.imgFromGallery().then((image) {
-                      setState(() => _image = image);
-                    });
-                  } catch (e) {
-                    setState(() => _isLoading = true);
-                    SmartDialog.showToast('Pilih gambar dibatalkan');
-                  }
-
-                  if (_image != null) {
-                    try {
-                      Navigation.back();
-                      String _imgUrl =
-                          await FirebaseStorageHelper.uploadImageProfile(
-                              _image!);
-                      await Firestore.firebaseFirestore
-                          .collection('users')
-                          .doc(Auth.firebaseAuth.currentUser!.uid)
-                          .update({'img_profile': _imgUrl});
-                    } catch (e) {
-                      Toast(toastTitle: '').failedToast().show(context);
-                      SmartDialog.showToast(
-                        '',
-                        widget:
-                            const CustomToast(msg: 'Opss.. terjadi kesalahan'),
-                      );
-                    }
-                  }
-
-                  setState(() => _isLoading = false);
-
-                  Navigation.back();
-                },
-                child: Text(
-                  'Pilih dari galeri',
-                  style:
-                      greyTextStyle.copyWith(fontSize: 16, fontWeight: medium),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
