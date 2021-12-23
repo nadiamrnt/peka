@@ -35,15 +35,27 @@ class KelolaPage extends StatelessWidget {
               ));
             }
 
-            if (snapshot.data!.docs.isNotEmpty) {
-              var _listDataPanti = snapshot.data!.docs;
+            List<PantiAsuhanModel> pantiAsuhan = [];
+            List<PantiAsuhanModel> approvedPantiAsuhan = [];
+
+            for (var doc in snapshot.data!.docs) {
+              pantiAsuhan.add(PantiAsuhanModel.fromDatabase(doc));
+            }
+
+            for (var item in pantiAsuhan) {
+              if (item.approved == true) {
+                approvedPantiAsuhan.add(item);
+              }
+            }
+
+            if (approvedPantiAsuhan.isNotEmpty) {
               return Padding(
                 padding: const EdgeInsets.only(top: 30, left: 24, right: 24),
                 child: Column(
                   children: [
                     _buildHeader(),
                     const SizedBox(height: 24),
-                    _buildListKelolaPanti(_listDataPanti, context),
+                    _buildListKelolaPanti(approvedPantiAsuhan, context),
                   ],
                 ),
               );
@@ -83,14 +95,11 @@ class KelolaPage extends StatelessWidget {
   }
 
   Widget _buildListKelolaPanti(
-      List<QueryDocumentSnapshot<Map<String, dynamic>>> listDataPanti,
-      BuildContext context) {
+      List<PantiAsuhanModel> listDataPanti, BuildContext context) {
     return Flexible(
       child: ListView(
-        children: listDataPanti.map((documentSnapshot) {
-          PantiAsuhanModel _pantiAsuhan =
-              PantiAsuhanModel.fromDatabase(documentSnapshot);
-          var splitString = _pantiAsuhan.address.split(', ');
+        children: listDataPanti.map((pantiAsuhan) {
+          var splitString = pantiAsuhan.address.split(', ');
           String location = "${splitString[4]}, ${splitString[5]}";
           int? _kebutuhanLenght;
 
@@ -100,7 +109,7 @@ class KelolaPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => DetailKelolaPage(
-                    pantiAsuhan: _pantiAsuhan,
+                    pantiAsuhan: pantiAsuhan,
                   ),
                 ),
               );
@@ -127,7 +136,7 @@ class KelolaPage extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(18),
                             child: Image.network(
-                              _pantiAsuhan.imgUrl,
+                              pantiAsuhan.imgUrl,
                               fit: BoxFit.cover,
                             ),
                           )),
@@ -137,7 +146,7 @@ class KelolaPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _pantiAsuhan.name,
+                              pantiAsuhan.name,
                               style: blackTextStyle.copyWith(
                                 fontSize: 16,
                                 fontWeight: semiBold,
@@ -176,17 +185,16 @@ class KelolaPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Row(
-                          children: _pantiAsuhan.kebutuhan
+                          children: pantiAsuhan.kebutuhan
                               .map((kebutuhan) {
-                                _kebutuhanLenght =
-                                    _pantiAsuhan.kebutuhan.length;
+                                _kebutuhanLenght = pantiAsuhan.kebutuhan.length;
                                 return Container(
                                   width: 76,
                                   height: 24,
                                   margin: const EdgeInsets.only(right: 8),
                                   padding: const EdgeInsets.only(top: 2),
                                   decoration: BoxDecoration(
-                                    color: _pantiAsuhan.kebutuhan
+                                    color: pantiAsuhan.kebutuhan
                                             .indexOf(kebutuhan)
                                             .isOdd
                                         ? kPinkBgColor

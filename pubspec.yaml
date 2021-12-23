@@ -2,7 +2,7 @@
 name: peka
 description: A new Flutter project.
 publish_to: none
-version: 1.0.0+1
+version: 1.0.0+2
 environment:
   sdk: '>=2.15.0-116.0.dev <3.0.0'
 dependencies:
@@ -21,7 +21,6 @@ dependencies:
   google_maps_flutter: ^2.1.1
   location: ^4.3.0
   geocoding: ^2.0.1
-  http: ^0.13.4
   url_launcher: ^6.0.15
   file_picker: ^4.2.7
   responsive_grid: ^2.0.0

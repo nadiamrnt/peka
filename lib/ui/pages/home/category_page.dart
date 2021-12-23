@@ -88,6 +88,7 @@ class _CategoryPageState extends State<CategoryPage> {
           Firestore.firebaseFirestore.collection('panti_asuhan').snapshots(),
       builder: (_, snapshot) {
         List<PantiAsuhanModel> listPantiAsuhan = [];
+        List<PantiAsuhanModel> approvedPantiAsuhan = [];
 
         if (snapshot.data == null) {
           return Center(
@@ -113,34 +114,64 @@ class _CategoryPageState extends State<CategoryPage> {
             }
           }
 
-          return snapshot.hasData
-              ? SingleChildScrollView(
-                  child: ResponsiveGridRow(
-                      children: listPantiAsuhan.map((pantiAsuhan) {
-                    return ResponsiveGridCol(
-                      xs: 6,
-                      md: 3,
-                      sm: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 6, right: 6, bottom: 12),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigation.intentWithData(
-                                DetailPage.routeName, pantiAsuhan);
-                          },
-                          child: CardGridPantiAsuhan(pantiAsuhan: pantiAsuhan),
-                        ),
-                      ),
-                    );
-                  }).toList()),
-                )
-              : LottieBuilder.asset(
+          for (var item in listPantiAsuhan) {
+            if (item.approved == true) {
+              approvedPantiAsuhan.add(item);
+            }
+          }
+
+          return !snapshot.hasData
+              ? LottieBuilder.asset(
                   'assets/raw/loading.json',
                   width: 200,
-                );
+                )
+              : approvedPantiAsuhan.isNotEmpty
+                  ? SingleChildScrollView(
+                      child: ResponsiveGridRow(
+                          children: approvedPantiAsuhan.map((pantiAsuhan) {
+                        return ResponsiveGridCol(
+                          xs: 6,
+                          md: 3,
+                          sm: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 6, right: 6, bottom: 12),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigation.intentWithData(
+                                    DetailPage.routeName, pantiAsuhan);
+                              },
+                              child:
+                                  CardGridPantiAsuhan(pantiAsuhan: pantiAsuhan),
+                            ),
+                          ),
+                        );
+                      }).toList()),
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 24),
+                          Image.asset(
+                            'assets/images/no_data.png',
+                            width: 180,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Belum ada panti asuhan',
+                            style: greyTextStyle.copyWith(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    );
         } else {
-          return const SizedBox();
+          return Center(
+            child: Image.asset(
+              'assets/images/no_data.png',
+              width: 180,
+            ),
+          );
         }
       },
     );

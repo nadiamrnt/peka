@@ -115,12 +115,20 @@ class _SearchPageState extends State<SearchPage> {
                       .contains(_query!.toLowerCase()))
                   .toList();
 
-              return snapshot.hasData
+              List<PantiAsuhanModel> approvedPantiAsuhan = [];
+
+              for (var item in _listPantiAsuhan) {
+                if (item.approved == true) {
+                  approvedPantiAsuhan.add(item);
+                }
+              }
+
+              return approvedPantiAsuhan.isNotEmpty
                   ? Padding(
                       padding: EdgeInsets.only(
                           left: defaultMargin, right: defaultMargin),
                       child: ResponsiveGridRow(
-                          children: _listPantiAsuhan.map((pantiAsuhan) {
+                          children: approvedPantiAsuhan.map((pantiAsuhan) {
                         return ResponsiveGridCol(
                             xs: 6,
                             md: 3,
@@ -139,10 +147,28 @@ class _SearchPageState extends State<SearchPage> {
                             ));
                       }).toList()),
                     )
-                  : LottieBuilder.asset(
-                      'assets/raw/loading.json',
-                      width: 200,
-                    );
+                  : !snapshot.hasData
+                      ? LottieBuilder.asset(
+                          'assets/raw/loading.json',
+                          width: 200,
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 24),
+                              Image.asset(
+                                'assets/images/no_data.png',
+                                width: 180,
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                'Opss panti asuhan tidak ditemukan',
+                                style: greyTextStyle.copyWith(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        );
             })
         : Center(
             child: SizedBox(
