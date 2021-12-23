@@ -30,6 +30,7 @@ PEKA has the main goal of being able to accommodate information on the needs of 
 - Users can register orphanages and their needs
 - Search feature and area filter to make it easier for users to find the desired orphanage
 - Displays the category of orphanage needs to make it easier for donors to choose an orphanage according to the needs they want to donate
+- Users can make a donation report on the orphanage detail page
 - Displays the number of people who donated in the details of the orphanage
 - Displays the location and navigation to the orphanage
 
