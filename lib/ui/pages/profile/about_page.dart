@@ -150,6 +150,7 @@ class AboutPage extends StatelessWidget {
                     'Nadia Miranti',
                     style: blackTextStyle.copyWith(
                         fontSize: 14, fontWeight: medium),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 5),
                   Text(
@@ -174,6 +175,7 @@ class AboutPage extends StatelessWidget {
                     'Muhammad Ridhoi',
                     style: blackTextStyle.copyWith(
                         fontSize: 14, fontWeight: medium),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 5),
                   Text(
